@@ -1,0 +1,30 @@
+---
+version: '3'
+
+# using fixed ip addresses
+# to see all network use docker network ls
+# to see config use docker network inspect kuwabia-docker-compose_frontend
+# note gateway is 172.20.0.1 
+networks:
+  frontend:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+volumes:
+  data-kuwaiba: {}
+
+services:
+  kuwaiba:
+    container_name: kuwaiba
+    image: ${DOCKER_REGISTRY:-docker.io}/neotropic/kuwaiba:${KUWAIBA_VERSION:-v2.1-nightly}
+    environment:
+      URL_DATA: https://sourceforge.net/projects/kuwaiba/files/Version%202.x/kuwaiba_server_2.1.1_stable.zip
+    volumes:
+      - data-kuwaiba:/data
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      frontend:
+        ipv4_address: 172.20.0.55
