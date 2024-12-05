@@ -1,11 +1,12 @@
-# kuwaiba-examples-1
-Example topologies with kuwaiba https://www.kuwaiba.org/
+# Kuwaiba
 
-inspired by :
+## checkout and build 
 
-using docker https://hub.docker.com/r/neotropic/kuwaiba#!
+code on sourceforge: https://sourceforge.net/p/kuwaiba/code/HEAD/tree/
 
-https://kuwaiba.org/docs/manuals/user/index.html  Kuwaiba Open Network Inventory User’s Manual v2.1.1
+svn checkout https://svn.code.sf.net/p/kuwaiba/code/ kuwaiba-code
 
-https://passionateaboutoss.com/oss-sandpit-gpon-network-inventory-prototype/  OSS Sandpit – GPON Network Inventory Prototype
 
+https://www.kuwaiba.org/docs/dev/build/
+note needs java 8 https://www.java.com/en/download/manual.jsp
+netbeans 8 https://dlc-cdn.sun.com/netbeans/8.2/final/start.html?platform=windows&lang=en&option=javaee&pagelang=
