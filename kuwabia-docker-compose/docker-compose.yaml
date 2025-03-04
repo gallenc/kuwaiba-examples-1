@@ -1,13 +1,13 @@
 
 # using fixed ip addresses
 # to see all network use docker network ls
-# to see config use docker network inspect kuwabia-docker-compose_frontend
-# note gateway is 172.20.0.1 
+# to see config use docker network inspect kuwabia-docker-compose_kuwaiba-net
+# note gateway is 172.30.0.1 
 networks:
-  frontend:
+  kuwaiba-net:
     ipam:
       config:
-        - subnet: 172.20.0.0/24
+        - subnet: 172.30.0.0/24
 
 volumes:
   data-kuwaiba: {}
@@ -24,5 +24,5 @@ services:
       - "8080:8080"
       - "8081:8081"
     networks:
-      frontend:
-        ipv4_address: 172.20.0.55
+      kuwaiba-net:
+        ipv4_address: 172.30.0.55
