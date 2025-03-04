@@ -1,17 +1,17 @@
 # photos of racks for experiments
 
-![alt text](../rackphoto/20250304_142151.jpg)
+![alt text](../rackphoto/20250304_142151.png)
 	
-![alt text](../rackphoto/20250304_142215.jpg)
+![alt text](../rackphoto/20250304_142215.png)
 	
-![alt text](../rackphoto/20250304_142222.jpg)
+![alt text](../rackphoto/20250304_142222.png)
 	
-![alt text](../rackphoto/20250304_142227.jpg)
+![alt text](../rackphoto/20250304_142227.png)
 	
-![alt text](../rackphoto/20250304_142230.jpg)
+![alt text](../rackphoto/20250304_142230.png)
 	
-![alt text](../rackphoto/20250304_142300.jpg)
+![alt text](../rackphoto/20250304_142300.png)
 	
-![alt text](../rackphoto/20250304_142305.jpg)
+![alt text](../rackphoto/20250304_142305.png)
 	
-![alt text](../rackphoto/20250304_142346.jpg)
+![alt text](../rackphoto/20250304_142346.png)
