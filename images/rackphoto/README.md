@@ -1,15 +1,20 @@
-[a](../../images/20250304_142151.jpg)
+
+![alt text](../master/docs/images/ForkingARepo.png "Figure ForkingARepo.png")
+
+
+
+[a](../master/images/20250304_142151.jpg)
 	
-[b](../images/20250304_142215.jpg)
+[b](../master/images/20250304_142215.jpg)
 	
-[c](../images/20250304_142222.jpg)
+[c](../master/images/20250304_142222.jpg)
 	
-[d](../images/20250304_142227.jpg)
+[d](../master/images/20250304_142227.jpg)
 	
-[e](../images/20250304_142230.jpg)
+[e](../master/images/20250304_142230.jpg)
 	
-[f](../images/20250304_142300.jpg)
+[f](../master/images/20250304_142300.jpg)
 	
-[g](../images/20250304_142305.jpg)
+[g](../master/images/20250304_142305.jpg)
 	
-[h](../images/20250304_142346.jpg)
+[h](../master/images/20250304_142346.jpg)
