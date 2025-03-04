@@ -2,9 +2,9 @@
 
 ## Class Diagram
 
-![alt text](../PersistenceExtraction/ClassDiagram.png "Figure ClassDiagram.png" )
+![alt text](../PersistenceExtractionLayer/ClassDiagram.png "Figure ClassDiagram.png" )
 
 
 ## Use Case Diagram
 
-![alt text](../PersistenceExtraction/UseCaseDiagram.png "Figure UseCaseDiagram.png" )
+![alt text](../PersistenceExtractionLayer/UseCaseDiagram.png "Figure UseCaseDiagram.png" )
