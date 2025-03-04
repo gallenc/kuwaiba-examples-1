@@ -3,7 +3,7 @@
 
 
 
-[a](../images/rackphoto/20250304_142151.jpg)
+[a](../rackphoto/20250304_142151.jpg)
 	
 [b](../master/images/20250304_142215.jpg)
 	
