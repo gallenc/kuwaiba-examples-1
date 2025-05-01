@@ -1,0 +1,7 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.processCompleted"/>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml"/>
+</formDefinition>

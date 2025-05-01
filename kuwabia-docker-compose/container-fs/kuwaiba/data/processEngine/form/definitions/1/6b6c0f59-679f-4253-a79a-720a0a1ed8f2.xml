@@ -1,0 +1,7 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.joinMessage"/>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml"/>
+</formDefinition>

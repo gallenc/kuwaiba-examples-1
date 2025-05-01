@@ -1,0 +1,93 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.equipmentAcceptance"/>
+        <label onload="value.i18n.createAcceptedEquipment"/>
+        <gridLayout columns="2" rows="1" width="100%">
+            <label onload="value.i18n.warehouse"/>
+            <comboBox id="cmbWarehouse" datatype="RemoteObjectLight" onlazyload="items.getPhysicalWarehouses" propertychangelistener="cmbPool"/>
+
+            <label onload="value.i18n.pool"/>
+            <comboBox id="cmbPool" datatype="InventoryObjectPool" onlazyload="items.getPoolsInWarehouse.cmbWarehouse" propertychangelistener="btnCreate" 
+                onload="enabled.isEnabledCmbPool.cmbWarehouse" onpropertychange="enabled.isEnabledCmbPool.cmbWarehouse"
+                validate="value.isInventoryObjectPool.cmbPool"/>
+        </gridLayout>
+
+        <button id="btnCreate" caption="Create" width="100%"
+            onclick="createAcceptedEquipmentInWarehouse.tblEquipmentAcceptance.cmbWarehouse.cmbPool"
+            onload="enabled.isInventoryObjectPool.cmbPool"
+            onpropertychange="enabled.isInventoryObjectPool.cmbPool"/>
+        
+        <grid id="tblEquipmentAcceptance" width="100%" onload="rows.getRows.tblEquipmentAcceptance">
+            <column caption="Accepted"/>
+            <column caption="Equipment Code"/>
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Model"/>
+        </grid>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml">
+        <function type="validator" name="isInventoryObjectPool" parameternames="cmbPool" message="i18n.inventoryObjectPool"><![CDATA[
+            cmbPool.getValue() != null && 'InventoryObject'.equals(cmbPool.getValue().getClassName())
+        ]]></function>
+        <function type="function" name="isEnabledCmbPool" parameternames="cmbWarehouse"><![CDATA[
+            cmbWarehouse.getValue() != null
+        ]]></function>
+        <function type="function" name="getRows" parameternames="tbl"><![CDATA[
+            if (tbl != null && tbl.getRows() != null && !tbl.getRows().isEmpty())
+                return tbl.getRows()
+            
+            def rowsNetworkTechnician = elementScript.getFunctionByName('getSharedGridRows').run(['eb057c99-ce60-4392-8eb2-7e842696cb10', 'tblEquipmentAcceptance'])
+            def rowsFieldTechnician = elementScript.getFunctionByName('getSharedGridRows').run(['6144411f-7fcc-4da0-8afd-9455e2ca2c7b', 'tblEquipmentAcceptance'])
+            
+            def result = []
+            
+            rowsNetworkTechnician.each {row -> 
+                result.add(row)
+            }
+            rowsFieldTechnician.each {row -> 
+                result.add(row)
+            }
+            result
+        ]]></function>
+        <function type="function" name="createAcceptedEquipmentInWarehouse" parameternames="tbl cmbWarehouse cmbPool"><![CDATA[
+            import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight
+            import org.neotropic.kuwaiba.core.apis.persistence.metadata.ClassMetadataLight
+
+            def warehouse = cmbWarehouse.getValue()
+            def classPool = cmbPool.getValue()
+            if (warehouse != null && classPool != null && tbl != null && tbl.getRows() != null && !tbl.getRows().isEmpty()) {
+                def yes = elementScript.getFunctionByName('i18n').run(['yes'])
+                def counter = 0
+                tbl.getRows().each {row -> 
+                    def equipmentClassName = row.get(4) instanceof ClassMetadataLight ? row.get(4).getName() : row.get(4)
+                    def equipmentName = row.get(3) + '-' + row.get(1)
+                    def accepted = row.get(0)
+
+                    if (yes.equals(accepted) && bem.getObjectsWithFilterLight(equipmentClassName, 'name', equipmentName).isEmpty()) {
+                        def attributes = [name: equipmentName]
+
+                        def type = mem.getClass(equipmentClassName)
+
+                        if (type.hasAttribute('model') && row.get(6) instanceof BusinessObjectLight)
+                            attributes['model'] = row.get(6).getId()
+                        if (type.hasAttribute('vendor') && row.get(5) instanceof BusinessObjectLight)
+                            attributes['vendor'] = row.get(5).getId()
+                        
+                        warehouseService.createSparePart(classPool.getId(), equipmentClassName, attributes, "", 
+                            scriptQueryExecutor.execute("shared", ['__userName__'], ['__userName__']));
+                        counter++
+                    }
+                }
+                if (counter == 0) {
+                    scriptQueryExecutor.execute("notifications", ['info'], [elementScript.getFunctionByName('i18n').run(['noEquipmentCreated'])])
+                } else {
+                    scriptQueryExecutor.execute("notifications", ['info'], [String.format(elementScript.getFunctionByName('i18n').run(['equipmentCreated']), counter)])
+                }
+            }
+            null
+        ]]></function>
+    </script>
+</formDefinition>

@@ -1,0 +1,67 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.acceptRejectEquipment"/>
+        <button id="btnEquipmentAcceptance" caption="Accept/Reject" width="100%" 
+            onclick="open.frmAcceptEquipment"
+            onload="enabled.isEnabledButtton.tblEquipmentAcceptance" onpropertychange="enabled.isEnabledButtton.tblEquipmentAcceptance"/>
+        
+        <grid id="tblEquipmentAcceptance" width="100%" onload="rows.getRows.tblEquipmentAcceptance" propertychangelistener="btnEquipmentAcceptance" shared="true">
+            <column caption="Accepted"/>
+            <column caption="Equipment Code"/>
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Model"/>
+        </grid>
+        <subform id="frmAcceptEquipment" width="50%">
+            <gridLayout columns="2" rows="7">
+                <label onload="value.i18n.acceptEquipment"/>
+                <comboBox id="cmbAcceptEquipment" onload="value.getCellData.tblEquipmentAcceptance.0" onlazyload="items.getYesNoItems" width="400px"/>
+
+                <textField hidden="true" id="txtEquipmentCode" onload="value.getCellData.tblEquipmentAcceptance.1" width="400px"/>
+
+                <textField hidden="true" id="txtNum" enabled="false" onload="value.getCellData.tblEquipmentAcceptance.2" width="400px"/>
+
+                <comboBox hidden="true" enabled="false" id="txtName" onload="value.getCellData.tblEquipmentAcceptance.3" width="400px"/>
+
+                <comboBox hidden="true" enabled="false" id="cmbClass" onload="value.getCellData.tblEquipmentAcceptance.4" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <comboBox hidden="true" enabled="false" id="cmbVendor" onload="value.getCellData.tblEquipmentAcceptance.5" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <comboBox hidden="true" enabled="false" id="cmbModel" onload="value.getCellData.tblEquipmentAcceptance.6" onlazyload="items.getModels.cmbClass" width="400px"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frmAcceptEquipment" width="100%"/>
+                <button caption="OK" width="100%" onclick="editgridrow.tblEquipmentAcceptance.cmbAcceptEquipment.txtEquipmentCode.txtNum.txtName.cmbClass.cmbVendor.cmbModel close.frmAcceptEquipment clean.frmAcceptEquipment"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml">
+        <function type="function" name="getRows" parameternames="tbl"><![CDATA[
+            if (tbl != null && tbl.getRows() != null && !tbl.getRows().isEmpty())
+                return tbl.getRows()
+            
+            def rows = elementScript.getFunctionByName('getSharedGridRows').run(['45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398', 'tblEquipmentReception'])
+            def result = []
+            rows.each {row -> 
+                def quantity = Integer.valueOf(row.get(7))
+                if (row.size() == 13 && 'Field Technician'.equals(row.get(1))) {
+                    for (def i = 0; i < quantity; i++) {
+                        result.add([
+                            elementScript.getFunctionByName('i18n').run(['notSet']),
+                            UUID.randomUUID().toString(),
+                            row.get(3),
+                            row.get(4),
+                            row.get(5),
+                            row.get(6),
+                            row.get(11)
+                        ])
+                    }
+                }
+            }
+            result
+        ]]></function>
+    </script>
+</formDefinition>

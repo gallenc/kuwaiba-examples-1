@@ -1,0 +1,162 @@
+<formDefinition>
+    <form>
+        <gridLayout columns="2" rows="8">
+            <label value="Request Id"/>
+            <label onload="value.request.id"/>
+
+            <label value="Latitude"/>
+            <label onload="value.request.latitude"/>
+
+            <label value="Longitude"/>
+            <label onload="value.request.longitude"/>
+
+            <label/><label/>
+            <label/><label/>
+            <label/><label/>
+
+            <label value="Type"/>
+            <label onload="value.request.type"/>
+
+            <label value="Bandwidth (Mbps)" onload="hidden.isHidden.bandwidth"/>
+            <label onload="value.request.bandwidth hidden.isHidden.bandwidth"/>
+            
+            <label value="Availability (%)" onload="hidden.isHidden.availability"/>
+            <label onload="value.request.availability hidden.isHidden.availability"/>
+
+            <label value="Video Quality" onload="hidden.isHidden.videoQuality"/>
+            <label onload="value.request.videoQuality hidden.isHidden.videoQuality"/>
+
+            <label value="Lines" onload="hidden.isHidden.lines"/>
+            <label onload="value.request.lines hidden.isHidden.lines"/>
+        </gridLayout>
+
+        <label/>
+        <label/>
+        <label/>
+
+        <gridLayout columns="2" rows="1" width="60%">
+            <label value="Implementation Type"/>
+            <label id="lblImplType" enabled="false" width="400px" shared="true" datatype="String"/>
+
+            <label value="Selected Node"/>
+            <comboBox id="cmbSelectedNode" enabled="false" width="400px" shared="true" datatype="RemoteObjectLight"/>
+        </gridLayout>
+
+        <label/>
+        <label/>
+        <label/>
+
+        <label value="Implementation Options"/>
+
+        <button id="btnSelectPonNode" caption="Select PON Node" onclick="propertyChange.cmbSelectedNode.value.getSelectedNode.tblPon propertyChange.lblImplType.value.getImplementationType.tblPon.PON"/>
+        <grid id="tblPon" width="100%" onload="rows.getTblPonRows">
+            <column caption="PON"/>
+        </grid>
+
+        <label/>
+        <label/>
+        <label/>
+
+        <button id="btnSelectRadioNode" caption="Select Radio Node" onclick="propertyChange.cmbSelectedNode.value.getSelectedNode.tblRadio propertyChange.lblImplType.value.getImplementationType.tblRadio.Radio"/>
+        <grid id="tblRadio" width="100%" onload="rows.getTblRadioRows">
+            <column caption="Radio"/>
+        </grid>
+
+        <label/>
+        <label/>
+        <label/>
+        
+        <button id="btnSelectLteNode" caption="Select LTE Node" onclick="propertyChange.cmbSelectedNode.value.getSelectedNode.tblLte propertyChange.lblImplType.value.getImplementationType.tblLte.LTE"/>
+        <grid id="tblLte" width="100%" onload="rows.getTblLteRows">
+            <column caption="LTE"/>
+        </grid>
+    </form>
+    <script src="scripts.xml service-feasibility-scripts.xml">
+        <function type="function" name="getTblPonRows"><![CDATA[
+            import org.neotropic.kuwaiba.core.apis.persistence.application.ScriptedQueryParameter
+
+            def res = []
+            def latitude = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'latitude'])
+            def longitude = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'longitude'])
+
+            def sqPool = aem.getScriptedQueriesPoolByName('procruntime.service-feasibility')
+            if (sqPool != null && latitude != null && longitude != null) {
+                def sqCount = aem.getScriptedQueryCountByPoolName('procruntime.service-feasibility', 'free-nodes-pon');
+                if (sqCount > 0) {
+                    def lstSq = aem.getScriptedQueriesByPoolName('procruntime.service-feasibility', 'free-nodes-pon', true, 0, sqCount)
+
+                    def result = aem.executeScriptedQuery(
+                        lstSq.get(0).getId(), 
+                        new ScriptedQueryParameter('latitude', Double.valueOf(latitude)),
+                        new ScriptedQueryParameter('longitude', Double.valueOf(longitude)),
+                        new ScriptedQueryParameter('radius', 100)
+                    )
+                    result.getRows().each {row -> 
+                        res.add([row.get(0)])
+                    }
+                }
+            }
+            res
+        ]]></function>
+        <function type="function" name="getTblRadioRows"><![CDATA[
+            import org.neotropic.kuwaiba.core.apis.persistence.application.ScriptedQueryParameter
+
+            def res = []
+            def latitude = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'latitude'])
+            def longitude = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'longitude'])
+            
+            def sqPool = aem.getScriptedQueriesPoolByName('procruntime.service-feasibility')
+            if (sqPool != null && latitude != null && longitude != null) {
+                def sqCount = aem.getScriptedQueryCountByPoolName('procruntime.service-feasibility', 'free-nodes-radio');
+                if (sqCount > 0) {
+                    def lstSq = aem.getScriptedQueriesByPoolName('procruntime.service-feasibility', 'free-nodes-radio', true, 0, sqCount)
+
+                    def result = aem.executeScriptedQuery(
+                        lstSq.get(0).getId(), 
+                        new ScriptedQueryParameter('latitude', Double.valueOf(latitude)),
+                        new ScriptedQueryParameter('longitude', Double.valueOf(longitude)),
+                        new ScriptedQueryParameter('radius', 100)
+                    )
+                    result.getRows().each {row -> 
+                        res.add([row.get(0)])
+                    }
+                }
+            }
+            res
+        ]]></function>
+        <function type="function" name="getTblLteRows"><![CDATA[
+            import org.neotropic.kuwaiba.core.apis.persistence.application.ScriptedQueryParameter
+
+            def res = []
+            def latitude = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'latitude'])
+            def longitude = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'longitude'])
+
+            def sqPool = aem.getScriptedQueriesPoolByName('procruntime.service-feasibility')
+            if (sqPool != null && latitude != null && longitude != null) {
+                def sqCount = aem.getScriptedQueryCountByPoolName('procruntime.service-feasibility', 'free-nodes-lte');
+                if (sqCount > 0) {
+                    def lstSq = aem.getScriptedQueriesByPoolName('procruntime.service-feasibility', 'free-nodes-lte', true, 0, sqCount)
+
+                    def result = aem.executeScriptedQuery(
+                        lstSq.get(0).getId(), 
+                        new ScriptedQueryParameter('latitude', Double.valueOf(latitude)),
+                        new ScriptedQueryParameter('longitude', Double.valueOf(longitude)),
+                        new ScriptedQueryParameter('radius', 100)
+                    )
+                    result.getRows().each {row -> 
+                        res.add([row.get(0)])
+                    }
+                }
+            }
+            res
+        ]]></function>
+        <function type="function" name="getSelectedNode" parameternames="tbl"><![CDATA[
+            if (tbl.getSelectedRow() != -1)
+                return tbl.getRows().get(Integer.valueOf(String.valueOf(tbl.getSelectedRow()))).get(0)
+            null
+        ]]></function>
+        <function type="function" name="getImplementationType" parameternames="tbl impl"><![CDATA[
+            tbl.getSelectedRow() != -1 ? impl : null
+        ]]></function>
+    </script>
+</formDefinition>

@@ -1,0 +1,110 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.bom"/>
+        <gridLayout columns="2" rows="5">
+            <label onload="value.i18n.bomCode"/>
+            <textField id="txtQuotationBomCode" enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtBomCode" width="500px"/>
+
+            <label onload="value.i18n.date"/>
+            <dateField id="dtfQuotationDate" enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.dtfDate" width="500px"/>
+            
+            <label onload="value.i18n.author"/>
+            <textField id="txtQuotationAuthor" enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtAuthor" width="500px"/>
+            
+            <label onload="value.i18n.currency"/>
+            <comboBox id="cmbQuotationCurrency" enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.cmbCurrency" width="500px"/>
+        </gridLayout>
+        <label onload="value.i18n.quotations"/>
+        <button id="btnEditQuotation" caption="Edit Quotation" width="100%" onclick="open.frmEditEquipmentQuotation"
+            onload="enabled.isEnabledButtton.tblEquipmentQuotations" onpropertychange="enabled.isEnabledButtton.tblEquipmentQuotations"/>
+
+        <label id="lblQuotationTotal" hidden="true" datatype="String"/>
+
+        <grid id="tblEquipmentQuotations" width="100%" shared="true"
+            onload="rows.getRows.tblEquipmentQuotations"
+            propertychangelistener="btnEditQuotation">
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Estimated Unit Cost"/>
+            <column caption="Estimated Total Cost"/>
+            <column caption="Model"/>
+            <column caption="Supplier"/>
+            <column caption="Unit Cost"/>
+            <column caption="Total Cost"/>
+        </grid>
+        
+        <subform id="frmEditEquipmentQuotation" width="50%">
+            <gridLayout columns="2" rows="11">
+                <label onload="value.i18n.num"/>
+                <textField id="txtEditNum" enabled="false" onload="value.getCellData.tblEquipmentQuotations.0" width="400px"/>
+
+                <label onload="value.i18n.name"/>
+                <comboBox enabled="false" id="txtEditName" onload="value.getCellData.tblEquipmentQuotations.1" width="400px"/>
+
+                <label onload="value.i18n.class"/>
+                <comboBox enabled="false" id="cmbEditClass" onload="value.getCellData.tblEquipmentQuotations.2" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <label onload="value.i18n.vendor"/>
+                <comboBox enabled="false" id="cmbEditVendor" onload="value.getCellData.tblEquipmentQuotations.3" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <label onload="value.i18n.quantity"/>
+                <textField enabled="false" id="txtEditQuantity" onload="value.getCellData.tblEquipmentQuotations.4" width="400px" propertychangelistener="txtEditTotalCost"/>
+
+                <label onload="value.i18n.notes"/>
+                <textField enabled="false" id="txtEditNotes" onload="value.getCellData.tblEquipmentQuotations.5" width="400px"/>
+
+                <label onload="value.i18n.estimatedUnitCost"/>
+                <textField id="txtEditEstimatedUnitCost" onload="value.getCellData.tblEquipmentQuotations.6" width="400px" enabled="false"/>
+
+                <label onload="value.i18n.estimatedTotalCost"/>
+                <textField id="txtEditEstimatedTotalCost" onload="value.getCellData.tblEquipmentQuotations.7" width="400px" enabled="false"/>
+
+                <label onload="value.i18n.model"/>
+                <comboBox enabled="false" id="cmbEditModel" onload="value.getCellData.tblEquipmentQuotations.8" onlazyload="items.getModels.cmbEditClass" width="400px"/>
+
+                <label onload="value.i18n.supplier"/>
+                <comboBox id="cmbEditSupplier" onload="value.getCellData.tblEquipmentQuotations.9" onlazyload="items.getListTypeItems.Supplier" width="400px"/>
+
+                <label onload="value.i18n.unitCost"/>
+                <textField id="txtEditUnitCost" onload="value.getCellData.tblEquipmentQuotations.10" width="400px" propertychangelistener="txtEditTotalCost" validate="value.isPositiveRealNumber.txtEditUnitCost"/>
+
+                <label onload="value.i18n.totalCost"/>
+                <textField enabled="false" id="txtEditTotalCost" onload="value.getCellData.tblEquipmentQuotations.11" width="400px" onpropertychange="value.getEstimatedTotalCost.txtEditQuantity.txtEditUnitCost"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frmEditEquipmentQuotation" width="100%"/>
+                <button caption="OK" width="100%" onclick="editgridrow.tblEquipmentQuotations.txtEditNum.txtEditName.cmbEditClass.cmbEditVendor.txtEditQuantity.txtEditNotes.txtEditEstimatedUnitCost.txtEditEstimatedTotalCost.cmbEditModel.cmbEditSupplier.txtEditUnitCost.txtEditTotalCost close.frmEditEquipmentQuotation clean.frmEditEquipmentQuotation propertyChange.lblQuotationTotal.value.getTotal.tblEquipmentQuotations"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml">
+        <function type="function" name="getRows" parameternames="tbl"><![CDATA[
+            if (tbl != null && tbl.getRows() != null && !tbl.getRows().isEmpty())
+                return tbl.getRows()
+            def rows = elementScript.getFunctionByName('getSharedGridRows').run(['544b643c-cab9-4fe2-80ed-931cf0cd5965', 'tblEquipmentVendors'])
+            rows.each {row -> 
+                row.add('')
+                row.add('')
+            }
+            rows
+        ]]></function>
+
+        <function type="function" name="getTotal" parameternames="tbl"><![CDATA[
+            def total = 0
+            if (tbl != null && tbl.getRows() != null) {
+                tbl.getRows().each {row -> 
+                    try {
+                        total += Double.valueOf(String.valueOf(row.get(11)))
+                    } catch(NumberFormatException ex) {
+                    }
+                }
+            }
+            String.valueOf(total)
+        ]]></function>
+    </script>
+</formDefinition>

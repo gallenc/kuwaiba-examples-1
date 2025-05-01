@@ -1,0 +1,34 @@
+<formDefinition>
+    <form>
+        <gridLayout columns="2" rows="8">
+            <label value="Request Id"/>
+            <label onload="value.request.id"/>
+
+            <label value="Latitude"/>
+            <label onload="value.request.latitude"/>
+
+            <label value="Longitude"/>
+            <label onload="value.request.longitude"/>
+
+            <label/>
+            <label/>
+
+            <label value="Type"/>
+            <label onload="value.request.type"/>
+
+            <label value="Bandwidth (Mbps)" onload="hidden.isHidden.bandwidth"/>
+            <label onload="value.request.bandwidth hidden.isHidden.bandwidth"/>
+
+            <label value="Availability (%)" onload="hidden.isHidden.availability"/>
+            <label onload="value.request.availability hidden.isHidden.availability"/>
+
+            <label value="Video Quality" onload="hidden.isHidden.videoQuality"/>
+            <label onload="value.request.videoQuality hidden.isHidden.videoQuality"/>
+
+            <label value="Lines" onload="hidden.isHidden.lines"/>
+            <label onload="value.request.lines hidden.isHidden.lines"/>
+        </gridLayout>
+        <label value="Request Rejected"/>
+    </form>
+    <script src="scripts.xml service-feasibility-scripts.xml"/>
+</formDefinition>

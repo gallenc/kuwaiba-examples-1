@@ -1,0 +1,96 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.bom"/>
+        <gridLayout columns="2" rows="5">
+            <label onload="value.i18n.bomCode"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtBomCode" width="500px"/>
+
+            <label onload="value.i18n.date"/>
+            <dateField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.dtfDate" width="500px"/>
+            
+            <label onload="value.i18n.author"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtAuthor" width="500px"/>
+            
+            <label onload="value.i18n.currency"/>
+            <comboBox enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.cmbCurrency" width="500px"/>
+        </gridLayout>
+        <label onload="value.i18n.purchaseOrders"/>
+        <label onload="value.i18n.setPoCode"/>
+        <button id="btnSetPoCode" caption="Edit" width="100%" 
+            onclick="open.frmSetPurchaseCode"
+            onload="enabled.isEnabledButtton.tblPurchaseOrder" onpropertychange="enabled.isEnabledButtton.tblPurchaseOrder"/>
+        <grid id="tblPurchaseOrder" width="100%" onload="rows.getRows.tblPurchaseOrder" propertychangelistener="btnSetPoCode" shared="true">
+            <column caption="PO Code"/>
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Unit Cost"/>
+            <column caption="Total Cost"/>
+            <column caption="Model"/>
+            <column caption="Supplier"/>
+        </grid>
+        <subform id="frmSetPurchaseCode" width="50%">
+            <gridLayout columns="2" rows="11">
+                <label onload="value.i18n.num"/>
+                <textField id="txtNum" enabled="false" onload="value.getCellData.tblPurchaseOrder.1" width="400px"/>
+
+                <label onload="value.i18n.name"/>
+                <comboBox enabled="false" id="txtName" onload="value.getCellData.tblPurchaseOrder.2" width="400px"/>
+
+                <label onload="value.i18n.class"/>
+                <comboBox enabled="false" id="cmbClass" onload="value.getCellData.tblPurchaseOrder.3" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <label onload="value.i18n.vendor"/>
+                <comboBox enabled="false" id="cmbSupplier" onload="value.getCellData.tblPurchaseOrder.4" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <label onload="value.i18n.quantity"/>
+                <textField enabled="false" id="txtQuantity" onload="value.getCellData.tblPurchaseOrder.5" width="400px"/>
+
+                <label onload="value.i18n.notes"/>
+                <textField enabled="false" id="txtNotes" onload="value.getCellData.tblPurchaseOrder.6" width="400px"/>
+
+                <label onload="value.i18n.unitCost"/>
+                <textField enabled="false" id="txtUnitCost" onload="value.getCellData.tblPurchaseOrder.7" width="400px"/>
+
+                <label onload="value.i18n.totalCost"/>
+                <textField enabled="false" id="txtTotalCost" onload="value.getCellData.tblPurchaseOrder.8" width="400px"/>
+
+                <label onload="value.i18n.model"/>
+                <comboBox enabled="false" id="cmbModel" onload="value.getCellData.tblPurchaseOrder.9" onlazyload="items.getModels.cmbClass" width="400px"/>
+
+                <label onload="value.i18n.supplier"/>
+                <comboBox enabled="false" id="cmbVendor" onload="value.getCellData.tblPurchaseOrder.10" onlazyload="items.getListTypeItems.Supplier" width="400px"/>
+
+                <label onload="value.i18n.poCode"/>
+                <textField id="txtPoCode" onload="value.getCellData.tblPurchaseOrder.0" width="400px"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frmSetPurchaseCode" width="100%"/>
+                <button caption="OK" width="100%" onclick="editgridrow.tblPurchaseOrder.txtPoCode.txtNum.txtName.cmbClass.cmbSupplier.txtQuantity.txtNotes.txtUnitCost.txtTotalCost.cmbModel.cmbVendor close.frmSetPurchaseCode clean.frmSetPurchaseCode"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml">
+        <function type="function" name="getRows" parameternames="tbl"><![CDATA[
+            if (tbl != null && tbl.getRows() != null && !tbl.getRows().isEmpty())
+                return tbl.getRows()
+            def rows = elementScript.getFunctionByName('getEquipmentRequestRows').run()
+            rows.each {row -> 
+                if (!row.isEmpty()) {
+                    def totalCost = row.remove(row.size() - 1)
+                    def unitCost = row.remove(row.size() - 1)
+
+                    row.set(6, unitCost)
+                    row.set(7, totalCost)
+
+                    row.add(0, elementScript.getFunctionByName('i18n').run(['notSet']))
+                }
+            }
+            rows
+        ]]></function>
+    </script>
+</formDefinition>

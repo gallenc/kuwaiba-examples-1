@@ -1,0 +1,53 @@
+<script>
+    <function type="function" name="updateRequest" parameternames="state message"><![CDATA[
+        import com.fasterxml.jackson.databind.node.ObjectNode
+        import org.springframework.http.HttpEntity
+        import org.springframework.http.HttpHeaders
+        import org.springframework.http.HttpMethod
+        import org.springframework.http.HttpStatus
+        import org.springframework.http.MediaType
+        import org.springframework.http.ResponseEntity
+        import org.springframework.web.client.RestTemplate
+
+        def requestId = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'id'])
+
+        RestTemplate restTemplateGet = new RestTemplate()
+        HttpHeaders headersGet = new HttpHeaders()
+        headersGet.setAccept(Arrays.asList(MediaType.APPLICATION_JSON))
+
+        HttpEntity<String> entityGet = new HttpEntity("parameters", headersGet)
+        
+        ResponseEntity<ObjectNode> responseGet = restTemplateGet.exchange('http://localhost:9090/request/' + requestId, HttpMethod.GET, entityGet, ObjectNode.class)
+        if (HttpStatus.OK.equals(responseGet.getStatusCode())) {
+            responseGet.getBody().put('state', state)
+            if (message)
+                responseGet.getBody().put('message', message)
+
+            RestTemplate restTemplatePut = new RestTemplate()
+            HttpHeaders headersPut = new HttpHeaders()
+            headersPut.setContentType(MediaType.APPLICATION_JSON)
+
+            HttpEntity<String> entityPut = new HttpEntity(responseGet.getBody(), headersPut)
+            ResponseEntity<String> responsePut = restTemplatePut.exchange('http://localhost:9090/request/' + requestId, HttpMethod.PUT, entityPut, String.class)
+
+            if (HttpStatus.OK.equals(responsePut.getStatusCode()))
+                return true
+        }
+        false
+    ]]></function>
+
+    <function type="function" name="request" parameternames="property"><![CDATA[
+        scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', property])
+    ]]></function>
+    <function type="function" name="isHidden" parameternames="property"><![CDATA[
+        def type = scriptQueryExecutor.execute('shared', ['activityId', 'sharedId'], ['08a0bc51-155c-4f6a-852d-f1cb0a6baf0f', 'type'])
+
+        if ('Internet'.equals(type) && ('bandwidth'.equals(property) || 'availability'.equals(property)))
+            return false
+        else if ('TV'.equals(type) && 'videoQuality'.equals(property))
+            return false
+        else if ('Voice'.equals(type) && 'lines'.equals(property))
+            return false
+        true
+    ]]></function>
+</script>

@@ -1,6 +1,8 @@
 # Notes
 
+docker
 
+When you first start the container from an image data from the image will be copied to the volume that you mounted to that specific path, but only if that volume is empty.
 
 
 ## building kuwaiba 

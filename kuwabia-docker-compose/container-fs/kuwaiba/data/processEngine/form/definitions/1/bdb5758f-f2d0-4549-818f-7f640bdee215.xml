@@ -1,0 +1,129 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.bom"/>
+        <gridLayout columns="2" rows="5">
+            <label onload="value.i18n.bomCode"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtBomCode" width="500px"/>
+
+            <label onload="value.i18n.date"/>
+            <dateField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.dtfDate" width="500px"/>
+            
+            <label onload="value.i18n.author"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtAuthor" width="500px"/>
+            
+            <label onload="value.i18n.currency"/>
+            <comboBox enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.cmbCurrency" width="500px"/>
+        </gridLayout>
+        <button id="btnSuggestChange" caption="Suggest Change" onclick="open.frmSuggestChange" width="100%"
+            onload="enabled.isEnabledButtton.tblSharedequipment" onpropertychange="enabled.isEnabledButtton.tblSharedequipment"/>
+        <grid id="tblSharedequipment" width="100%" 
+            onload="rows.getRowsInGridSaved.15ca1cb9-f3f2-46d0-aac7-308ddde73811.tblEquipment.tblSharedequipment"
+            propertychangelistener="btnSuggestChange">
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Estimated Unit Cost"/>
+            <column caption="Estimated Total Cost"/>
+            <column caption="Model"/>
+        </grid>
+        <label onload="value.i18n.suggestedChanges"/>
+        <horizontalLayout width="100%">
+            <button id="btnEditSuggestedChange" caption="Edit Suggested Change" width="100%"
+                onclick="open.frmEditSuggestedChange"
+                onload="enabled.isEnabledButtton.tblSuggestedChanges"
+                onpropertychange="enabled.isEnabledButtton.tblSuggestedChanges"/>
+            <button id="btnDeleteSuggestedChange" caption="Delete Suggested Change" width="100%"
+                onclick="deletegridrow.tblSuggestedChanges"
+                onload="enabled.isEnabledButtton.tblSuggestedChanges"
+                onpropertychange="enabled.isEnabledButtton.tblSuggestedChanges"/>
+        </horizontalLayout>
+        <grid id="tblSuggestedChanges" width="100%" shared="true" 
+            propertychangelistener="btnEditSuggestedChange btnDeleteSuggestedChange">
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Estimated Unit Cost"/>
+            <column caption="Estimated Total Cost"/>
+            <column caption="Model"/>
+        </grid>
+
+        <subform id="frmSuggestChange" width="50%">
+            <gridLayout columns="2" rows="9">
+                <label onload="value.i18n.num"/>
+                <textField id="txtSuggestedNum" enabled="false" onload="value.getCellData.tblSharedequipment.0" width="400px"/>
+
+                <label onload="value.i18n.name"/>
+                <comboBox id="txtSuggestedName" onload="value.getCellData.tblSharedequipment.1" width="400px"/>
+
+                <label onload="value.i18n.class"/>
+                <comboBox id="cmbSuggestedClass" onload="value.getCellData.tblSharedequipment.2" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <label onload="value.i18n.vendor"/>
+                <comboBox id="cmbSuggestedSupplier" onload="value.getCellData.tblSharedequipment.3" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <label onload="value.i18n.quantity"/>
+                <textField id="txtSuggestedQuantity" onload="value.getCellData.tblSharedequipment.4" width="400px" propertychangelistener="txtSuggestedEstimatedTotalCost"/>
+
+                <label onload="value.i18n.notes"/>
+                <textField id="txtSuggestedNotes" onload="value.getCellData.tblSharedequipment.5" width="400px"/>
+
+                <label onload="value.i18n.estimatedUnitCost"/>
+                <textField id="txtSuggestedEstimatedUnitCost" onload="value.getCellData.tblSharedequipment.6" width="400px" propertychangelistener="txtSuggestedEstimatedTotalCost"/>
+
+                <label onload="value.i18n.estimatedTotalCost"/>
+                <textField id="txtSuggestedEstimatedTotalCost" onload="value.getCellData.tblSharedequipment.7" width="400px" onpropertychange="value.getEstimatedTotalCost.txtSuggestedQuantity.txtSuggestedEstimatedUnitCost" enabled="false"/>
+
+                <label onload="value.i18n.model"/>
+                <comboBox id="cmbSuggestedModel" onload="value.getCellData.tblSharedequipment.8" onlazyload="items.getModels.cmbSuggestedClass" width="400px"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" width="100%" onclick="close.frmSuggestChange"/>
+                <button caption="OK" width="100%" 
+                    onclick="addgridrow.tblSuggestedChanges.txtSuggestedNum.txtSuggestedName.cmbSuggestedClass.cmbSuggestedSupplier.txtSuggestedQuantity.txtSuggestedNotes.txtSuggestedEstimatedUnitCost.txtSuggestedEstimatedTotalCost.cmbSuggestedModel close.frmSuggestChange"/>
+            </horizontalLayout>
+        </subform>
+        <subform id="frmEditSuggestedChange" width="50%">
+            <gridLayout columns="2" rows="9">
+                <label onload="value.i18n.num"/>
+                <textField id="txtEditSuggestedNum" enabled="false" onload="value.getCellData.tblSuggestedChanges.0" width="400px"/>
+
+                <label onload="value.i18n.name"/>
+                <comboBox id="txtEditSuggestedName" onload="value.getCellData.tblSuggestedChanges.1" width="400px"/>
+
+                <label onload="value.i18n.class"/>
+                <comboBox id="cmbEditSuggestedClass" onload="value.getCellData.tblSuggestedChanges.2" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <label onload="value.i18n.vendor"/>
+                <comboBox id="cmbEditSuggestedSupplier" onload="value.getCellData.tblSuggestedChanges.3" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <label onload="value.i18n.quantity"/>
+                <textField id="txtEditSuggestedQuantity" onload="value.getCellData.tblSuggestedChanges.4" width="400px" propertychangelistener="txtEditSuggestedEstimatedTotalCost" validate="value.isGreaterThanZero.txtEditSuggestedQuantity"/>
+
+                <label onload="value.i18n.notes"/>
+                <textField id="txtEditSuggestedNotes" onload="value.getCellData.tblSuggestedChanges.5" width="400px"/>
+
+                <label onload="value.i18n.estimatedUnitCost"/>
+                <textField id="txtEditSuggestedEstimatedUnitCost" onload="value.getCellData.tblSuggestedChanges.6" width="400px" propertychangelistener="txtEditSuggestedEstimatedTotalCost" validate="value.isPositiveRealNumber.txtEditSuggestedEstimatedUnitCost"/>
+
+                <label onload="value.i18n.estimatedTotalCost"/>
+                <textField id="txtEditSuggestedEstimatedTotalCost" onload="value.getCellData.tblSuggestedChanges.7" width="400px" onpropertychange="value.getEstimatedTotalCost.txtEditSuggestedQuantity.txtEditSuggestedEstimatedUnitCost" enabled="false"/>
+
+                <label onload="value.i18n.model"/>
+                <comboBox id="cmbEditSuggestedModel" onload="value.getCellData.tblSuggestedChanges.8" onlazyload="items.getModels.cmbEditSuggestedClass" width="400px"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" width="100%" onclick="close.frmEditSuggestedChange"/>
+                <button caption="OK" width="100%" 
+                    onclick="editgridrow.tblSuggestedChanges.txtEditSuggestedNum.txtEditSuggestedName.cmbEditSuggestedClass.cmbEditSuggestedSupplier.txtEditSuggestedQuantity.txtEditSuggestedNotes.txtEditSuggestedEstimatedUnitCost.txtEditSuggestedEstimatedTotalCost.cmbEditSuggestedModel close.frmEditSuggestedChange clean.frmEditSuggestedChange"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml"/>
+</formDefinition>

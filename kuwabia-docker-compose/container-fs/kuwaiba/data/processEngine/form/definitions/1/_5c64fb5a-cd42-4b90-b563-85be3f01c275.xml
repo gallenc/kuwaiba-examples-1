@@ -1,0 +1,31 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.bom"/>
+        <gridLayout columns="2" rows="5">
+            <label onload="value.i18n.bomCode"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtBomCode" width="500px"/>
+
+            <label onload="value.i18n.date"/>
+            <dateField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.dtfDate" width="500px"/>
+            
+            <label onload="value.i18n.author"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtAuthor" width="500px"/>
+            
+            <label onload="value.i18n.currency"/>
+            <comboBox enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.cmbCurrency" width="500px"/>
+        </gridLayout>
+        <grid id="tblSharedequipment" width="100%" onload="rows.getEquipment">
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Estimated Unit Cost"/>
+            <column caption="Estimated Total Cost"/>
+            <column caption="Model"/>
+        </grid>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml"/>
+</formDefinition>

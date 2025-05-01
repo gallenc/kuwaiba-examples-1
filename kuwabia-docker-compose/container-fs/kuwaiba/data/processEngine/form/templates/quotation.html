@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Quotation</title>
+        <style type="text/css">
+			body {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				font: 11pt "Arial";
+			}
+
+			.page {
+				width: 210mm;
+				min-height: 297mm;
+				padding: 20mm;
+				margin: 10mm auto;
+			}
+			
+			@page {
+				size: A4;
+				margin: 0;
+			}
+
+			@media print {
+				html, body {
+					width: 210mm;
+					height: 297mm;   
+					-webkit-print-color-adjust: exact;     
+					}
+				.page {
+					margin: 0;
+					border: initial;
+					border-radius: initial;
+					width: initial;
+					min-height: initial;
+					box-shadow: initial;
+					background: initial;
+					page-break-after: always;
+				}
+			}
+			.paperA4 {
+				width: 297mm;
+				height: 210mm;
+				min-height: 297mm;
+				min-width: 210mm;
+				max-height: 297mm;
+				max-width: 210mm;
+				background: white;
+				padding: 0.50in 0.25in 0.50in 0.25in;
+			}
+			.tbl {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+        </style>
+		<script type="text/javascript">
+			function printTemplate() {
+                window.print();
+			}
+		</script>
+    </head>
+    <body onload="printTemplate()">
+		<page size="A4">
+			<div class="paperA4">
+				<div style="justify-content: center; width : 100%; display: flex;">
+					<img src="https://media-exp1.licdn.com/dms/image/C4E1BAQFbvFTL_dIXUw/company-background_10000/0/1635776443920?e=2159024400&v=beta&t=LR2Kato9jl5AYuVKlIm1y5AViLPPqBFdHb_S88XdnKI" alt="header" style="width: 100%;"/>
+				</div>
+				<h1 style="text-align:center">Quotation</h1>				
+                <table>
+                    <tr>
+                        <td><b>BOM Code</b></td>
+                        <td>${txtQuotationBomCode}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Date</b></td>
+                        <td>${dtfQuotationDate}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Author</b></td>
+                        <td>${txtQuotationAuthor}</td>
+                    </tr>
+                </table>
+				<br>
+				<table class="tbl">
+					<tr class="tbl">
+						<th>BOM Item Code</th>
+						<th>Name</th>
+						<th>Type</th>
+						<th>Vendor</th>
+						<th>Quantity</th>
+						<th>Notes</th>
+						<th>Estimated Unit Cost</th>
+						<th>Estimated Total Cost</th>
+						<th>Model</th>
+						<th>Supplier</th>
+						<th>Unit Cost</th>
+						<th>Total Cost</th>
+					</tr>
+					<#list tblEquipmentQuotations?chunk(12) as row>
+						<tr class="tbl">
+							<#list row as cell>
+								<td>${cell}</td>
+							</#list>
+						</tr>
+					</#list>
+				</table>
+				<br>
+                <table>
+                    <tr>
+                        <td><b>Currency</b></td>
+                        <td>${cmbQuotationCurrency}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Total</b></td>
+                        <td>${lblQuotationTotal}</td>
+                    </tr>
+                </table>
+				<hr>
+				<div style="justify-content: center; width : 100%; display: flex;">
+					<img src="https://media-exp1.licdn.com/dms/image/C4E0BAQEr3H2MBOejCQ/company-logo_200_200/0/1635449730886?e=2159024400&v=beta&t=V690Lphq1zuP6j4l-zohkSSVgE-EXWo27EsEkH8PFtc" alt="logo" style="width: 64px; height:64px;" />
+                </div>
+            </div>
+        </page>
+    </body>
+</html>

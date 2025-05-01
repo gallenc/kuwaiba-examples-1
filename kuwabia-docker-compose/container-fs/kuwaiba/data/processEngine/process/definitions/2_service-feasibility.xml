@@ -1,0 +1,127 @@
+<processDefinition version="2.0" id="838963a6-c7e6-4c25-9176-f8467bc34a3d" name="Service Feasibility" description="" creationDate="1648574235299" startActivityId="7bd4bbda-90c6-4609-a4e7-537f600e04fc" enabled="1">
+    <actors>
+        <actor id="52f6f6a8-1d25-4e3a-849f-10795d238456" name="Commercial" type="2"/>
+        <actor id="7bd43401-31be-4222-9ea0-c62961d48288" name="Engineering" type="2"/>
+        <actor id="2b82c35e-4563-40ac-b54e-f3adb27b1569" name="Manager" type="2"/>
+    </actors>
+    <activityDefinitions>
+        <activityDefinition id="7bd4bbda-90c6-4609-a4e7-537f600e04fc" name="Start Process" description="" actorId="52f6f6a8-1d25-4e3a-849f-10795d238456" type="2">
+            <paths>
+                <path>08a0bc51-155c-4f6a-852d-f1cb0a6baf0f</path>
+            </paths>
+            <artifactDefinition id="7bd4bbda-90c6-4609-a4e7-537f600e04fc" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">7bd4bbda-90c6-4609-a4e7-537f600e04fc.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+        </activityDefinition>
+        <activityDefinition id="08a0bc51-155c-4f6a-852d-f1cb0a6baf0f" name="Service Definition" description="Service Definition" actorId="52f6f6a8-1d25-4e3a-849f-10795d238456" type="1">
+            <paths>
+                <path>feeee854-a159-4063-b7f2-84ad4d0f7dbb</path>
+            </paths>
+            <artifactDefinition id="08a0bc51-155c-4f6a-852d-f1cb0a6baf0f" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">08a0bc51-155c-4f6a-852d-f1cb0a6baf0f.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+        </activityDefinition>
+        <activityDefinition id="feeee854-a159-4063-b7f2-84ad4d0f7dbb" name="Service Implementation Options" description="Service Implementation Options" actorId="7bd43401-31be-4222-9ea0-c62961d48288" type="1">
+            <paths>
+                <path>f249510b-8fa7-427c-ba3d-6b1bf514765e</path>
+            </paths>
+            <artifactDefinition id="feeee854-a159-4063-b7f2-84ad4d0f7dbb" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">feeee854-a159-4063-b7f2-84ad4d0f7dbb.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+        </activityDefinition>
+        <activityDefinition id="f249510b-8fa7-427c-ba3d-6b1bf514765e" name="Can the service be provided?" description="Can the service be provided?" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" type="4">
+            <paths>
+                <path>bd1f24c5-fb44-49f3-983d-db7f1d496d41</path>
+                <path>ca447650-387d-4ebb-8e16-68d0c14e0600</path>
+            </paths>
+            <artifactDefinition id="f249510b-8fa7-427c-ba3d-6b1bf514765e" type="2">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">Can the service be provided?</parameter>
+                </parameters>
+            </artifactDefinition>
+            <artifactDefinition id="_f249510b-8fa7-427c-ba3d-6b1bf514765e" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">_f249510b-8fa7-427c-ba3d-6b1bf514765e.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+        </activityDefinition>
+        <activityDefinition id="bd1f24c5-fb44-49f3-983d-db7f1d496d41" name="Cost Estimation" description="Cost Estimation" actorId="7bd43401-31be-4222-9ea0-c62961d48288" type="1">
+            <paths>
+                <path>bb4804de-9b65-4db5-af23-0b79926cd9d4</path>
+            </paths>
+            <artifactDefinition id="bd1f24c5-fb44-49f3-983d-db7f1d496d41" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">bd1f24c5-fb44-49f3-983d-db7f1d496d41.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+        </activityDefinition>
+        <activityDefinition id="ca447650-387d-4ebb-8e16-68d0c14e0600" name="Rejected" description="" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" type="3">
+            <artifactDefinition id="ca447650-387d-4ebb-8e16-68d0c14e0600" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">ca447650-387d-4ebb-8e16-68d0c14e0600.xml</parameter>
+                    <parameter name="externalScripts">service-feasibility-scripts.xml</parameter>
+                    <parameter name="preconditionsScript"><![CDATA[
+                        elementScript.getFunctionByName("updateRequest").run(['REJECTED', null])
+                    ]]></parameter>
+                </parameters>
+            </artifactDefinition>
+        </activityDefinition>
+        <activityDefinition id="bb4804de-9b65-4db5-af23-0b79926cd9d4" name="Accepted" description="" actorId="7bd43401-31be-4222-9ea0-c62961d48288" type="3">
+            <artifactDefinition id="bb4804de-9b65-4db5-af23-0b79926cd9d4" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">bb4804de-9b65-4db5-af23-0b79926cd9d4.xml</parameter>
+                    <parameter name="externalScripts">scripts.xml service-feasibility-scripts.xml</parameter>
+                    <parameter name="preconditionsScript"><![CDATA[
+                        import com.fasterxml.jackson.databind.ObjectMapper
+
+                        def rows = elementScript.getFunctionByName('getSharedGridRows').run(['bd1f24c5-fb44-49f3-983d-db7f1d496d41', 'tbl'])
+                        
+                        def objectMapper = new ObjectMapper()
+                        
+                        def arrayNode = objectMapper.createArrayNode()
+                        rows.each {row -> 
+                            def an = objectMapper.createArrayNode()
+                            row.each {data -> 
+                                an.add(String.valueOf(data))
+                            }
+                            arrayNode.add(an)
+                        }
+                        elementScript.getFunctionByName("updateRequest").run(['ACCEPTED', arrayNode.toString()])
+                    ]]></parameter>
+                </parameters>
+            </artifactDefinition>
+        </activityDefinition>
+    </activityDefinitions>
+    <bpmnDiagram>
+        <bpmnSwimlane bpmnElement="52f6f6a8-1d25-4e3a-849f-10795d238456" width="930.0" height="150.0" x="0" y="0" color="#FFADAD"/>
+        <bpmnSwimlane bpmnElement="7bd43401-31be-4222-9ea0-c62961d48288" width="930.0" height="150.0" x="0" y="0" color="#FFD6A5"/>
+        <bpmnSwimlane bpmnElement="2b82c35e-4563-40ac-b54e-f3adb27b1569" width="930.0" height="300.0" x="0" y="0" color="#FDFFB6"/>
+        <bpmnShape id="7bd4bbda-90c6-4609-a4e7-537f600e04fc" actorId="52f6f6a8-1d25-4e3a-849f-10795d238456" width="50.0" height="50.0" x="60.0" y="50.0" isLabel="false" type="2"></bpmnShape>
+        <bpmnShape id="08a0bc51-155c-4f6a-852d-f1cb0a6baf0f" actorId="52f6f6a8-1d25-4e3a-849f-10795d238456" width="100.0" height="50.0" x="180.0" y="50.0" isLabel="false" type="1">Service Definition</bpmnShape>
+        <bpmnShape id="feeee854-a159-4063-b7f2-84ad4d0f7dbb" actorId="7bd43401-31be-4222-9ea0-c62961d48288" width="100.0" height="50.0" x="180.0" y="50.0" isLabel="false" type="1">Service Implementation Options</bpmnShape>
+        <bpmnShape id="f249510b-8fa7-427c-ba3d-6b1bf514765e" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" width="50.0" height="50.0" x="440.0" y="50.0" isLabel="false" type="4">Can the service be provided?</bpmnShape>
+        <bpmnShape id="bd1f24c5-fb44-49f3-983d-db7f1d496d41" actorId="7bd43401-31be-4222-9ea0-c62961d48288" width="100.0" height="50.0" x="620.0" y="50.0" isLabel="false" type="1">Cost Estimation</bpmnShape>
+        <bpmnShape id="ca447650-387d-4ebb-8e16-68d0c14e0600" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" width="50.0" height="50.0" x="440.0" y="200.0" isLabel="false" type="3"></bpmnShape>
+        <bpmnShape id="bb4804de-9b65-4db5-af23-0b79926cd9d4" actorId="7bd43401-31be-4222-9ea0-c62961d48288" width="50.0" height="50.0" x="800.0" y="50.0" isLabel="false" type="3"></bpmnShape>
+        <bpmnEdge source="7bd4bbda-90c6-4609-a4e7-537f600e04fc" target="08a0bc51-155c-4f6a-852d-f1cb0a6baf0f"/>
+        <bpmnEdge source="08a0bc51-155c-4f6a-852d-f1cb0a6baf0f" target="feeee854-a159-4063-b7f2-84ad4d0f7dbb"/>
+        <bpmnEdge source="feeee854-a159-4063-b7f2-84ad4d0f7dbb" target="f249510b-8fa7-427c-ba3d-6b1bf514765e"/>
+        <bpmnEdge source="f249510b-8fa7-427c-ba3d-6b1bf514765e" target="bd1f24c5-fb44-49f3-983d-db7f1d496d41" name="Yes"/>
+        <bpmnEdge source="f249510b-8fa7-427c-ba3d-6b1bf514765e" target="ca447650-387d-4ebb-8e16-68d0c14e0600" name="No"/>
+        <bpmnEdge source="bd1f24c5-fb44-49f3-983d-db7f1d496d41" target="bb4804de-9b65-4db5-af23-0b79926cd9d4"/>
+    </bpmnDiagram>
+</processDefinition>

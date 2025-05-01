@@ -1,0 +1,398 @@
+<processDefinition version="2.0" name="Equipment Purchase" description="Equipment Purchase" creationDate="1528466583423" startActivityId="9a5e9be1-b9ed-49ba-aa5a-d65b1e159e71" enabled="1">
+    <actors>
+        <actor id="214bb9fb-884d-466e-bf8d-7fe67ef3938a" name="Engineering" type="2"/>
+        <actor id="2b82c35e-4563-40ac-b54e-f3adb27b1569" name="Manager" type="2"/>
+        <actor id="94fcc332-cc30-4a56-a77f-d8a880406abb" name="Network Technician" type="2"/>
+        <actor id="298288ed-d603-4f4d-8427-f639a686a3f8" name="Field Technician" type="2"/>
+        <actor id="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" name="Purchasing" type="2"/>
+        <actor id="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" name="Warehouse" type="2"/>
+    </actors>
+    <activityDefinitions>
+        <activityDefinition id="9a5e9be1-b9ed-49ba-aa5a-d65b1e159e71" name="Start Process" description="" actorId="214bb9fb-884d-466e-bf8d-7fe67ef3938a" type="2">
+            <paths>
+                <path>15ca1cb9-f3f2-46d0-aac7-308ddde73811</path>
+            </paths>
+            <artifactDefinition id="9a5e9be1-b9ed-49ba-aa5a-d65b1e159e71" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">9a5e9be1-b9ed-49ba-aa5a-d65b1e159e71.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="15ca1cb9-f3f2-46d0-aac7-308ddde73811" name="Bill of Materials (BOM)" description="Bill of Materials (BOM)" actorId="214bb9fb-884d-466e-bf8d-7fe67ef3938a" type="1">
+            <paths>
+                <path>5c64fb5a-cd42-4b90-b563-85be3f01c275</path>
+            </paths>
+            <artifactDefinition id="15ca1cb9-f3f2-46d0-aac7-308ddde73811" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">15ca1cb9-f3f2-46d0-aac7-308ddde73811.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="5c64fb5a-cd42-4b90-b563-85be3f01c275" name="BOM Requires Changes" description="BOM Requires Changes" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" type="4">
+            <paths>
+                <path>bdb5758f-f2d0-4549-818f-7f640bdee215</path>
+                <path>544b643c-cab9-4fe2-80ed-931cf0cd5965</path>
+            </paths>
+            <artifactDefinition id="5c64fb5a-cd42-4b90-b563-85be3f01c275" type="2">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">Does the bill of materials require changes?</parameter>
+                </parameters>
+            </artifactDefinition>
+            <artifactDefinition id="_5c64fb5a-cd42-4b90-b563-85be3f01c275" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">_5c64fb5a-cd42-4b90-b563-85be3f01c275.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="bdb5758f-f2d0-4549-818f-7f640bdee215" name="BOM Changes Description" description="BOM Changes Description" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" type="1">
+            <paths>
+                <path>12c97a62-79a3-4d66-8d7e-481a0f95a3eb</path>
+            </paths>
+            <artifactDefinition id="bdb5758f-f2d0-4549-818f-7f640bdee215" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">bdb5758f-f2d0-4549-818f-7f640bdee215.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="12c97a62-79a3-4d66-8d7e-481a0f95a3eb" name="Changes BOM" description="Changes BOM" actorId="214bb9fb-884d-466e-bf8d-7fe67ef3938a" type="1">
+            <paths>
+                <path>5c64fb5a-cd42-4b90-b563-85be3f01c275</path>
+            </paths>
+            <artifactDefinition id="12c97a62-79a3-4d66-8d7e-481a0f95a3eb" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">12c97a62-79a3-4d66-8d7e-481a0f95a3eb.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="544b643c-cab9-4fe2-80ed-931cf0cd5965" name="Supplier Selection" description="Supplier Selection" actorId="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" type="1">
+            <paths>
+                <path>b0953376-a975-47d4-826d-5a8febb505d6</path>
+            </paths>
+            <artifactDefinition id="544b643c-cab9-4fe2-80ed-931cf0cd5965" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">544b643c-cab9-4fe2-80ed-931cf0cd5965.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="b0953376-a975-47d4-826d-5a8febb505d6" name="Equipment Quotation" description="Equipment Quotation" actorId="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" type="1" idling="true">
+            <paths>
+                <path>dd4f9fb6-4215-4712-9990-4ed2249732a5</path>
+            </paths>
+            <artifactDefinition id="b0953376-a975-47d4-826d-5a8febb505d6" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">b0953376-a975-47d4-826d-5a8febb505d6.xml</parameter>
+                    <parameter name="printable">true</parameter>
+                    <parameter name="printableTemplate">quotation.html</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="dd4f9fb6-4215-4712-9990-4ed2249732a5" name="Equipment Request" description="Equipment Request" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" type="1">
+            <paths>
+                <path>c3163238-57f2-4b69-94c7-8f91b810a74f</path>
+            </paths>
+            <artifactDefinition id="dd4f9fb6-4215-4712-9990-4ed2249732a5" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">dd4f9fb6-4215-4712-9990-4ed2249732a5.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="c3163238-57f2-4b69-94c7-8f91b810a74f" name="Purchase Order" description="Purchase Order" actorId="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" type="1" idling="true">
+            <paths>
+                <path>45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398</path>
+            </paths>
+            <artifactDefinition id="c3163238-57f2-4b69-94c7-8f91b810a74f" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">c3163238-57f2-4b69-94c7-8f91b810a74f.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398" name="Equipment Reception" description="Equipment Reception" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" type="1">
+            <paths>
+                <path>b62f1231-80ad-4df9-8f3a-ce4f21110f0b</path>
+            </paths>
+            <artifactDefinition id="45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="b62f1231-80ad-4df9-8f3a-ce4f21110f0b" name="Start of parallel review of equipment" description="" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" type="5" sequenceFlow="1" incomingSequenceFlowId="6b6c0f59-679f-4253-a79a-720a0a1ed8f2">
+            <paths>
+                <path>eb057c99-ce60-4392-8eb2-7e842696cb10</path>
+                <path>6144411f-7fcc-4da0-8afd-9455e2ca2c7b</path>
+            </paths>
+            <artifactDefinition id="b62f1231-80ad-4df9-8f3a-ce4f21110f0b" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">b62f1231-80ad-4df9-8f3a-ce4f21110f0b.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="eb057c99-ce60-4392-8eb2-7e842696cb10" name="Review Equipment" description="Review Equipment" actorId="94fcc332-cc30-4a56-a77f-d8a880406abb" type="1">
+            <paths>
+                <path>6b6c0f59-679f-4253-a79a-720a0a1ed8f2</path>
+            </paths>
+            <artifactDefinition id="eb057c99-ce60-4392-8eb2-7e842696cb10" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">eb057c99-ce60-4392-8eb2-7e842696cb10.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="6144411f-7fcc-4da0-8afd-9455e2ca2c7b" name="Review Equipment" description="Review Equipment" actorId="298288ed-d603-4f4d-8427-f639a686a3f8" type="1">
+            <paths>
+                <path>6b6c0f59-679f-4253-a79a-720a0a1ed8f2</path>
+            </paths>
+            <artifactDefinition id="6144411f-7fcc-4da0-8afd-9455e2ca2c7b" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">6144411f-7fcc-4da0-8afd-9455e2ca2c7b.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="6b6c0f59-679f-4253-a79a-720a0a1ed8f2" name="End of parallel review of equipment" description="" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" type="5" sequenceFlow="2" outgoingSequenceFlowId="b62f1231-80ad-4df9-8f3a-ce4f21110f0b">
+            <paths>
+                <path>20063f81-e6dd-4674-a3ff-b1e9e30000cd</path>
+            </paths>
+            <artifactDefinition id="6b6c0f59-679f-4253-a79a-720a0a1ed8f2" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">6b6c0f59-679f-4253-a79a-720a0a1ed8f2.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="20063f81-e6dd-4674-a3ff-b1e9e30000cd" name="Equipment Acceptance" description="Equipment Acceptance" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" type="1">
+            <paths>
+                <path>d066cacb-2de5-402d-a602-539d9f18b75c</path>
+            </paths>
+            <artifactDefinition id="20063f81-e6dd-4674-a3ff-b1e9e30000cd" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">20063f81-e6dd-4674-a3ff-b1e9e30000cd.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+        <activityDefinition id="d066cacb-2de5-402d-a602-539d9f18b75c" name="Completed" description="" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" type="3">
+            <artifactDefinition id="d066cacb-2de5-402d-a602-539d9f18b75c" type="1">
+                <parameters>
+                    <parameter name="version">1.0</parameter>
+                    <parameter name="definition">d066cacb-2de5-402d-a602-539d9f18b75c.xml</parameter>
+                </parameters>
+            </artifactDefinition>
+            <kpis>
+                <kpi name="time" description="Time" action="actionTime">
+                    <threshold name="normal" value="1"/>
+                    <threshold name="warning" value="2"/>
+                    <threshold name="critical" value="3"/>
+                </kpi>
+            </kpis>
+        </activityDefinition>
+    </activityDefinitions>
+    <kpis>
+        <actions>
+            <action type="2" name="actionTime" description="Action Time"><![CDATA[
+                import org.neotropic.kuwaiba.core.apis.persistence.application.processman.KpiResult
+                import java.util.concurrent.TimeUnit
+
+                def thresholdNormal = Integer.valueOf(activityKpi.getThresholds().getProperty("normal"))
+                def thresholdWarning = Integer.valueOf(activityKpi.getThresholds().getProperty("warning"))
+                def thresholdCritical = Integer.valueOf(activityKpi.getThresholds().getProperty("critical"))
+
+                def days = TimeUnit.MILLISECONDS.toDays(artifact.getCommitDate() - artifact.getCreationDate())
+                if (days >= 0) {
+                    if (days <= thresholdNormal)
+                        return new KpiResult(5, null, null)
+                    if (days > thresholdNormal && days < thresholdWarning)
+                        return new KpiResult(5, null, null)
+                    if (days >= thresholdWarning && days < thresholdCritical)
+                        return new KpiResult(10, null, null)
+                    if (days >= thresholdCritical)
+                        return new KpiResult(0, null, null)
+                }
+                null
+            ]]></action>
+        </actions>
+    </kpis>
+    <bpmnDiagram>
+        <bpmnSwimlane bpmnElement="214bb9fb-884d-466e-bf8d-7fe67ef3938a" width="2830.0" height="200.0" x="0" y="0" color="#FFADAD"/>
+        <bpmnSwimlane bpmnElement="2b82c35e-4563-40ac-b54e-f3adb27b1569" width="2830.0" height="300.0" x="0" y="0" color="#FFD6A5"/>
+        <bpmnSwimlane bpmnElement="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" width="2830.0" height="300.0" x="0" y="0" color="#FDFFB6"/>
+        <bpmnSwimlane bpmnElement="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" width="2830.0" height="300.0" x="0" y="0" color="#CAFFBF"/>
+        <bpmnSwimlane bpmnElement="94fcc332-cc30-4a56-a77f-d8a880406abb" width="2830.0" height="200.0" x="0" y="0" color="#9BF6FF"/>
+        <bpmnSwimlane bpmnElement="298288ed-d603-4f4d-8427-f639a686a3f8" width="2830.0" height="200.0" x="0" y="0" color="#A0C4FF"/>
+        <bpmnShape id="9a5e9be1-b9ed-49ba-aa5a-d65b1e159e71" actorId="214bb9fb-884d-466e-bf8d-7fe67ef3938a" width="50.0" height="50.0" x="50.0" y="75.0" isLabel="false" type="2"></bpmnShape>
+        <bpmnShape id="15ca1cb9-f3f2-46d0-aac7-308ddde73811" actorId="214bb9fb-884d-466e-bf8d-7fe67ef3938a" width="100.0" height="50.0" x="170.0" y="75.0" isLabel="false" type="1">Bill of Materials (BOM)</bpmnShape>
+        <bpmnShape id="5c64fb5a-cd42-4b90-b563-85be3f01c275" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" width="50.0" height="50.0" x="330.0" y="50.0" isLabel="false" type="4">BOM Requires Changes</bpmnShape>
+        <bpmnShape id="bdb5758f-f2d0-4549-818f-7f640bdee215" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" width="100.0" height="50.0" x="520.0" y="50.0" isLabel="false" type="1">BOM Changes Description</bpmnShape>
+        <bpmnShape id="12c97a62-79a3-4d66-8d7e-481a0f95a3eb" actorId="214bb9fb-884d-466e-bf8d-7fe67ef3938a" width="100.0" height="50.0" x="520.0" y="75.0" isLabel="false" type="1">Changes BOM</bpmnShape>
+        <bpmnShape id="544b643c-cab9-4fe2-80ed-931cf0cd5965" actorId="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" width="100.0" height="50.0" x="760.0" y="75.0" isLabel="false" type="1">Supplier Selection</bpmnShape>
+        <bpmnShape id="b0953376-a975-47d4-826d-5a8febb505d6" actorId="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" width="100.0" height="50.0" x="920.0" y="75.0" isLabel="false" type="1">Equipment Quotation</bpmnShape>
+        <bpmnShape id="dd4f9fb6-4215-4712-9990-4ed2249732a5" actorId="2b82c35e-4563-40ac-b54e-f3adb27b1569" width="100.0" height="50.0" x="1090.0" y="75.0" isLabel="false" type="1">Equipment Request</bpmnShape>
+        <bpmnShape id="c3163238-57f2-4b69-94c7-8f91b810a74f" actorId="6f33744c-c0fc-4b91-b8c2-d674cd57b8e9" width="100.0" height="50.0" x="1710.0" y="75.0" isLabel="false" type="1">Purchase Order</bpmnShape>
+        <bpmnShape id="45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" width="100.0" height="50.0" x="1930.0" y="75.0" isLabel="false" type="1">Equipment Reception</bpmnShape>
+        <bpmnShape id="b62f1231-80ad-4df9-8f3a-ce4f21110f0b" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" width="50.0" height="50.0" x="2100.0" y="75.0" isLabel="false" type="5"></bpmnShape>
+        <bpmnShape id="eb057c99-ce60-4392-8eb2-7e842696cb10" actorId="94fcc332-cc30-4a56-a77f-d8a880406abb" width="100.0" height="50.0" x="2150.0" y="75.0" isLabel="false" type="1">Review Equipment</bpmnShape>
+        <bpmnShape id="6144411f-7fcc-4da0-8afd-9455e2ca2c7b" actorId="298288ed-d603-4f4d-8427-f639a686a3f8" width="100.0" height="50.0" x="2150.0" y="75.0" isLabel="false" type="1">Review Equipment</bpmnShape>
+        <bpmnShape id="6b6c0f59-679f-4253-a79a-720a0a1ed8f2" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" width="50.0" height="50.0" x="2260.0" y="75.0" isLabel="false" type="5"></bpmnShape>
+        <bpmnShape id="20063f81-e6dd-4674-a3ff-b1e9e30000cd" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" width="100.0" height="50.0" x="2450" y="75.0" isLabel="false" type="1">Equipment Acceptance</bpmnShape>
+        <bpmnShape id="d066cacb-2de5-402d-a602-539d9f18b75c" actorId="d9e96f63-e3d4-4295-b4c5-9429d02dfed7" width="50.0" height="50.0" x="2700.0" y="75.0" isLabel="false" type="3"></bpmnShape>
+        <bpmnEdge source="9a5e9be1-b9ed-49ba-aa5a-d65b1e159e71" target="15ca1cb9-f3f2-46d0-aac7-308ddde73811"/>
+        <bpmnEdge source="15ca1cb9-f3f2-46d0-aac7-308ddde73811" target="5c64fb5a-cd42-4b90-b563-85be3f01c275">
+            <controlPoint x="220.0" y="126.0"/>
+            <controlPoint x="220.0" y="275.0"/>
+            <controlPoint x="322.63" y="275.0"/>
+        </bpmnEdge>
+        <bpmnEdge source="12c97a62-79a3-4d66-8d7e-481a0f95a3eb" target="5c64fb5a-cd42-4b90-b563-85be3f01c275"/>
+        <bpmnEdge source="5c64fb5a-cd42-4b90-b563-85be3f01c275" target="bdb5758f-f2d0-4549-818f-7f640bdee215" name="Yes"/>
+        <bpmnEdge source="bdb5758f-f2d0-4549-818f-7f640bdee215" target="12c97a62-79a3-4d66-8d7e-481a0f95a3eb"/>
+        <bpmnEdge source="5c64fb5a-cd42-4b90-b563-85be3f01c275" target="544b643c-cab9-4fe2-80ed-931cf0cd5965" name="No">
+            <controlPoint x="355.0" y="301.0"/>
+            <controlPoint x="355.0" y="370.0"/>
+            <controlPoint x="810.0" y="370.0"/>
+            <controlPoint x="810.0" y="132.37"/>
+        </bpmnEdge>
+        <bpmnEdge source="544b643c-cab9-4fe2-80ed-931cf0cd5965" target="b0953376-a975-47d4-826d-5a8febb505d6"/>
+        <bpmnEdge source="b0953376-a975-47d4-826d-5a8febb505d6" target="dd4f9fb6-4215-4712-9990-4ed2249732a5"/>
+        <bpmnEdge source="dd4f9fb6-4215-4712-9990-4ed2249732a5" target="c3163238-57f2-4b69-94c7-8f91b810a74f"/>
+        <bpmnEdge source="c3163238-57f2-4b69-94c7-8f91b810a74f" target="45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398"/>
+        <bpmnEdge source="45b2c8fd-c9e0-4a26-a5b2-a2e21ddfd398" target="b62f1231-80ad-4df9-8f3a-ce4f21110f0b"/>
+        <bpmnEdge source="b62f1231-80ad-4df9-8f3a-ce4f21110f0b" target="eb057c99-ce60-4392-8eb2-7e842696cb10">
+            <controlPoint x="2151.0" y="900.0"/>
+            <controlPoint x="2190.0" y="900.0"/>
+            <controlPoint x="2190.0" y="1167.63"/>
+        </bpmnEdge>
+        <bpmnEdge source="b62f1231-80ad-4df9-8f3a-ce4f21110f0b" target="6144411f-7fcc-4da0-8afd-9455e2ca2c7b">
+            <controlPoint x="2125.0" y="926.0"/>
+            <controlPoint x="2125.0" y="1400.0"/>
+            <controlPoint x="2142.63" y="1400.0"/>
+        </bpmnEdge>
+        <bpmnEdge source="eb057c99-ce60-4392-8eb2-7e842696cb10" target="6b6c0f59-679f-4253-a79a-720a0a1ed8f2">
+            <controlPoint x="2210.0" y="1174.0"/>
+            <controlPoint x="2210.0" y="900.0"/>
+            <controlPoint x="2252.63" y="900.0"/>
+        </bpmnEdge>
+        <bpmnEdge source="6144411f-7fcc-4da0-8afd-9455e2ca2c7b" target="6b6c0f59-679f-4253-a79a-720a0a1ed8f2">
+            <controlPoint x="2251.0" y="1400.0"/>
+            <controlPoint x="2285.0" y="1400.0"/>
+            <controlPoint x="2285.0" y="932.37"/>
+        </bpmnEdge>
+        <bpmnEdge source="6b6c0f59-679f-4253-a79a-720a0a1ed8f2" target="20063f81-e6dd-4674-a3ff-b1e9e30000cd"/>
+        <bpmnEdge source="20063f81-e6dd-4674-a3ff-b1e9e30000cd" target="d066cacb-2de5-402d-a602-539d9f18b75c"/>
+    </bpmnDiagram>
+</processDefinition>

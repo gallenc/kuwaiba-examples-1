@@ -1,0 +1,169 @@
+<!--Note: Using camel case to messages key-->
+<i18n>
+    <messages key="bom">
+        <message lang="en_US" value="Bill of Materials"/>
+        <message lang="es_CO" value="Lista de Materiales"/>
+    </messages>
+    <messages key="bomCode">
+        <message lang="en_US" value="BOM Code*"/>
+    </messages>
+    <messages key="date">
+        <message lang="en_US" value="Date*"/>
+    </messages>
+    <messages key="author">
+        <message lang="en_US" value="Author*"/>
+    </messages>
+    <messages key="currency">
+        <message lang="en_US" value="Currency*"/>
+    </messages>
+    <messages key="warehouse">
+        <message lang="en_US" value="Warehouse*"/>
+    </messages>
+    <messages key="quantity">
+        <message lang="en_US" value="Quantity*"/>
+    </messages>
+    <messages key="totalBomCost">
+        <message lang="en_US" value="Total BOM Cost"/>
+    </messages>
+    <messages key="num">
+        <message lang="en_US" value="BOM Item Code"/>
+    </messages>
+    <messages key="equipment">
+        <message lang="en_US" value="Equipment"/>
+    </messages>
+    <messages key="vendor">
+        <message lang="en_US" value="Vendor*"/>
+    </messages>
+    <messages key="model">
+        <message lang="en_US" value="Model"/>
+    </messages>
+    <messages key="notes">
+        <message lang="en_US" value="Notes"/>
+    </messages>
+    <messages key="estimatedUnitCost">
+        <message lang="en_US" value="Estimated Unit Cost"/>
+    </messages>
+    <messages key="estimatedTotalCost">
+        <message lang="en_US" value="Estimated Total Cost"/>
+    </messages>
+    <messages key="unitCost">
+        <message lang="en_US" value="Unit Cost"/>
+    </messages>
+    <messages key="totalCost">
+        <message lang="en_US" value="Total Cost"/>
+    </messages>
+    <messages key="name">
+        <message lang="en_US" value="Name*"/>
+    </messages>
+    <messages key="class">
+        <message lang="en_US" value="Type*"/>
+    </messages>
+    <messages key="notSet">
+        <message lang="en_US" value="(Not Set)"/>
+    </messages>
+    <messages key="suggestedChanges">
+        <message lang="en_US" value="Suggested Changes"/>
+    </messages>
+    <messages key="equipment">
+        <message lang="en_US" value="Equipment"/>
+    </messages>
+    <messages key="rejectionDescription">
+        <message lang="en_US" value="Rejection Description*"/>
+    </messages>
+    <messages key="supplier">
+        <message lang="en_US" value="Supplier"/>
+    </messages>
+    <messages key="hasQuote">
+        <message lang="en_US" value="Has Quote"/>
+    </messages>
+    <messages key="yes">
+        <message lang="en_US" value="Yes"/>
+    </messages>
+    <messages key="no">
+        <message lang="en_US" value="No"/>
+    </messages>
+    <messages key="no">
+        <message lang="en_US" value="No"/>
+    </messages>
+    <messages key="quotations">
+        <message lang="en_US" value="Quotations"/>
+    </messages>
+    <messages key="equipmentRequest">
+        <message lang="en_US" value="Equipment Request"/>
+    </messages>
+    <messages key="purchaseOrders">
+        <message lang="en_US" value="Purchase Orders"/>
+    </messages>
+    <messages key="equipmentReception">
+        <message lang="en_US" value="Equipment Reception"/>
+    </messages>
+    <messages key="receptionDate">
+        <message lang="en_US" value="Reception Date*"/>
+    </messages>
+    <messages key="reviewer">
+        <message lang="en_US" value="Reviewer*"/>
+    </messages>
+    <messages key="forkMessage">
+        <message lang="en_US" value="Start of parallel activities to review received equipment"/>
+    </messages>
+    <messages key="joinMessage">
+        <message lang="en_US" value="End of parallel activities to review received equipment"/>
+    </messages>
+    <messages key="equipmentToReview">
+        <message lang="en_US" value="Equipment To Review"/>
+    </messages>
+    <messages key="equipmentToReview">
+        <message lang="en_US" value="Equipment To Review"/>
+    </messages>
+    <messages key="acceptEquipment">
+        <message lang="en_US" value="Accept Equipment"/>
+    </messages>
+    <messages key="equipmentAcceptance">
+        <message lang="en_US" value="Equipment Acceptance"/>
+    </messages>
+    <messages key="equipmentCode">
+        <message lang="en_US" value="Equipment Code"/>
+    </messages>
+    <messages key="processCompleted">
+        <message lang="en_US" value="Purchase of equipment process completed"/>
+    </messages>
+    <messages key="noEquipmentCreated">
+        <message lang="en_US" value="No equipment was created in the warehouse"/>
+    </messages>
+    <messages key="equipmentCreated">
+        <message lang="en_US" value="%s equipment was created in the warehouse"/>
+    </messages>
+    <messages key="poolCreated">
+        <message lang="en_US" value="Pool created from process manager"/>
+    </messages>
+    <messages key="pool">
+        <message lang="en_US" value="Pool*"/>
+    </messages>
+    <messages key="createAcceptedEquipment">
+        <message lang="en_US" value="Select a warehouse, a pool and click on create to create the accepted equipment"/>
+    </messages>
+    <messages key="inventoryObjectPool">
+        <message lang="en_US" value="Pool must be a pool of InventoryObject"/>
+    </messages>
+    <messages key="selectSupplier">
+        <message lang="en_US" value="Select a row in the table below and click the edit button to select the supplier"/>
+    </messages>
+    <messages key="removeEquipment">
+        <message lang="en_US" value="Select a row in the table below and click the remove button to remove equipment that is over budget"/>
+    </messages>
+    <messages key="acceptRejectEquipment">
+        <message lang="en_US" value="Select a row in the table below and click the accept/reject button to accept or reject an equipment"/>
+    </messages>
+    <messages key="validatorIsGreaterThanZero">
+        <message lang="en_US" value="The value must be greater than or equal to one"/>
+    </messages>
+    <messages key="validatorIsPositiveRealNumber">
+        <message lang="en_US" value="The value must be greater than or equal to zero"/>
+    </messages>
+    <messages key="poCode">
+        <message lang="en_US" value="PO Code"/>
+    </messages>
+    <messages key="setPoCode">
+        <message lang="en_US" value="Select a row in the table below and click the edit button to set the purchase order code"/>
+    </messages>
+</i18n>

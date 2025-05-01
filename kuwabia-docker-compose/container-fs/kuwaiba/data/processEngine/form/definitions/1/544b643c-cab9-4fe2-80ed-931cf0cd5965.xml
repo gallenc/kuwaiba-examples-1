@@ -1,0 +1,84 @@
+<formDefinition>
+    <form>
+        <label value="Bill of Materials"/>
+        <gridLayout columns="2" rows="5">
+            <label onload="value.i18n.bomCode"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtBomCode" width="500px"/>
+
+            <label onload="value.i18n.date"/>
+            <dateField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.dtfDate" width="500px"/>
+            
+            <label onload="value.i18n.author"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtAuthor" width="500px"/>
+            
+            <label onload="value.i18n.currency"/>
+            <comboBox enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.cmbCurrency" width="500px"/>
+        </gridLayout>
+        <label onload="value.i18n.selectSupplier"/>
+        <button id="btnSelectVendor" caption="Edit" width="100%" onclick="open.frmEditEquipmentVendor"
+            onload="enabled.isEnabledButtton.tblEquipmentVendors" onpropertychange="enabled.isEnabledButtton.tblEquipmentVendors"/>
+        <grid id="tblEquipmentVendors" width="100%" shared="true"
+            onload="rows.getRows.tblEquipmentVendors"
+            propertychangelistener="btnSelectVendor">
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Estimated Unit Cost"/>
+            <column caption="Estimated Total Cost"/>
+            <column caption="Model"/>
+            <column caption="Supplier"/>
+        </grid>
+        <subform id="frmEditEquipmentVendor" width="50%">
+            <gridLayout columns="2" rows="10">
+                <label onload="value.i18n.num"/>
+                <textField id="txtEditNum" enabled="false" onload="value.getCellData.tblEquipmentVendors.0" width="400px"/>
+
+                <label onload="value.i18n.name"/>
+                <comboBox enabled="false" id="txtEditName" onload="value.getCellData.tblEquipmentVendors.1" width="400px"/>
+
+                <label onload="value.i18n.class"/>
+                <comboBox enabled="false" id="cmbEditClass" onload="value.getCellData.tblEquipmentVendors.2" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <label onload="value.i18n.vendor"/>
+                <comboBox enabled="false" id="cmbEditSupplier" onload="value.getCellData.tblEquipmentVendors.3" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <label onload="value.i18n.quantity"/>
+                <textField enabled="false" id="txtEditQuantity" onload="value.getCellData.tblEquipmentVendors.4" width="400px"/>
+
+                <label onload="value.i18n.notes"/>
+                <textField enabled="false" id="txtEditNotes" onload="value.getCellData.tblEquipmentVendors.5" width="400px"/>
+
+                <label onload="value.i18n.estimatedUnitCost"/>
+                <textField enabled="false" id="txtEditEstimatedUnitCost" onload="value.getCellData.tblEquipmentVendors.6" width="400px"/>
+
+                <label onload="value.i18n.estimatedTotalCost"/>
+                <textField enabled="false" id="txtEditEstimatedTotalCost" onload="value.getCellData.tblEquipmentVendors.7" width="400px"/>
+
+                <label onload="value.i18n.model"/>
+                <comboBox enabled="false" id="cmbEditModel" onload="value.getCellData.tblEquipmentVendors.8" onlazyload="items.getModels.cmbEditClass" width="400px"/>
+
+                <label onload="value.i18n.supplier"/>
+                <comboBox id="cmbEditVendor" onload="value.getCellData.tblEquipmentVendors.9" onlazyload="items.getListTypeItems.Supplier" width="400px"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frmEditEquipmentVendor" width="100%"/>
+                <button caption="OK" width="100%" onclick="editgridrow.tblEquipmentVendors.txtEditNum.txtEditName.cmbEditClass.cmbEditSupplier.txtEditQuantity.txtEditNotes.txtEditEstimatedUnitCost.txtEditEstimatedTotalCost.cmbEditModel.cmbEditVendor close.frmEditEquipmentVendor clean.frmEditEquipmentVendor"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml">
+        <function type="function" name="getRows" parameternames="tbl"><![CDATA[
+            if (tbl != null && tbl.getRows() != null && !tbl.getRows().isEmpty())
+                return tbl.getRows()
+            def rows = elementScript.getFunctionByName('getEquipment').run()
+            rows.each {row -> 
+                row.add(elementScript.getFunctionByName('i18n').run(['notSet']))
+            }
+            rows
+        ]]></function>
+    </script>
+</formDefinition>

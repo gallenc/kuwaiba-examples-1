@@ -1,0 +1,106 @@
+<formDefinition>
+    <form>
+        <label onload="value.i18n.bom"/>
+        <gridLayout columns="2" rows="5">
+            <label onload="value.i18n.bomCode"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtBomCode" width="500px"/>
+
+            <label onload="value.i18n.date"/>
+            <dateField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.dtfDate" width="500px"/>
+            
+            <label onload="value.i18n.author"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtAuthor" width="500px"/>
+            
+            <label onload="value.i18n.currency"/>
+            <comboBox enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.cmbCurrency" width="500px"/>
+
+            <label value="Attachment"/>
+            <upload id="uplAttachment" datatype="Attachment"/>
+        </gridLayout>
+        <label onload="value.i18n.equipmentReception"/>
+        <button id="btnEditRow" caption="Set Reception Date and Reviewer" width="100%" 
+            onclick="open.frmEditEquipmentReception"
+            onload="enabled.isEnabledButtton.tblEquipmentReception" onpropertychange="enabled.isEnabledButtton.tblEquipmentReception"/>
+        <grid id="tblEquipmentReception" width="100%" onload="rows.getRows.tblEquipmentReception" propertychangelistener="btnEditRow" shared="true">
+            <column caption="Reception Date"/>
+            <column caption="Reviewer"/>
+            <column caption="PO Code"/>
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Unit Cost"/>
+            <column caption="Total Cost"/>
+            <column caption="Model"/>
+            <column caption="Supplier"/>
+        </grid>
+
+        <subform id="frmEditEquipmentReception" width="50%">
+            <gridLayout columns="2" rows="13">
+                <label onload="value.i18n.num"/>
+                <textField id="txtNum" enabled="false" onload="value.getCellData.tblEquipmentReception.3" width="400px"/>
+
+                <label onload="value.i18n.name"/>
+                <comboBox enabled="false" id="txtName" onload="value.getCellData.tblEquipmentReception.4" width="400px"/>
+
+                <label onload="value.i18n.class"/>
+                <comboBox enabled="false" id="cmbClass" onload="value.getCellData.tblEquipmentReception.5" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <label onload="value.i18n.vendor"/>
+                <comboBox enabled="false" id="cmbSupplier" onload="value.getCellData.tblEquipmentReception.6" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <label onload="value.i18n.quantity"/>
+                <textField enabled="false" id="txtQuantity" onload="value.getCellData.tblEquipmentReception.7" width="400px"/>
+
+                <label onload="value.i18n.notes"/>
+                <textField enabled="false" id="txtNotes" onload="value.getCellData.tblEquipmentReception.8" width="400px"/>
+
+                <label onload="value.i18n.unitCost"/>
+                <textField enabled="false" id="txtUnitCost" onload="value.getCellData.tblEquipmentReception.9" width="400px"/>
+
+                <label onload="value.i18n.totalCost"/>
+                <textField enabled="false" id="txtTotalCost" onload="value.getCellData.tblEquipmentReception.10" width="400px"/>
+
+                <label onload="value.i18n.model"/>
+                <comboBox enabled="false" id="cmbModel" onload="value.getCellData.tblEquipmentReception.11" onlazyload="items.getModels.cmbClass" width="400px"/>
+
+                <label onload="value.i18n.supplier"/>
+                <comboBox enabled="false" id="cmbVendor" onload="value.getCellData.tblEquipmentReception.12" onlazyload="items.getListTypeItems.Supplier" width="400px"/>
+
+                <label onload="value.i18n.poCode"/>
+                <textField enabled="false" id="txtPoCode" onload="value.getCellData.tblEquipmentReception.2" width="400px"/>
+
+                <label onload="value.i18n.receptionDate"/>
+                <dateField id="dtfReceptionDate" width="400px"/>
+                
+                <label onload="value.i18n.reviewer"/>
+                <comboBox id="cmbReviewer" onload="value.getCellData.tblEquipmentReception.1" onlazyload="items.getReviewer" width="400px"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frmEditEquipmentReception" width="100%"/>
+                <button caption="OK" width="100%" onclick="editgridrow.tblEquipmentReception.dtfReceptionDate.cmbReviewer.txtPoCode.txtNum.txtName.cmbClass.cmbSupplier.txtQuantity.txtNotes.txtUnitCost.txtTotalCost.cmbModel.cmbVendor close.frmEditEquipmentReception clean.frmEditEquipmentReception"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml">
+        <function type="function" name="getReviewer"><![CDATA[
+            ['Field Technician', 'Network Technician']
+        ]]></function>
+
+        <function type="function" name="getRows" parameternames="tbl"><![CDATA[
+            if (tbl != null && tbl.getRows() != null && !tbl.getRows().isEmpty())
+                return tbl.getRows()
+            def rows = elementScript.getFunctionByName('getSharedGridRows').run(['c3163238-57f2-4b69-94c7-8f91b810a74f', 'tblPurchaseOrder'])
+            rows.each {row -> 
+                if (!row.isEmpty()) {
+                    row.add(0, elementScript.getFunctionByName('i18n').run(['notSet']))
+                    row.add(1, elementScript.getFunctionByName('i18n').run(['notSet']))
+                }
+            }
+            rows
+        ]]></function>
+    </script>
+</formDefinition>

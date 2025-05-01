@@ -1,0 +1,82 @@
+<formDefinition>
+    <form>
+        <gridLayout columns="2" rows="8">
+            <label value="Request Id"/>
+            <label onload="value.request.id"/>
+
+            <label value="Latitude"/>
+            <label onload="value.request.latitude"/>
+
+            <label value="Longitude"/>
+            <label onload="value.request.longitude"/>
+
+            <label/>
+            <label/>
+
+            <label value="Type"/>
+            <label onload="value.request.type"/>
+
+            <label value="Bandwidth (Mbps)" onload="hidden.isHidden.bandwidth"/>
+            <label onload="value.request.bandwidth hidden.isHidden.bandwidth"/>
+
+            <label value="Availability (%)" onload="hidden.isHidden.availability"/>
+            <label onload="value.request.availability hidden.isHidden.availability"/>
+
+            <label value="Video Quality" onload="hidden.isHidden.videoQuality"/>
+            <label onload="value.request.videoQuality hidden.isHidden.videoQuality"/>
+
+            <label value="Lines" onload="hidden.isHidden.lines"/>
+            <label onload="value.request.lines hidden.isHidden.lines"/>
+
+            <label value="Implementation Type"/>
+            <label width="400px" onload="value.shared.feeee854-a159-4063-b7f2-84ad4d0f7dbb.lblImplType"/>
+
+            <label value="Selected Node"/>
+            <comboBox width="400px" onload="value.shared.feeee854-a159-4063-b7f2-84ad4d0f7dbb.cmbSelectedNode"/>
+        </gridLayout>
+        <horizontalLayout width="100%">
+            <button caption="Add Material" onclick="open.frm" width="100%"/>
+            <button id="btnEdit" caption="Edit Material" onclick="open.frmEdit" width="100%" onload="enabled.isEnabledButtton.tbl" onpropertychange="enabled.isEnabledButtton.tbl"/>
+            <button id="btnDelete" caption="Delete Material" onclick="deletegridrow.tbl" width="100%" onload="enabled.isEnabledButtton.tbl" onpropertychange="enabled.isEnabledButtton.tbl"/>
+        </horizontalLayout>
+        <grid id="tbl" width="100%" propertychangelistener="btnEdit btnDelete" shared="true">
+            <column caption="Type"/>
+            <column caption="Quantity"/>
+            <column caption="Cost (USD)"/>
+        </grid>
+        <subform id="frm" width="50%">
+            <gridLayout columns="2" rows="3">
+                <label value="Type*"/>
+                <comboBox id="cmbType" onlazyload="items.getEquipmentTypes" onload="value.i18n.notSet" width="400px"/>
+
+                <label value="Quantity*"/>
+                <textField id="txtQuantity" width="400px" validate="value.isGreaterThanZero.txtQuantity"/>
+
+                <label value="Cost (USD)*"/>
+                <textField id="txtCost" width="400px" validate="value.isPositiveRealNumber.txtCost"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frm clean.frm" width="100%"/>
+                <button caption="OK" onclick="addgridrow.tbl.cmbType.txtQuantity.txtCost close.frm clean.frm" width="100%"/>
+            </horizontalLayout>
+        </subform>
+        <subform id="frmEdit" width="50%">
+            <gridLayout columns="2" rows="3">
+                <label value="Type*"/>
+                <comboBox id="cmbEditType" onlazyload="items.getEquipmentTypes" onload="value.getCellData.tbl.0" width="400px"/>
+
+                <label value="Quantity*"/>
+                <textField id="txtEditQuantity" width="400px" onload="value.getCellData.tbl.1" validate="value.isGreaterThanZero.txtQuantity"/>
+
+                <label value="Cost (USD)*"/>
+                <textField id="txtEditCost" width="400px" onload="value.getCellData.tbl.2" validate="value.isPositiveRealNumber.txtCost"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frmEdit clean.frmEdit" width="100%"/>
+                <button caption="OK" onclick="editgridrow.tbl.cmbEditType.txtEditQuantity.txtEditCost close.frmEdit clean.frmEdit" width="100%"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml service-feasibility-scripts.xml"/>
+</formDefinition>

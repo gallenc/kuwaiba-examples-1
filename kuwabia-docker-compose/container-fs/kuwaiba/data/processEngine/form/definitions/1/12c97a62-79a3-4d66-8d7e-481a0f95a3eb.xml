@@ -1,0 +1,85 @@
+<formDefinition>
+    <form>
+        <label value="Bill of Materials"/>
+        <gridLayout columns="2" rows="5">
+            <label onload="value.i18n.bomCode"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtBomCode" width="500px"/>
+
+            <label onload="value.i18n.date"/>
+            <dateField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.dtfDate" width="500px"/>
+            
+            <label onload="value.i18n.author"/>
+            <textField enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.txtAuthor" width="500px"/>
+            
+            <label onload="value.i18n.currency"/>
+            <comboBox enabled="false" onload="value.shared.15ca1cb9-f3f2-46d0-aac7-308ddde73811.cmbCurrency" width="500px"/>
+        </gridLayout>
+        <label onload="value.i18n.suggestedChanges"/>
+        <grid id="tblSharedSuggestedChanged" width="100%"
+            onload="rows.getRowsInGridSaved.bdb5758f-f2d0-4549-818f-7f640bdee215.tblSuggestedChanges.tblSharedSuggestedChanged">
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Estimated Unit Cost"/>
+            <column caption="Estimated Total Cost"/>
+            <column caption="Model"/>
+        </grid>
+        <label onload="value.i18n.equipment"/>
+        <button id="btnEdit" caption="Edit Equipment" width="100%"
+            onclick="open.frmEditEquipment"
+            onload="enabled.isEnabledButtton.tblChangedequipment"
+            onpropertychange="enabled.isEnabledButtton.tblChangedequipment"/>
+        <grid id="tblChangedequipment" width="100%" shared="true" 
+            onload="rows.getRowsInGridSaved.15ca1cb9-f3f2-46d0-aac7-308ddde73811.tblEquipment.tblChangedequipment"
+            propertychangelistener="btnEdit">
+            <column caption="BOM Item Code"/>
+            <column caption="Name"/>
+            <column caption="Type"/>
+            <column caption="Vendor"/>
+            <column caption="Quantity"/>
+            <column caption="Notes"/>
+            <column caption="Estimated Unit Cost"/>
+            <column caption="Estimated Total Cost"/>
+            <column caption="Model"/>
+        </grid>
+        <subform id="frmEditEquipment" width="50%">
+            <gridLayout columns="2" rows="9">
+                <label onload="value.i18n.num"/>
+                <textField id="txtEditNum" enabled="false" onload="value.getCellData.tblChangedequipment.0" width="400px"/>
+
+                <label onload="value.i18n.name"/>
+                <comboBox id="txtEditName" onload="value.getCellData.tblChangedequipment.1" width="400px"/>
+
+                <label onload="value.i18n.class"/>
+                <comboBox id="cmbEditClass" onload="value.getCellData.tblChangedequipment.2" onlazyload="items.getEquipmentTypes" width="400px"/>
+
+                <label onload="value.i18n.vendor"/>
+                <comboBox id="cmbEditSupplier" onload="value.getCellData.tblChangedequipment.3" onlazyload="items.getListTypeItems.EquipmentVendor" width="400px"/>
+
+                <label onload="value.i18n.quantity"/>
+                <textField id="txtEditQuantity" onload="value.getCellData.tblChangedequipment.4" width="400px" propertychangelistener="txtEditEstimatedTotalCost" validate="value.isGreaterThanZero.txtEditQuantity"/>
+
+                <label onload="value.i18n.notes"/>
+                <textField id="txtEditNotes" onload="value.getCellData.tblChangedequipment.5" width="400px"/>
+
+                <label onload="value.i18n.estimatedUnitCost"/>
+                <textField id="txtEditEstimatedUnitCost" onload="value.getCellData.tblChangedequipment.6" width="400px" propertychangelistener="txtEditEstimatedTotalCost" validate="value.isPositiveRealNumber.txtEditEstimatedUnitCost"/>
+
+                <label onload="value.i18n.estimatedTotalCost"/>
+                <textField id="txtEditEstimatedTotalCost" onload="value.getCellData.tblChangedequipment.7" width="400px" onpropertychange="value.getEstimatedTotalCost.txtEditQuantity.txtEditEstimatedUnitCost" enabled="false"/>
+
+                <label onload="value.i18n.model"/>
+                <comboBox id="cmbEditModel" onload="value.getCellData.tblChangedequipment.8" onlazyload="items.getModels.cmbEditClass" width="400px"/>
+            </gridLayout>
+            <horizontalLayout width="100%">
+                <button caption="Cancel" onclick="close.frmEditEquipment" width="100%"/>
+                <button caption="OK" width="100%" onclick="editgridrow.tblChangedequipment.txtEditNum.txtEditName.cmbEditClass.cmbEditSupplier.txtEditQuantity.txtEditNotes.txtEditEstimatedUnitCost.txtEditEstimatedTotalCost.cmbEditModel close.frmEditEquipment clean.frmEditEquipment"/>
+            </horizontalLayout>
+        </subform>
+    </form>
+    <i18n src="i18n.xml"/>
+    <script src="scripts.xml"/>
+</formDefinition>

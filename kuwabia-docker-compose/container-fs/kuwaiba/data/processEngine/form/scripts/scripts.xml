@@ -1,0 +1,253 @@
+<!--Note: Using groovy lang to scripting-->
+<script>
+    <function type="query" name="shared" parameternames="activityId sharedId" queryname="shared"/>
+
+    <function type="function" name="getCellData" parameternames="tbl col"><![CDATA[
+        if (tbl != null && col != null && tbl.getSelectedRow() != -1l) {
+            def row = Integer.valueOf(String.valueOf(tbl.getSelectedRow()))
+            col = Integer.valueOf(col)
+            def data = tbl.getData(row, col)
+            return data != null ? data : elementScript.getFunctionByName('i18n').run(['notSet'])
+        }
+        elementScript.getFunctionByName('i18n').run(['notSet'])
+    ]]></function>
+
+    <function type="function" name="isEnabledButtton" parameternames="tbl"><![CDATA[
+        tbl != null && tbl.getSelectedRow() != -1l
+    ]]></function>
+
+    <function type="function" name="getNumber" parameternames="tblEquipment"><![CDATA[
+        tblEquipment != null ? tblEquipment.getRows() != null ? tblEquipment.getRows().size() + 1 : 1 : -1
+    ]]></function>
+
+    <function type="function" name="getSharedGridRows" parameternames="activityId sharedGridId"><![CDATA[
+      def paramNames = new ArrayList();
+
+      paramNames.add("activityId");
+      paramNames.add("sharedId");
+
+      def paramValues = new ArrayList();
+
+      paramValues.add(activityId);
+      paramValues.add(sharedGridId + "rowscount");
+
+      def strRowsCount = scriptQueryExecutor.execute("shared", paramNames, paramValues);
+
+      paramValues.clear();
+
+      paramValues.add(activityId);
+      paramValues.add(sharedGridId + "columnscount");
+
+      def strColumnsCount = scriptQueryExecutor.execute("shared", paramNames, paramValues);
+
+      def res = new ArrayList();
+
+      if (strRowsCount != null && strColumnsCount != null) {
+
+        def rowscount = Integer.valueOf(strRowsCount);
+        def columnscount = Integer.valueOf(strColumnsCount);
+
+        for (int i = 0; i < rowscount; i++) {
+          def lst = new ArrayList();
+
+          for (int j = 0; j < columnscount; j++) {
+            paramValues.clear();
+
+            paramValues.add(activityId);
+            paramValues.add(sharedGridId + i + j);
+
+            def dataGrid = scriptQueryExecutor.execute("shared", paramNames, paramValues);
+
+            paramValues.clear();
+
+            paramValues.add(activityId);
+            paramValues.add(sharedGridId + i + j + "datatype");
+
+            def dataType = scriptQueryExecutor.execute("shared", paramNames, paramValues);
+
+            if ("RemoteObjectLight".equals(dataType)) {
+
+              paramNames.clear();
+
+              paramNames.add("activityId");
+              paramNames.add("sharedId");
+
+              paramValues.clear();
+
+              paramValues.add(activityId);
+              paramValues.add(sharedGridId + i + j + "objectname");
+
+              def objectname = scriptQueryExecutor.execute("shared", paramNames, paramValues);
+
+              paramValues.clear();
+
+              paramValues.add(activityId);
+              paramValues.add(sharedGridId + i + j + "objectId");
+
+              def objectId = scriptQueryExecutor.execute("shared", paramNames, paramValues);
+
+              paramValues.clear();
+
+              paramValues.add(activityId);
+              paramValues.add(sharedGridId + i + j + "classid");
+
+              def classid = scriptQueryExecutor.execute("shared", paramNames, paramValues);
+
+              paramNames.clear();
+
+              paramNames.add("classId");
+              paramNames.add("objectId");
+
+              paramValues.clear();
+
+              paramValues.add(classid);
+              paramValues.add(objectId);
+              def rol = elementScript.getFunctionByName("getObjectLightUsingClassId").run(paramValues);
+
+              lst.add(rol);
+            } else if ("ClassInfoLight".equals(dataType)) {
+              def className = scriptQueryExecutor.execute("shared", ['activityId', 'sharedId'], [activityId, sharedGridId + i + j + 'name']);
+              lst.add(mem.getClass(className))
+            } else {
+              lst.add(dataGrid);
+            };
+          };
+          res.add(lst);
+        };
+      };
+      res;
+    ]]></function>
+
+  <function type="function" name="getRowsInGridSaved" parameternames="activityId sharedGridId aGrid"><![CDATA[
+      if (aGrid != null && aGrid.getRows() != null && !aGrid.getRows().isEmpty())
+        return aGrid.getRows()
+      elementScript.getFunctionByName("getSharedGridRows").run([activityId, sharedGridId])
+  ]]></function>
+
+  <function type="function" name="getObjectLightUsingClassId" parameternames="classId objectId" return="Object"><![CDATA[
+    def classId = Long.valueOf(classId);
+    def objectId = objectId;
+
+    def _class = mem.getClass(classId);
+    def objectClassName = _class.getName();
+
+    bem.getObjectLight(objectClassName, objectId)
+  ]]></function>
+
+  <function type="function" name="getListTypeItems" parameternames="className"><![CDATA[
+    aem.getListTypeItems(className)
+  ]]></function>
+
+  <function type="function" name="getPhysicalWarehouses"><![CDATA[
+    import org.neotropic.kuwaiba.core.apis.persistence.util.Constants
+    import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager
+
+    def physicalWarehousesPool = bem.getRootPools(Constants.CLASS_WAREHOUSE, ApplicationEntityManager.POOL_TYPE_MODULE_ROOT, false)
+    if (!physicalWarehousesPool.isEmpty())
+      return warehouseService.getWarehousesInPool(physicalWarehousesPool.get(0).getId(), -1)
+    null
+  ]]></function>
+
+  <function type="function" name="getPoolsInWarehouse" parameternames="cmbWarehouse"><![CDATA[
+    def warehouse = cmbWarehouse.getValue()
+    if (warehouse != null) {
+      def pools = warehouseService.getPoolsInWarehouse(warehouse.getClassName(), warehouse.getId())
+      if (!pools.isEmpty())
+        return pools
+    }
+    null
+  ]]></function>
+
+  <function type="function" name="getModels" parameternames="cmbClass"><![CDATA[
+    def models = []
+    if (cmbClass.getValue() != null) {
+      def attrModel = 'model'
+      def className = cmbClass.getValue() instanceof String ? cmbClass.getValue() : cmbClass.getValue().getName()
+      def type = mem.getClass(className)
+      if (type.hasAttribute(attrModel)) {
+        def model = type.getAttribute(attrModel).getType()
+        if (mem.isSubclassOf('GenericObjectList', model)) {
+          aem.getListTypeItems(model).each {modelItem -> 
+            models.add(modelItem)
+          }
+          models.sort()
+        }
+      }
+    }
+    models
+  ]]></function>
+  
+  <function type="function" name="getEquipmentTypes"><![CDATA[
+    def types = []
+    def configurationItems = mem.getSubClassesLight("ConfigurationItem", false, false)
+    def physicalCxn = mem.getSubClassesLight("GenericPhysicalConnection", false, false)
+    configurationItems.each {type ->
+      types.add(type)
+    }
+    physicalCxn.each {type -> 
+      types.add(type)
+    }
+    types.sort()
+  ]]></function>
+
+  <function type="function" name="getEquipment"><![CDATA[
+    def equipment = elementScript.getFunctionByName('getSharedGridRows').run(['12c97a62-79a3-4d66-8d7e-481a0f95a3eb', 'tblChangedequipment'])
+    if (equipment == null || equipment.isEmpty())
+      equipment = elementScript.getFunctionByName('getSharedGridRows').run(['15ca1cb9-f3f2-46d0-aac7-308ddde73811', 'tblEquipment'])
+    equipment
+  ]]></function>
+
+  <function type="function" name="getEmptyString"><![CDATA[
+    ''
+  ]]></function>
+
+  <function type="function" name="getYesNoItems"><![CDATA[
+    [
+      elementScript.getFunctionByName('i18n').run(['yes']),
+      elementScript.getFunctionByName('i18n').run(['no'])
+    ]
+  ]]></function>
+
+  <function type="function" name="getEquipmentRequestRows"><![CDATA[
+    elementScript.getFunctionByName('getSharedGridRows').run(['dd4f9fb6-4215-4712-9990-4ed2249732a5', 'tblEquipmentRequest'])
+  ]]></function>
+
+  <function type="function" name="getEstimatedTotalCost" parameternames="txtQuantity txtEstimatedUnitCost"><![CDATA[
+    if (txtQuantity.getValue() != null && txtEstimatedUnitCost.getValue() != null) {
+      try {
+        def quantity = Double.valueOf(String.valueOf(txtQuantity.getValue()))
+        def estimatedUnitCost = Double.valueOf(String.valueOf(txtEstimatedUnitCost.getValue()))
+        if (quantity > 0 && estimatedUnitCost > 0)
+          return quantity * estimatedUnitCost
+      } catch(NumberFormatException ex) {
+        return "";
+      }
+    }
+    ""
+  ]]></function>
+  <!-- Validators -->
+  <function type="validator" name="isGreaterThanZero" parameternames="elementField" message="i18n.validatorIsGreaterThanZero"><![CDATA[
+    def num = null
+
+    if (elementField.getValue() != null) {
+      try {
+        num = Integer.valueOf(String.valueOf(elementField.getValue()))
+      } catch(NumberFormatException ex) {
+        return false;
+      }
+    }
+    num != null ? num > 0 : false
+  ]]></function>
+  <function type="validator" name="isPositiveRealNumber" parameternames="elementField" message="i18n.validatorIsPositiveRealNumber"><![CDATA[
+    def num = null
+
+    if (elementField.getValue() != null) {
+      try {
+        num = Double.valueOf(String.valueOf(elementField.getValue()))
+      } catch(NumberFormatException ex) {
+        return false;
+      }
+    }
+    num != null ? num >= 0 : false
+  ]]></function>
+</script>
