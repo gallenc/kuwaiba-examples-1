@@ -24,7 +24,8 @@ services:
     volumes:
       - data-kuwaiba:/data
       - ./container-fs/kuwaiba/start.sh:/start.sh
-      - ./container-fs/kuwaiba/data:/data-overlay
+      - ./container-fs/kuwaiba/data-overlay:/data-overlay
+      - ./container-fs/kuwaiba/data-zip:/data-zip
     ports:
       - "8080:8080"
       - "8081:8081"
