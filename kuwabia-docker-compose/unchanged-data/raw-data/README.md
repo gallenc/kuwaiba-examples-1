@@ -1,1 +1,0 @@
-# overlay configuration from kuwiba 2.1
