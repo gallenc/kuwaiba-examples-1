@@ -29,10 +29,12 @@ public class GrooveyScriptTestBase {
 
    @Test
    public void baseTest() throws IOException, InvalidArgumentException {
+      System.out.println("running baseTest");
       
       String testFile="./GrooveyScripts/BaseTest.groovy";
       
       System.out.println("loading test script from: "+testFile);
+      
       String reportgroovyscript = getResourceFileAsString(testFile);
       
       List<StringPair> parameters = Arrays.asList(); 
@@ -45,6 +47,8 @@ public class GrooveyScriptTestBase {
       String str = new String(bytes, StandardCharsets.UTF_8);
       
       System.out.println("Result of script execution\n"+str);
+      
+      System.out.println("end of baseTest");
    }
 
    // adapted from org.neotropic.kuwaiba.core.persistence.reference.neo4j.BusinessEntityManagerImpl

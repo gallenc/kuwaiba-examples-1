@@ -29,6 +29,7 @@ public class KuwaibaGrooveyScriptTest1 extends  GrooveyScriptTestBase {
 
    @Test
    public void test1() throws IOException, InvalidArgumentException {
+      System.out.println("running test1");
       
       String testFile="./GrooveyScripts/OpenNMSReport.groovy";
       
@@ -45,6 +46,9 @@ public class KuwaibaGrooveyScriptTest1 extends  GrooveyScriptTestBase {
       String str = new String(bytes, StandardCharsets.UTF_8);
       
       System.out.println("Result of script execution\n"+str);
+      
+      System.out.println("end of test1");
+      
    }
    
 

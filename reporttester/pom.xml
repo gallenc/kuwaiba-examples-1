@@ -62,17 +62,41 @@
          <groupId>org.neotropic.kuwaiba</groupId>
          <artifactId>persistence-api</artifactId>
          <version>2.1.1</version>
-         <scope>system</scope>
-         <systemPath>${project.basedir}/lib/persistence-api-2.1.1.jar</systemPath>
+         <!-- <scope>system</scope> -->
+         <!-- <systemPath>${project.basedir}/lib/persistence-api-2.1.1.jar</systemPath> -->
       </dependency>
+
+
+      <!-- use mvn install:install-file -Dfile='.\lib\persistence-api-2.1.1.jar' -Dsources='.\lib\persistence-api-2.1.1-sources.jar' -DgroupId='org.neotropic.kuwaiba' 
+         -DartifactId='persistence-api' -Dversion='2.1.1' -Dpackaging='jar' -->
+
+      <!-- <dependency> -->
+      <!-- <groupId>org.neotropic.kuwaiba</groupId> -->
+      <!-- <artifactId>persistence-api</artifactId> -->
+      <!-- <version>2.1.1</version> -->
+      <!-- <scope>system</scope> -->
+      <!-- <classifier>sources</classifier> -->
+      <!-- <systemPath>${project.basedir}/lib/persistence-api-2.1.1-sources.jar</systemPath> -->
+      <!-- </dependency> -->
 
       <dependency>
          <groupId>org.neotropic.kuwaiba</groupId>
          <artifactId>reports</artifactId>
          <version>2.1.1</version>
-         <scope>system</scope>
-         <systemPath>${project.basedir}/lib/reports-2.1.1.jar</systemPath>
+         <!-- <scope>system</scope> -->
+         <!-- <systemPath>${project.basedir}/lib/reports-2.1.1.jar</systemPath> -->
       </dependency>
+
+      <!-- use mvn install:install-file -Dfile='.\lib\reports-2.1.1.jar' -Dsources='.\lib\reports-2.1.1-sources.jar' -DgroupId='org.neotropic.kuwaiba' -DartifactId='reports'
+         -Dversion='2.1.1' -Dpackaging='jar' -->
+      <!-- <dependency> -->
+      <!-- <groupId>org.neotropic.kuwaiba</groupId> -->
+      <!-- <artifactId>reports</artifactId> -->
+      <!-- <version>2.1.1</version> -->
+      <!-- <scope>system</scope> -->
+      <!-- <classifier>sources</classifier> -->
+      <!-- <systemPath>${project.basedir}/lib/reports-2.1.1-sources.jar</systemPath> -->
+      <!-- </dependency> -->
 
 
       <!-- junit dependencies -->

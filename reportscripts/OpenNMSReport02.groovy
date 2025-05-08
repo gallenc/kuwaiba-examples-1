@@ -4,11 +4,27 @@
  * Parameters: None
  * Applies to: TBD
  */
- 
+
+//package org.entimoss.kuwaiba; // package omitted from groovy 
+
+import org.neotropic.kuwaiba.core.apis.persistence.application.reporting.InventoryReport;
+import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessEntityManager;
+import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObject;
+import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight;
+import org.neotropic.kuwaiba.core.apis.persistence.exceptions.ApplicationObjectNotFoundException;
+import org.neotropic.kuwaiba.core.apis.persistence.exceptions.BusinessObjectNotFoundException;
+import org.neotropic.kuwaiba.core.apis.persistence.exceptions.InvalidArgumentException;
+import org.neotropic.kuwaiba.core.apis.persistence.exceptions.MetadataObjectNotFoundException;
 import org.neotropic.kuwaiba.modules.optional.reports.defaults.RawReport;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+// public class OpenNMSExport2 { // class omitted from groovy
+
+//InventoryReport returnReport() { // function omitted from groovy
 
 // main report function
 
@@ -17,29 +33,73 @@ String version = "0.1";
 String author = "Craig Gallen";
 
 // create CSV headerline
-StringBuffer  textBuffer = new StringBuffer();
+StringBuffer textBuffer = new StringBuffer();
 
 Iterator<String> columnIterator = OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.iterator();
 while (columnIterator.hasNext()) {
-      String columnName = columnIterator.next();
-      textBuffer.append(columnName);
-      if(columnIterator.hasNext()) textBuffer.append(",");
+   String columnName = columnIterator.next();
+   textBuffer.append(columnName);
+   if (columnIterator.hasNext()) {
+      textBuffer.append(",");
+   }
 }
 
 textBuffer.append("\n");
 
 // now populate data lines
-
+String tmp = tmp(bem);
+textBuffer.append(tmp);
 
 // return a RawReport containing csv
-report = new RawReport(title, author, version, textBuffer.toString());
+InventoryReport report = new RawReport(title, author, version, textBuffer.toString());
  
 return report;
  
- 
+// end of main report function
 
+// }  // function omitted from groovy
 
-class OnmsRequisitionConstants {
+public String  tmp(BusinessEntityManager bem) {
+
+   StringBuffer returnstring= new StringBuffer();
+
+   // First we get all active network devices
+   List<BusinessObject> devices;
+   try {
+      devices = bem.getObjectsOfClass("GenericCommunicationsElement", -1);
+
+      for (BusinessObject device : devices) {
+         String name = device.getName();
+         
+         returnstring.append(name);
+         
+
+         List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(device.getId(), device.getClassName(), "GenericCommunicationsPort", null, -1, -1);
+
+         for (BusinessObjectLight aPort : commPorts) {
+            returnstring.append(" "+aPort);
+            String portStatus = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "state");
+            
+            // We check if there's an IP address associated to the interface.
+            List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(aPort.getClassName(), aPort.getId(), "ipamHasIpAddress");
+            for (BusinessObjectLight ipAddress :ipAddressesInPort ) {
+               returnstring.append(" "+ipAddress.getName());
+            }
+            returnstring.append("/n");
+            
+
+         }
+
+      }
+   } catch (MetadataObjectNotFoundException | InvalidArgumentException | BusinessObjectNotFoundException | ApplicationObjectNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+   }
+   
+   return returnstring.toString();
+}
+
+   class OnmsRequisitionConstants {
 
    public static final String NODE_LABEL = "Node_Label";
    public static final String ID_ = "ID_";
@@ -65,10 +125,6 @@ class OnmsRequisitionConstants {
    public static final String ASSET_CIRCUITID = "Asset_circuitId";
    public static final String ASSET_DESCRIPTION = "Asset_description";
    
-   //MetaData_requisition:primarysnmproutername 
-   //public static final String METADATA_REQUISITION = "MetaData_requisition:primarysnmproutername";
-      
-
    // this is same order as in csv header line
    public static final List<String> OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID, PARENT_FOREIGN_SOURCE, IP_MANAGEMENT,
             MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY ,ASSET_REGION, ASSET_SERIALNUMBER, ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY,
