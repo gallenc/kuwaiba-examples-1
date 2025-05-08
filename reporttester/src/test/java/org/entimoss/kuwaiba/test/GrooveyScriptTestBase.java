@@ -25,12 +25,15 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.StringPair;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
-public class GrooveyScriptTest {
+public class GrooveyScriptTestBase {
 
    @Test
-   public void test1() throws IOException, InvalidArgumentException {
+   public void baseTest() throws IOException, InvalidArgumentException {
       
-      String reportgroovyscript = getResourceFileAsString("./GrooveyScripts/OpenNMSReport.groovy");
+      String testFile="./GrooveyScripts/BaseTest.groovy";
+      
+      System.out.println("loading test script from: "+testFile);
+      String reportgroovyscript = getResourceFileAsString(testFile);
       
       List<StringPair> parameters = Arrays.asList(); 
       BusinessEntityManager bem = null; 
@@ -40,7 +43,8 @@ public class GrooveyScriptTest {
       byte[] bytes = executeReport(reportgroovyscript ,  parameters, bem,  mem,  aem);
       
       String str = new String(bytes, StandardCharsets.UTF_8);
-      System.out.println(str);
+      
+      System.out.println("Result of script execution\n"+str);
    }
 
    // adapted from org.neotropic.kuwaiba.core.persistence.reference.neo4j.BusinessEntityManagerImpl
@@ -60,7 +64,7 @@ public class GrooveyScriptTest {
           environmentParameters.setVariable("bem", bem); 
           
           try {
-              GroovyShell shell = new GroovyShell(GrooveyScriptTest.class.getClassLoader(), environmentParameters);
+              GroovyShell shell = new GroovyShell(GrooveyScriptTestBase.class.getClassLoader(), environmentParameters);
               Object theResult = shell.evaluate(reportgroovyscript);
               
               if (theResult == null)
