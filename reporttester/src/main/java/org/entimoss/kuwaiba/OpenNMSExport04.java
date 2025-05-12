@@ -36,9 +36,9 @@ public class OpenNMSExport04 { // class omitted from groovy
       String version = "0.1";
       String author = "Craig Gallen";
 
-      // create CSV headerline
       StringBuffer textBuffer = new StringBuffer();
 
+      // create CSV headerline
       Iterator<String> columnIterator = OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.iterator();
       while (columnIterator.hasNext()) {
          String columnName = columnIterator.next();
@@ -51,22 +51,24 @@ public class OpenNMSExport04 { // class omitted from groovy
       textBuffer.append("\n");
 
       // now populate data lines
-      BusinessEntityManager bem = null; //remove
+      BusinessEntityManager bem = null; //remove 
 
-      ArrayList<HashMap<String, String>> lineData = generateLineData(bem);
+      ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem);
 
-      for (HashMap<String, String> singlelineData : lineData) {
+      for (HashMap<String, String> singleCsvlineData : csvLineData) {
+
          // create and populate empty CSV line
          List<String> requisitionLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
          for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
             requisitionLine.add("");
-         // populate values if they exist
+
+         // populate csv values in line if they exist
          for (String key : OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS) {
-            if (singlelineData.containsKey(key)) {
-               requisitionLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(key), singlelineData.get(key));
+            if (singleCsvlineData.containsKey(key)) {
+               requisitionLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(key), singleCsvlineData.get(key));
             }
          }
-         // write out csv line with commas
+         // write out each csv line to text buffer with commas
          Iterator<String> requisitionLineIterator = requisitionLine.iterator();
          while (requisitionLineIterator.hasNext()) {
             String columnValue = requisitionLineIterator.next();
@@ -87,72 +89,103 @@ public class OpenNMSExport04 { // class omitted from groovy
 
    } // function omitted from groovy
 
-   public ArrayList<HashMap<String, String>> generateLineData(BusinessEntityManager bem) {
+   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem) {
 
-      ArrayList<HashMap<String, String>> lineData = new ArrayList<HashMap<String, String>>();
+      ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
 
       try {
 
-         // first we get all ip addresses and subnet names
+         // first we get all ip addresses, folders and subnets names from ipam
 
          // find ipv4 root pools - currently only one root but could be more
          List<InventoryObjectPool> ipv4RootPools = bem.getRootPools(Constants.CLASS_SUBNET_IPV4, ApplicationEntityManager.POOL_TYPE_MODULE_ROOT, false);
-         HashMap<String,ArrayList<String>> folderAddresses = new HashMap<String,ArrayList<String>>();
-         
-         HashMap<String,String> addresslookup = new HashMap<String, String>();
+         HashMap<String, ArrayList<String>> folderAddresses = new HashMap<String, ArrayList<String>>();
+
+         HashMap<String, String> addresslookup = new HashMap<String, String>();
 
          poolLookup(ipv4RootPools, bem, Constants.CLASS_SUBNET_IPV4, folderAddresses);
          printFolderAddresses(folderAddresses);
-         
+
          for (String folderName : folderAddresses.keySet()) {
             ArrayList<String> addresses = folderAddresses.get(folderName);
             for (String address : addresses) {
                addresslookup.put(address, folderName);
             }
          }
+         System.out.println("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
-         // First we get all active network devices
-
+         // Next we get all active network devices
          devices = bem.getObjectsOfClass("GenericCommunicationsElement", -1);
 
          for (BusinessObject device : devices) {
 
-            String name = device.getName();
+            String name = device.getName().strip().replaceAll(" ", "_");
 
-            // then we get coms posts on devices
+            // get the parent location of each device for latitude/longitude
+            String latitude = "";
+            String longitude = "";
+            String locationName="";
+            String rackName="";
+            try {
+               BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
+               if (location!=null && location.getName()!=null) { 
+                  locationName=location.getName().strip().replaceAll(" ", "_");
+                  latitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "latitude");
+                  longitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "longitude");
+               }
+               
+               BusinessObject rack = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "Rack");
+               if(rack!=null && rack.getName()!=null) {
+                  rackName= rack.getName().strip().replaceAll(" ", "_");
+               }
+               
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+
+            // then we get comms ports (interfaces) on each device
             List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(device.getId(), device.getClassName(), "GenericCommunicationsPort", null, -1, -1);
 
             for (BusinessObjectLight aPort : commPorts) {
 
                String portStatus = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "state");
+               String isManagement = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "isManagement");
+               boolean isMgt = false;
+               if (isManagement != null && "true".equals(isManagement)) {
+                  isMgt = true;
+               }
 
-               // We check if there's an IP address associated to the interface.
+               // We check if there's an IP address associated to the port.
                List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(aPort.getClassName(), aPort.getId(), "ipamHasIpAddress");
 
                Iterator<BusinessObjectLight> ipAddressesInPortIterator = ipAddressesInPort.iterator();
                while (ipAddressesInPortIterator.hasNext()) {
                   BusinessObjectLight ipAddress = ipAddressesInPortIterator.next();
 
-                  // need to know subnet of ip address to get location
-                  // (taken from IpanService existsInInventory()
-
+                  // need to know the subnet of the ip address to get the location
                   List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
                   System.out.println("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
-                  // need to know if port is management port to set N/P
-
                   HashMap<String, String> line = new HashMap<String, String>();
-                  line.put(OnmsRequisitionConstants.NODE_LABEL, name);
-                  line.put(OnmsRequisitionConstants.ID_, name);
-                  line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipAddress.getName());
                   
+                  String nodename = locationName+"_"+rackName+"_"+name;
+                  line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
+                  line.put(OnmsRequisitionConstants.ID_, nodename);
+                  line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipAddress.getName());
+
+                  // if port set as management then set as Primary (P) snmp interface else (N) - not management
+                  line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isMgt ? "P" : "N"));
+
+                  line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude);
+                  line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude);
+
                   if (addresslookup.containsKey(ipAddress.getName())) {
-                     line.put(OnmsRequisitionConstants.MINION_LOCATION,addresslookup.get(ipAddress.getName()));
+                     line.put(OnmsRequisitionConstants.MINION_LOCATION, addresslookup.get(ipAddress.getName()));
                   } else {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
                   }
-                  lineData.add(line);
+                  csvLineData.add(line);
                }
             }
 
@@ -161,19 +194,19 @@ public class OpenNMSExport04 { // class omitted from groovy
          throw new RuntimeException(e);
       }
 
-      return lineData;
+      return csvLineData;
    }
-   
-   void printFolderAddresses(HashMap<String,ArrayList<String>> folderAddresses){
+
+   void printFolderAddresses(HashMap<String, ArrayList<String>> folderAddresses) {
       for (String folderName : folderAddresses.keySet()) {
          ArrayList<String> addresses = folderAddresses.get(folderName);
          for (String address : addresses) {
-            System.out.println("Folder: '"+folderName+"' Address: '"+address+"'");
+            System.out.println("Folder: '" + folderName + "' Address: '" + address + "'");
          }
       }
    }
 
-   void poolLookup(List<InventoryObjectPool> topFolderPoolList, BusinessEntityManager bem, String ipType, HashMap<String,ArrayList<String>> folderAddresses )
+   void poolLookup(List<InventoryObjectPool> topFolderPoolList, BusinessEntityManager bem, String ipType, HashMap<String, ArrayList<String>> folderAddresses)
             throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
       for (InventoryObjectPool topFolderPool : topFolderPoolList) {
@@ -181,17 +214,17 @@ public class OpenNMSExport04 { // class omitted from groovy
 
          // Look up subnets
          List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
-         
+
          ArrayList<String> addresses = new ArrayList<String>();
          folderAddresses.put(topFolderPool.getName().strip().replaceAll(" ", "_"), addresses);
-         
-         subnetLookup(subnetsInfolder, bem, ipType, addresses );
+
+         subnetLookup(subnetsInfolder, bem, ipType, addresses);
 
          // Look up Individual ip addresses in folder
          List<BusinessObjectLight> ipaddressesInFolder = bem.getPoolItemsByClassName(topFolderPool.getId(), Constants.CLASS_IP_ADDRESS, 0, 50);
          System.out.println("individual ipaddressesInFolder " + ipaddressesInFolder);
-         
-         for(BusinessObjectLight ip : ipaddressesInFolder) {
+
+         for (BusinessObjectLight ip : ipaddressesInFolder) {
             addresses.add(ip.getName());
          }
 
@@ -204,7 +237,7 @@ public class OpenNMSExport04 { // class omitted from groovy
 
    }
 
-   void subnetLookup(List<BusinessObjectLight> subnetsList, BusinessEntityManager bem, String ipType, ArrayList<String> addresses ) throws ApplicationObjectNotFoundException,
+   void subnetLookup(List<BusinessObjectLight> subnetsList, BusinessEntityManager bem, String ipType, ArrayList<String> addresses) throws ApplicationObjectNotFoundException,
             InvalidArgumentException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
       System.out.println("subnetLookup subnetsList " + subnetsList);
@@ -218,18 +251,17 @@ public class OpenNMSExport04 { // class omitted from groovy
                      child.getClassName().equals(Constants.CLASS_SUBNET_IPV6))
                subnets.add(child);
          }
-         
+
          // recursively look up subnets
-         subnetLookup(subnets,  bem, ipType, addresses);
-         
+         subnetLookup(subnets, bem, ipType, addresses);
+
          //addresses in subnets
 
          List<BusinessObjectLight> usedIpsInSubnet = bem.getObjectSpecialChildrenWithFilters(ipType, subnet.getId(), new ArrayList<>(Arrays.asList(Constants.CLASS_IP_ADDRESS)), 0, 50);
-         for(BusinessObjectLight ip : usedIpsInSubnet) {
+         for (BusinessObjectLight ip : usedIpsInSubnet) {
             addresses.add(ip.getName());
          }
 
-         
          System.out.println("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
       }
 

@@ -6,6 +6,7 @@
  */
 
 //package org.entimoss.kuwaiba; // package omitted from groovy
+
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.InventoryObjectPool;
 import org.neotropic.kuwaiba.core.apis.persistence.application.reporting.InventoryReport;
@@ -35,9 +36,10 @@ String title = "OpenNMSExport";
 String version = "0.1";
 String author = "Craig Gallen";
 
-// create CSV headerline
+
 StringBuffer textBuffer = new StringBuffer();
 
+      // create CSV headerline
 Iterator<String> columnIterator = OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.iterator();
 while (columnIterator.hasNext()) {
    String columnName = columnIterator.next();
@@ -52,20 +54,23 @@ textBuffer.append("\n");
 // now populate data lines
 // BusinessEntityManager bem = null; //remove
 
-ArrayList<HashMap<String,String>> lineData = generateLineData(bem);
+ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem);
 
-for(HashMap<String, String> singlelineData: lineData) {
+
+for (HashMap<String, String> singleCsvlineData : csvLineData) {
+   
    // create and populate empty CSV line
    List<String> requisitionLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
    for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
       requisitionLine.add("");
-   // populate values if they exist
-   for(String key : OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS) {
-      if (singlelineData.containsKey(key)) {
-         requisitionLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(key), singlelineData.get(key));
+         
+         // populate csv values in line if they exist
+   for (String key : OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS) {
+      if (singleCsvlineData.containsKey(key)) {
+         requisitionLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(key), singleCsvlineData.get(key));
       }
    }
-   // write out csv line with commas
+   // write out each csv line to text buffer with commas
    Iterator<String> requisitionLineIterator = requisitionLine.iterator();
    while (requisitionLineIterator.hasNext()) {
       String columnValue = requisitionLineIterator.next();
@@ -86,14 +91,14 @@ return report;
 
 // }  // function omitted from groovy
 
-public ArrayList<HashMap<String,String>>  generateLineData(BusinessEntityManager bem) {
+   public ArrayList<HashMap<String,String>> generateCsvLineData(BusinessEntityManager bem) {
    
-      ArrayList<HashMap<String, String>> lineData = new ArrayList<HashMap<String, String>>();
+      ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
 
       try {
          
-         // first we get all ip addresses, folders and subnet names from ipam
+         // first we get all ip addresses, folders and subnets names from ipam
 
          // find ipv4 root pools - currently only one root but could be more
          List<InventoryObjectPool> ipv4RootPools = bem.getRootPools(Constants.CLASS_SUBNET_IPV4, ApplicationEntityManager.POOL_TYPE_MODULE_ROOT, false);
@@ -111,7 +116,7 @@ public ArrayList<HashMap<String,String>>  generateLineData(BusinessEntityManager
                addresslookup.put(address, folderName);
             }
          }
-         System.out.println("************************* addresslookup" + addresslookup.size()+ " "+ addresslookup);
+         System.out.println("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
 
 
@@ -120,41 +125,72 @@ public ArrayList<HashMap<String,String>>  generateLineData(BusinessEntityManager
 
          for (BusinessObject device : devices) {
 
-            String name = device.getName();
+            String name = device.getName().strip().replaceAll(" ", "_");
 
-            // then we get coms posts on devices
+            // get the parent location of each device for latitude/longitude
+            String latitude = "";
+            String longitude = "";
+            String locationName="";
+            String rackName="";
+            try {
+               BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
+               if (location!=null && location.getName()!=null) { 
+                  locationName=location.getName().strip().replaceAll(" ", "_");
+                  latitude = bem.getAttributeValueAsString (location.getClassName(), location.getId(), "latitude");
+                  longitude = bem.getAttributeValueAsString (location.getClassName(), location.getId(), "longitude");
+               }
+               
+               BusinessObject rack = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "Rack");
+               if(rack!=null && rack.getName()!=null) {
+                  rackName= rack.getName().strip().replaceAll(" ", "_");
+               }
+               
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+            
+            // then we get comms ports (interfaces) on each device
             List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(device.getId(), device.getClassName(), "GenericCommunicationsPort", null, -1, -1);
 
             for (BusinessObjectLight aPort : commPorts) {
 
                String portStatus = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "state");
+               String isManagement = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "isManagement");
+               boolean isMgt = false;
+               if (isManagement != null && "true".equals(isManagement)) {
+                  isMgt = true;
+               }
 
-               // We check if there's an IP address associated to the interface.
+               // We check if there's an IP address associated to the port.
                List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(aPort.getClassName(), aPort.getId(), "ipamHasIpAddress");
 
                Iterator<BusinessObjectLight> ipAddressesInPortIterator = ipAddressesInPort.iterator();
                while (ipAddressesInPortIterator.hasNext()) {
                   BusinessObjectLight ipAddress = ipAddressesInPortIterator.next();
 
-                  // need to know subnet of ip address to get location
-                  // (taken from IpanService existsInInventory()
-
+                  // need to know the subnet of the ip address to get the location
                   List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
                   System.out.println("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
-                  // need to know if port is management port to set N/P
-
-                  HashMap<String, String> line = new HashMap();
-                  line.put(OnmsRequisitionConstants.NODE_LABEL, name);
-                  line.put(OnmsRequisitionConstants.ID_, name);
+                  HashMap<String, String> line = new HashMap<String, String>();
+                  
+                  String nodename = locationName+"_"+rackName+"_"+name;
+                  line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
+                  line.put(OnmsRequisitionConstants.ID_, nodename);
                   line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipAddress.getName());
+                  
+                  // if port set as management then set as Primary (P) snmp interface else (N) - not management
+                  line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isMgt ? "P"  : "N" ) );
+
+                  line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude );
+                  line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude );
                   
                   if (addresslookup.containsKey(ipAddress.getName())) {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION,addresslookup.get(ipAddress.getName()));
                   } else {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
                   }
-                  lineData.add(line);
+                  csvLineData.add(line);
                }
             }
 
@@ -163,7 +199,7 @@ public ArrayList<HashMap<String,String>>  generateLineData(BusinessEntityManager
          throw new RuntimeException(e);
       }
 
-      return lineData;
+      return csvLineData;
    }
 
   void printFolderAddresses(HashMap<String,ArrayList<String>> folderAddresses){
