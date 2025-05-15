@@ -47,20 +47,32 @@ The new kawaiba model will be imported from `container-fs/kuwaiba/data-zip/data.
 
 Any changes to this model will be persisted to the docker kuwaiba-data volume across restarts.
 
-You can export/backup any changes to this model as data.zip from a running container from the /data folder
 
 You can clear the model back to the original data.zip by running
 ```
 docker compose down -v
 ```
 
+# Creating a zip of your own model.
+
+You can export/backup any changes to your own model as data.zip from a running container by zipping the /data folder in a running kuwaiba container.
+The followng commands will do this without logging into the container.
+
+```
+# creates a zip of the data inside the container
+docker compose exec kuwaiba sh -c "rm -rf /tmp/kuwaiba && mkdir /tmp/kuwaiba && zip -rv  --exclude='/data/logs*' /tmp/kuwaiba/data.zip /data/* "
+
+# copy the zip file out of the container to overwrite the current data.zip
+docker compose cp kuwaiba:/tmp/kuwaiba/data.zip ./container-fs/kuwaiba/data-zip
+```
+
 # model contents
 The Radio Network is modelled under country `United Kingdom`.
 
-See the OpenNMS Export Inventory report in `Inventory report`s under the `Reports` tab. 
+See the OpenNMS Export Inventory report under the `Reports` tab in `Inventory report`s. 
 Running this report exports the mode in CSV format for import to OpenNMS Pris.
 
 # Report Tester
-Report Tester ss a maven project to help build and test groovy scripts against the kuwaiba api in an ide like eclipse.
+Report Tester is a maven project to help build and test groovy scripts against the kuwaiba api in an ide like eclipse.
 
 
