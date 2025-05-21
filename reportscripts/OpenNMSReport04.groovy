@@ -25,17 +25,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-// public class OpenNMSExport2 { // class omitted from groovy
+// public class OpenNMSExport04 { // class omitted from groovy
 
 //InventoryReport returnReport() { // function omitted from groovy
 
 // main report function
 
 String title = "OpenNMSExport";
-String version = "0.1";
+String version = "0.4";
 String author = "Craig Gallen";
 
+// Map<String, String> parameters = new HashMap<>(); // remove - parameters are injected
+
+System.out.println("opennms export report parameters :");
+for(Entry<String, String> entry : parameters.entrySet()){
+   System.out.println("   key: "+entry.getKey()+" value: "+entry.getValue());
+}
 
 StringBuffer textBuffer = new StringBuffer();
 

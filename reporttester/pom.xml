@@ -12,6 +12,8 @@
       <maven.compiler.source>11</maven.compiler.source>
       <maven.compiler.target>11</maven.compiler.target>
 
+      <jackson2Version>2.16.2</jackson2Version>
+
       <!-- junit dependencies -->
       <junit.version>4.12</junit.version>
       <hamcrest-core.version>1.3</hamcrest-core.version>
@@ -67,7 +69,7 @@
       </dependency>
 
 
-      <!-- use mvn install:install-file -Dfile='.\lib\persistence-api-2.1.1.jar' -Dsources='.\lib\persistence-api-2.1.1-sources.jar' -DgroupId='org.neotropic.kuwaiba' 
+      <!-- use mvn install:install-file -Dfile='.\lib\persistence-api-2.1.1.jar' -Dsources='.\lib\persistence-api-2.1.1-sources.jar' -DgroupId='org.neotropic.kuwaiba'
          -DartifactId='persistence-api' -Dversion='2.1.1' -Dpackaging='jar' -->
 
       <!-- <dependency> -->
@@ -98,6 +100,12 @@
       <!-- <systemPath>${project.basedir}/lib/reports-2.1.1-sources.jar</systemPath> -->
       <!-- </dependency> -->
 
+      <!-- for json binding -->
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-databind</artifactId>
+         <version>2.16.0</version>
+      </dependency>
 
       <!-- junit dependencies -->
       <dependency>
