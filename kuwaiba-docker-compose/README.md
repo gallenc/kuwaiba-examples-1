@@ -77,7 +77,7 @@ Report Tester is a maven project to help build and test groovy scripts against t
 
 # Pris
 
-Provisioning integration server now uses rest api to get report from kuwaiba.
+Provisioning integration server now uses a rest api to get the CSV report from kuwaiba.
 
 Make a call to should show requisition file http://localhost:8000/requisitions/kuwaiba
 

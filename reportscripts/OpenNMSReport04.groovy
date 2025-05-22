@@ -1,6 +1,6 @@
 /**
  * Exports inventory as OpenNMS PRIS CSV format.
- * Entimoss Ltd - version 0.1
+ * Entimoss Ltd - version 0.4
  * Parameters: None
  * Applies to: TBD
  */
@@ -34,9 +34,11 @@ import java.util.Map.Entry;
 
 // main report function
 
-String title = "OpenNMSExport";
+String title = "OpenNMSInventoryExport";
 String version = "0.4";
 String author = "Craig Gallen";
+
+System.out.println("Start of "+title+" Version "+version+" Author "+author);
 
 // Map<String, String> parameters = new HashMap<>(); // remove - parameters are injected
 
@@ -45,9 +47,14 @@ for(Entry<String, String> entry : parameters.entrySet()){
    System.out.println("   key: "+entry.getKey()+" value: "+entry.getValue());
 }
 
+// If blank or false, the report uses parent location and rack to generate each node name. 
+// if True it uses only the name of the node given in the model
+String useAbsoluteNamesStr = parameters.getOrDefault("useAbsoluteNames", "false");
+Boolean useAbsoluteNames = Boolean.valueOf(useAbsoluteNamesStr);
+
 StringBuffer textBuffer = new StringBuffer();
 
-      // create CSV headerline
+// create CSV headerline
 Iterator<String> columnIterator = OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.iterator();
 while (columnIterator.hasNext()) {
    String columnName = columnIterator.next();
@@ -60,9 +67,10 @@ while (columnIterator.hasNext()) {
 textBuffer.append("\n");
 
 // now populate data lines
-// BusinessEntityManager bem = null; //remove
+// BusinessEntityManager bem = null; //remove injected
+// ApplicationEntityManager aem = null; // remove injected
 
-ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem);
+ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames);
 
 
 for (HashMap<String, String> singleCsvlineData : csvLineData) {
@@ -92,14 +100,16 @@ for (HashMap<String, String> singleCsvlineData : csvLineData) {
 
 // return a RawReport containing csv
 InventoryReport report = new RawReport(title, author, version, textBuffer.toString());
- 
+
+System.out.println("End of "+title);
+
 return report;
  
 // end of main report function
 
 // }  // function omitted from groovy
 
-   public ArrayList<HashMap<String,String>> generateCsvLineData(BusinessEntityManager bem) {
+   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem, Boolean useAbsoluteNames) {
    
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
@@ -126,8 +136,6 @@ return report;
          }
          System.out.println("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
-
-
          // Next we get all active network devices
          devices = bem.getObjectsOfClass("GenericCommunicationsElement", -1);
 
@@ -135,12 +143,24 @@ return report;
 
             String name = device.getName().strip().replaceAll(" ", "_");
 
-            // get the parent location of each device for latitude/longitude
             String latitude = "";
             String longitude = "";
             String locationName="";
             String rackName="";
+            String deviceEquipmentDisplayName="";
             try {
+               
+               System.out.println("************ attributes :"+device.getAttributes());
+
+               String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
+               if(equipmentModelId!=null) {
+                   BusinessObject equipmentModel = aem.getListTypeItem(Constants.CLASS_EQUIPMENTMODEL, equipmentModelId);
+                   deviceEquipmentDisplayName = (String) equipmentModel.getAttributes().get(Constants.PROPERTY_DISPLAY_NAME);
+                //   System.out.println("************ equipmentModel "+equipmentModel);
+                //   System.out.println("************ equipmentModel attributes "+equipmentModel.getAttributes());
+               }
+               
+               // get the first parent location of each device for latitude/longitude
                BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
                if (location!=null && location.getName()!=null) { 
                   locationName=location.getName().strip().replaceAll(" ", "_");
@@ -148,6 +168,7 @@ return report;
                   longitude = bem.getAttributeValueAsString (location.getClassName(), location.getId(), "longitude");
                }
                
+               // get the first rack containing each device for rackName
                BusinessObject rack = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "Rack");
                if(rack!=null && rack.getName()!=null) {
                   rackName= rack.getName().strip().replaceAll(" ", "_");
@@ -183,6 +204,20 @@ return report;
                   HashMap<String, String> line = new HashMap<String, String>();
                   
                   String nodename = locationName+"_"+rackName+"_"+name;
+                  if(useAbsoluteNames){
+                     nodename=name;
+                  } 
+                  
+                  // sets asset category which determines which panel is displayed in grafana
+                  if(deviceEquipmentDisplayName==null || deviceEquipmentDisplayName.isEmpty()) {
+                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, "generic-1");
+                  } else {
+                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, deviceEquipmentDisplayName);
+                  }
+                  
+                  // sets display category which determines which customer - needs tied to service
+                  line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, "Customer2");
+                  
                   line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
                   line.put(OnmsRequisitionConstants.ID_, nodename);
                   line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipAddress.getName());
@@ -190,8 +225,8 @@ return report;
                   // if port set as management then set as Primary (P) snmp interface else (N) - not management
                   line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isMgt ? "P"  : "N" ) );
 
-                  line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude );
-                  line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude );
+                  if (latitude  !=null && !latitude.isEmpty() ) line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude );
+                  if (longitude !=null && !longitude.isEmpty()) line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude );
                   
                   if (addresslookup.containsKey(ipAddress.getName())) {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION,addresslookup.get(ipAddress.getName()));
@@ -315,5 +350,6 @@ return report;
    
    public static final String DEFAULT_MINION_LOCATION="Default"; // used when OpenNMS core is the poller.
    
+//   } // omit in groovy
 
 }

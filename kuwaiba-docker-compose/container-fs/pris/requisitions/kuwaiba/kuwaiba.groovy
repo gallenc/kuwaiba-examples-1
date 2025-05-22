@@ -1,4 +1,9 @@
-// runs import from kuwiba rest api
+/**
+ * runs import form kuwaiba api.
+ * Entimoss Ltd - version 0.1
+ * Parameters: None
+ * Applies to: TBD
+ */ 
 
 import org.opennms.pris.model.*;
 import org.opennms.pris.api.Source;
