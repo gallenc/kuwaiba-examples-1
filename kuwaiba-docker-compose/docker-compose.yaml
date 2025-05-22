@@ -48,8 +48,9 @@ services:
     volumes:
       - ./container-fs/pris/requisitions:/opt/opennms-pris/requisitions
       - ./container-fs/pris/scriptsteps:/opt/opennms-pris/scriptsteps
-      - ./container-fs/pris/requisitions/kuwaiba/kuwaiba.csv:/tmp/pris/kuwaiba/kuwaiba.csv
-      #- ./container-fs/pris/requisitions/kuwaiba/kuwaibarequisition.properties:/tmp/pris/kuwaiba/requisition.properties
+      - ./container-fs/pris/lib/jackson-annotations-2.16.0.jar:/opt/opennms-pris/lib/jackson-annotations-2.16.0.jar
+      - ./container-fs/pris/lib/jackson-core-2.16.0.jar:/opt/opennms-pris/lib/jackson-core-2.16.0.jar
+      - ./container-fs/pris/lib/jackson-databind-2.16.0.jar:/opt/opennms-pris/lib/jackson-databind-2.16.0.jar
     healthcheck:
       test: ["CMD", "curl", "-f", "-I", "http://localhost:8000/documentation/index.html"]
       interval: 30s

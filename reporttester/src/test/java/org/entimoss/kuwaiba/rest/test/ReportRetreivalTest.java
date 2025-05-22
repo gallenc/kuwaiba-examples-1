@@ -2,7 +2,6 @@ package org.entimoss.kuwaiba.rest.test;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 
@@ -35,9 +34,16 @@ public class ReportRetreivalTest {
 
    String token = null;
 
+   /**
+    * gets token from kuwaiba
+    * e.g. http://localhost:8080/kuwaiba/v2.1.1/session-manager/createSession/admin/kuwaiba/2
+    * calls org.neotropic.kuwaiba.northbound.rest.aem.SessionRestController.createSession
+    * @param kuwaibaUrl base url e.g http://localhost:8080/kuwaiba
+    * @param username
+    * @param password
+    * @return string token for use in other calls
+    */
    public String getToken(String kuwaibaUrl, String username, String password) {
-
-      // calls org.neotropic.kuwaiba.northbound.rest.aem.SessionRestController.createSession
 
       String requestUrl = kuwaibaUrl + "/v2.1.1/session-manager/createSession/" + username + "/" + password + "/2";
 
@@ -74,9 +80,16 @@ public class ReportRetreivalTest {
       return token;
    }
 
+   /**
+    * retrieves the report id for a report with a given name from the list of reports in kuwaiba
+    * e.g http://localhost:8080/kuwaiba/v2.1.1/reports/getInventoryLevelReports/true/13039085A6B8DA8670AF1C688F4FB62005A5
+      calls org.neotropic.kuwaiba.northbound.rest.bem.ReportRestController.getInventoryLevelReports
+    * @param kuwaibaUrl base url e.g http://localhost:8080/kuwaiba
+    * @param token the token previously retrieved
+    * @param reportName  the name of the report to retrieve from report list
+    * @return the report id or empty string if not found
+    */
    public String getReportId(String kuwaibaUrl, String token, String reportName) {
-      // http://localhost:8080/kuwaiba/v2.1.1/reports/getInventoryLevelReports/true/13039085A6B8DA8670AF1C688F4FB62005A5
-      // calls org.neotropic.kuwaiba.northbound.rest.bem.ReportRestController.getInventoryLevelReports
       
       if (token == null) {
          token = getToken(KUWAIBA_URL, USERNAME, PASSWORD);
@@ -89,7 +102,6 @@ public class ReportRetreivalTest {
       // create session
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
-
                .timeout(Duration.ofSeconds(10))
                .uri(URI.create(requestUrl))
                .header("Content-Type", "application/json")
@@ -107,7 +119,7 @@ public class ReportRetreivalTest {
          // read the json strings and convert it into JsonNode
          JsonNode jsonNode = mapper.readTree(response.body());
 
-         // is this a array?
+         // is this an array?
          if (jsonNode.isArray()) {
             // yes, loop the JsonNode and display one by one
             for (JsonNode node : jsonNode) {
@@ -126,11 +138,19 @@ public class ReportRetreivalTest {
       return reportId;
    }
 
+   /**
+    * executes a report in kuwaiba and returns the result
+    * e.g. http://localhost:8080/kuwaiba/v2.1.1/reports/executeInventoryLevelReport/10367/13031CC2E9A82F9BB096CD167B3C8D43970E
+    * calls org.neotropic.kuwaiba.northbound.rest.bem.ReportRestController.executeInventoryLevelReport
+    * 
+    * @param kuwaibaUrl base url e.g http://localhost:8080/kuwaiba
+    * @param token
+    * @param reportId
+    * @param parameters
+    * @return the report output as a String
+    */
    public String executeReport(String kuwaibaUrl, String token, String reportId, Map<String, String> parameters) {
-      // http://localhost:8080/kuwaiba/v2.1.1/reports/executeInventoryLevelReport/10367/13031CC2E9A82F9BB096CD167B3C8D43970E
 
-      // calls org.neotropic.kuwaiba.northbound.rest.bem.ReportRestController.executeInventoryLevelReport
-      
       if (token == null) {
          token = getToken(KUWAIBA_URL, USERNAME, PASSWORD);
       }
@@ -205,6 +225,9 @@ public class ReportRetreivalTest {
 
    }
    
+   /**
+    * Used to map string pairs to the kuwaiba parameters 
+    */
    class StringPair implements Serializable {
 
       private String key;
