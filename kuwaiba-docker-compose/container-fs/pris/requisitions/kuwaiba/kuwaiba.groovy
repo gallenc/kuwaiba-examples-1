@@ -37,9 +37,16 @@ String outputCsvRequisitonFileLocation = config.getString("outputCsvRequisitonFi
 String kuwaibaUrl = config.getString("kuwaiba.URL");
 String kuwaibaUsername = config.getString("kuwaiba.Username");
 String kuwaibaPassword = config.getString("kuwaiba.Password");
+String kuwaibaReportName = config.getString("kuwaiba.ReportName");
+
+String connectionTimeoutStr = config.getString("connectionTimeout");
+Integer timeout = Integer.parseInt(connectionTimeoutStr);
+logger.info("connectionTimeout="+timeout);
 
 logger.info("kuwaiba.URL="+kuwaibaUrl);
 logger.info("kuwaiba.Username="+kuwaibaUsername);
+logger.info("kuwaiba.Password="+ (String) (kuwaibaPassword!=null && ! kuwaibaPassword.isEmpty()) ?  "********" : "NOT SET");
+logger.info("kuwaiba.ReportName="+kuwaibaReportName);
 
 HashMap<String,String> parameters = new HashMap<String,String>();
 for (String key : config.getKeys() ){
@@ -52,33 +59,32 @@ for (String key : config.getKeys() ){
 logger.info("parameters:" + parameters.toString());
 
 // this code exercises the kuwaiba report to get the csv file
-if (token == null) {
-   token = getToken(kuwaibaUrl, kuwaibaUsername, kuwaibaPassword);
-}
+String token = getToken(kuwaibaUrl, kuwaibaUsername, kuwaibaPassword, timeout);
 
 logger.info("token: " + token);
 
 // get report id for reportname from list of reports
 
-String reportId = getReportId(KUWAIBA_URL, token, REPORTNAME);
+String reportId = getReportId(kuwaibaUrl, token, kuwaibaReportName, timeout);
 
-logger.info("reportId: " + reportId);
+logger.info("report name: "+kuwaibaReportName+" reportId: " + reportId);
 
 // execute report by id and print out result
-String csv = executeReport(kuwaibaUrl, token, reportId, parameters);
-logger.info("csv:\n" + csv);
+String csv = executeReport(kuwaibaUrl, token, reportId, parameters, timeout);
+logger.info("received csv:\n" + csv);
 
 String requisitionInstance=config.getString("requisitionInstance");
 Path basePath = Paths.get(outputCsvRequisitonFileLocation+"/"+requisitionInstance);
 
 // write csv file to tmp directory
 File csvFile = new File(basePath.toFile(), "/"+requisitionInstance+".csv");
+logger.info("writing csv data to file " + csvFile.getAbsolutePath() + " for requisition " + requisitionInstance);
 exportFile(csvFile, csv);
 
 // write pris properties file
 File propertiesFile = new File(basePath.toFile(), "requisition.properties");
 logger.info("writing pris properties file " + propertiesFile.getAbsolutePath() + " for requisition " + requisitionInstance);
-exportPrisPropertiesFile(propertiesFile, requisitionInstance);
+exportPrisPropertiesFile(propertiesFile, requisitionInstance+".csv");
 
 // this code calls csv mapper to return requisition with foreign source requisitionInstance for generated csv file
 logger.info("convert csv file to requisition");
@@ -112,10 +118,10 @@ public void exportFile(File file, String contents) {
 
       printWriter = new PrintWriter(new FileWriter(file));
 
-      printWriter.println(contents);
+      printWriter.print(contents);
 
-   } catch (Exception ex) {
-      ex.printStackTrace();
+   } catch (Exception e) {
+      logger.error("problem exporting file: ", e);
    } finally {
       if (printWriter != null)
          printWriter.close();
@@ -149,9 +155,10 @@ public void exportPrisPropertiesFile(File propertiesFile, String requisitionFile
  * @param kuwaibaUrl base url e.g http://localhost:8080/kuwaiba
  * @param username
  * @param password
+ * @param timeout time in seconts to await reponse
  * @return string token for use in other calls
  */
-public String getToken(String kuwaibaUrl, String username, String password) {
+public String getToken(String kuwaibaUrl, String username, String password, Integer timeout) {
 
    String requestUrl = kuwaibaUrl + "/v2.1.1/session-manager/createSession/" + username + "/" + password + "/2";
 
@@ -160,7 +167,7 @@ public String getToken(String kuwaibaUrl, String username, String password) {
    // create session
    HttpClient client = HttpClient.newHttpClient();
    HttpRequest request = HttpRequest.newBuilder()
-            .timeout(Duration.ofSeconds(10))
+            .timeout(Duration.ofSeconds(timeout))
             .uri(URI.create(requestUrl))
             .header("Content-Type", "application/json")
             .PUT(HttpRequest.BodyPublishers.noBody())
@@ -168,9 +175,9 @@ public String getToken(String kuwaibaUrl, String username, String password) {
 
    try {
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-      System.out.println(response.toString());
+      logger.info(response.toString());
 
-      System.out.println(response.body());
+      logger.info(response.body());
 
       ObjectMapper mapper = new ObjectMapper();
 
@@ -178,11 +185,10 @@ public String getToken(String kuwaibaUrl, String username, String password) {
       JsonNode jsonNode = mapper.readTree(response.body());
       token = jsonNode.get("token").asText();
 
-      System.out.println("token: " + token);
+      logger.info("token: " + token);
 
    } catch  (Exception e) {
-      token = null;
-      e.printStackTrace();
+      logger.error("problem getting token: ", e);
    }
    
    return token;
@@ -197,11 +203,7 @@ public String getToken(String kuwaibaUrl, String username, String password) {
  * @param reportName  the name of the report to retrieve from report list
  * @return the report id or empty string if not found
  */
-public String getReportId(String kuwaibaUrl, String token, String reportName) {
-   
-   if (token == null) {
-      token = getToken(KUWAIBA_URL, USERNAME, PASSWORD);
-   }
+public String getReportId(String kuwaibaUrl, String token, String reportName, Integer timeout) {
 
    String requestUrl = kuwaibaUrl + "/v2.1.1/reports/getInventoryLevelReports/true/" + token;
 
@@ -210,7 +212,7 @@ public String getReportId(String kuwaibaUrl, String token, String reportName) {
    // create session
    HttpClient client = HttpClient.newHttpClient();
    HttpRequest request = HttpRequest.newBuilder()
-            .timeout(Duration.ofSeconds(10))
+            .timeout(Duration.ofSeconds(timeout))
             .uri(URI.create(requestUrl))
             .header("Content-Type", "application/json")
             .GET()
@@ -218,9 +220,9 @@ public String getReportId(String kuwaibaUrl, String token, String reportName) {
 
    try {
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-      System.out.println(response.toString());
+      logger.info(response.toString());
 
-      System.out.println(response.body());
+      logger.info(response.body());
 
       ObjectMapper mapper = new ObjectMapper();
 
@@ -240,8 +242,7 @@ public String getReportId(String kuwaibaUrl, String token, String reportName) {
       }
 
    } catch (Exception e) {
-      token = null;
-      e.printStackTrace();
+      logger.error("problem getting reportId: ", e);
    }
    return reportId;
 }
@@ -257,11 +258,7 @@ public String getReportId(String kuwaibaUrl, String token, String reportName) {
  * @param parameters
  * @return the report output as a String
  */
-public String executeReport(String kuwaibaUrl, String token, String reportId, Map<String, String> parameters) {
-
-   if (token == null) {
-      token = getToken(KUWAIBA_URL, USERNAME, PASSWORD);
-   }
+public String executeReport(String kuwaibaUrl, String token, String reportId, Map<String, String> parameters, Integer timeout) {
 
    String requestUrl = kuwaibaUrl + "/v2.1.1/reports/executeInventoryLevelReport/" + reportId + "/" + token;
 
@@ -281,13 +278,13 @@ public String executeReport(String kuwaibaUrl, String token, String reportId, Ma
 
          ObjectMapper objectMapper = new ObjectMapper();
          jsonString = objectMapper.writeValueAsString(splist);
-         System.out.println("body: " + jsonString);
+         logger.info("body: " + jsonString);
 
       }
       // execute report
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
-               .timeout(Duration.ofSeconds(10))
+               .timeout(Duration.ofSeconds(timeout))
                .uri(URI.create(requestUrl))
                // .header("Content-Type", "application/x-www-form-urlencoded")
                .header("Content-Type", "application/json")
@@ -296,13 +293,12 @@ public String executeReport(String kuwaibaUrl, String token, String reportId, Ma
                .build();
 
       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-      System.out.println(response.toString());
+      logger.info(response.toString());
 
       csvResponse = response.body();
 
    } catch  (Exception e) {
-      token = null;
-      e.printStackTrace();
+      logger.error("problem executing report: ", e);
    }
 
    return csvResponse;
@@ -339,4 +335,4 @@ class StringPair implements Serializable {
          public void setValue(String value) {
              this.value = value;
          }
-      }
+   }
