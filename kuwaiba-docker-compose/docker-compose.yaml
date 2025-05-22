@@ -49,7 +49,7 @@ services:
       - ./container-fs/pris/requisitions:/opt/opennms-pris/requisitions
       - ./container-fs/pris/scriptsteps:/opt/opennms-pris/scriptsteps
       - ./container-fs/pris/requisitions/kuwaiba/kuwaiba.csv:/tmp/pris/kuwaiba/kuwaiba.csv
-      - ./container-fs/pris/requisitions/kuwaiba/kuwaibarequisition.properties:/tmp/pris/kuwaiba/requisition.properties
+      #- ./container-fs/pris/requisitions/kuwaiba/kuwaibarequisition.properties:/tmp/pris/kuwaiba/requisition.properties
     healthcheck:
       test: ["CMD", "curl", "-f", "-I", "http://localhost:8000/documentation/index.html"]
       interval: 30s
