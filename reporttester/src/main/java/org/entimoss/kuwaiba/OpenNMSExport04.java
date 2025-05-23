@@ -48,9 +48,12 @@ public class OpenNMSExport04 { // class omitted from groovy
       }
       
       // If blank or false, the report uses parent location and rack to generate each node name. 
-      // if True it uses only the name of the node given in the model
-      String useAbsoluteNamesStr = parameters.getOrDefault("useAbsoluteNames", "false");
-      Boolean useAbsoluteNames = Boolean.valueOf(useAbsoluteNamesStr);
+      // if true it uses only the name of the node given in the model
+      Boolean useAbsoluteNames = Boolean.valueOf(parameters.getOrDefault("useAbsoluteNames", "false"));
+      
+      // If blank or false, the report only uses ports designated as isManagement. 
+      // If true it uses all addresses assigned to a device and designates port P (primary snmp) or N (Not managed)
+      Boolean useAllPortAddresses = Boolean.valueOf(parameters.getOrDefault("useAllPortAddresses", "false"));
 
       StringBuffer textBuffer = new StringBuffer();
 
@@ -70,7 +73,7 @@ public class OpenNMSExport04 { // class omitted from groovy
       BusinessEntityManager bem = null; //remove injected
       ApplicationEntityManager aem = null; // remove injected
 
-      ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames);
+     ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses);
 
       for (HashMap<String, String> singleCsvlineData : csvLineData) {
 
@@ -108,7 +111,7 @@ public class OpenNMSExport04 { // class omitted from groovy
 
    } // function omitted from groovy
 
-   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem, Boolean useAbsoluteNames) {
+   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem, Boolean useAbsoluteNames, Boolean useAllPortAddresses) {
 
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
@@ -181,12 +184,11 @@ public class OpenNMSExport04 { // class omitted from groovy
 
             for (BusinessObjectLight aPort : commPorts) {
 
+               // not used
                String portStatus = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "state");
-               String isManagement = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "isManagement");
-               boolean isMgt = false;
-               if (isManagement != null && "true".equals(isManagement)) {
-                  isMgt = true;
-               }
+               
+               String isManagementStr = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "isManagement");
+               boolean isManagement =  Boolean.valueOf(isManagementStr);
 
                // We check if there's an IP address associated to the port.
                List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(aPort.getClassName(), aPort.getId(), "ipamHasIpAddress");
@@ -221,7 +223,7 @@ public class OpenNMSExport04 { // class omitted from groovy
                   line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipAddress.getName());
 
                   // if port set as management then set as Primary (P) snmp interface else (N) - not management
-                  line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isMgt ? "P" : "N"));
+                  line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isManagement ? "P" : "N"));
 
                   if (latitude  !=null && !latitude.isEmpty() ) line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude );
                   if (longitude !=null && !longitude.isEmpty()) line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude );
@@ -231,7 +233,13 @@ public class OpenNMSExport04 { // class omitted from groovy
                   } else {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
                   }
-                  csvLineData.add(line);
+                  
+                  // only create a line if useAllPortAddresses is true or if isManagement is true
+                  if (useAllPortAddresses) {
+                      csvLineData.add(line);
+                  } else if (isManagement) {
+                     csvLineData.add(line);
+                  }
                }
             }
 
