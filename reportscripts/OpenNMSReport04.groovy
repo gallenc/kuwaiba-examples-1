@@ -1,8 +1,33 @@
 /**
- * Exports inventory as OpenNMS PRIS CSV format.
+ * Exports inventory of nodes and interface IP addresses as OpenNMS PRIS CSV format.
+ * (see https://docs.opennms.com/pris/latest/ )
  * Entimoss Ltd - version 0.4
- * Parameters: None
+ * Parameters:
+ *    useNodeLabelAsForeignId
+ *    If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
+ *    If true the report uses the generated object label as node foreignId in the requisition.
+ *    
+ *    useAbsoluteNames
+ *    If blank or false, the report uses parent location and rack to generate each node name. 
+ *    if true it uses only the name of the node given in the model
+ *    
+ *    useAllPortAddresses
+ *    If blank or false, the report only uses ports designated as isManagement. (default)
+ *    If true it uses all port addresses assigned to a device and designates the interface snmp-primary P (primary snmp) if isManagment is true
+ *    or N (Not managed) if isManagment is false
+ *    
+ *    defaultAssetCategory
+ *    AssetCategory is populated from device EquipmentModel displayName
+ *    if the displayName is not set then the AssetCategory is set to the defaultAssetCategory or blank if the defaultAssetCategory is not set
+ *    (this can be used in grafana to determine which display template to use)
+ *    
+ *    defaultAssetDisplayCategory
+ *    AssetDisplayCategory is currently not populated from the model
+ *    AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set
+ *    (this can be used in OpenNMS to determine which users can view an object)
+ * 
  * Applies to: TBD
+ * 
  */
 
 //package org.entimoss.kuwaiba; // package omitted from groovy
@@ -47,13 +72,43 @@ for(Entry<String, String> entry : parameters.entrySet()){
    System.out.println("   key: "+entry.getKey()+" value: "+entry.getValue());
 }
 
-// If blank or false, the report uses parent location and rack to generate each node name. 
-// if true it uses only the name of the node given in the model
+      /*
+       * useNodeLabelAsForeignId
+       * If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
+       * If true the report uses the generated object label as node foreignId in the requisition.
+       */
+      Boolean useNodeLabelAsForeignId = Boolean.valueOf(parameters.getOrDefault("useNodeLabelAsForeignId", "false"));
+      
+      /*
+       * useAbsoluteNames
+       * If blank or false, the report uses parent location and rack to generate each node name. 
+       * if true it uses only the name of the node given in the model
+       */
 Boolean useAbsoluteNames = Boolean.valueOf(parameters.getOrDefault("useAbsoluteNames", "false"));
       
-// If blank or false, the report only uses ports designated as isManagement. 
-// If true it uses all addresses assigned to a device and designates port P (primary snmp) or N (Not managed)
+      /*
+       * useAllPortAddresses
+       * If blank or false, the report only uses ports designated as isManagement. (default)
+       * If true it uses all port addresses assigned to a device and designates the interface snmp-primary P (primary snmp) if isManagment is true
+       * or N (Not managed) if isManagment is false
+       */
 Boolean useAllPortAddresses = Boolean.valueOf(parameters.getOrDefault("useAllPortAddresses", "false"));
+
+      /*
+       * defaultAssetCategory
+       * AssetCategory is populated from device EquipmentModel displayName
+       * if the displayName is not set then the AssetCategory is set to the defaultAssetCategory or blank if the defaultAssetCategory is not set
+       * (this can be used in grafana to determine which display template to use)
+       */
+String defaultAssetCategory= parameters.getOrDefault("defaultAssetCategory", "");
+
+      /*
+       * defaultAssetDisplayCategory
+       * AssetDisplayCategory is currently not populated from the model
+       * AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set
+       * (this can be used in OpenNMS to determine which users can view an object)
+       */
+String defaultAssetDisplayCategory= parameters.getOrDefault("defaultAssetDisplayCategory", "");
 
 StringBuffer textBuffer = new StringBuffer();
 
@@ -70,10 +125,10 @@ while (columnIterator.hasNext()) {
 textBuffer.append("\n");
 
 // now populate data lines
-// BusinessEntityManager bem = null; //remove injected
-// ApplicationEntityManager aem = null; // remove injected
+// BusinessEntityManager    bem = null; // remove injected in groovy
+// ApplicationEntityManager aem = null; // remove injected in groovy
 
-ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses);
+ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses, useNodeLabelAsForeignId, defaultAssetCategory,  defaultAssetDisplayCategory);
 
 for (HashMap<String, String> singleCsvlineData : csvLineData) {
    
@@ -111,7 +166,8 @@ return report;
 
 // }  // function omitted from groovy
 
-   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem, Boolean useAbsoluteNames, Boolean useAllPortAddresses) {
+   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
+             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory) {
    
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
@@ -144,6 +200,7 @@ return report;
          for (BusinessObject device : devices) {
 
             String name = device.getName().strip().replaceAll(" ", "_");
+            String deviceId = device.getId();
 
             String latitude = "";
             String longitude = "";
@@ -158,8 +215,6 @@ return report;
                if(equipmentModelId!=null) {
                    BusinessObject equipmentModel = aem.getListTypeItem(Constants.CLASS_EQUIPMENTMODEL, equipmentModelId);
                    deviceEquipmentDisplayName = (String) equipmentModel.getAttributes().get(Constants.PROPERTY_DISPLAY_NAME);
-                //   System.out.println("************ equipmentModel "+equipmentModel);
-                //   System.out.println("************ equipmentModel attributes "+equipmentModel.getAttributes());
                }
                
                // get the first parent location of each device for latitude/longitude
@@ -211,16 +266,24 @@ return report;
                   
                   // sets asset category which determines which panel is displayed in grafana
                   if(deviceEquipmentDisplayName==null || deviceEquipmentDisplayName.isEmpty()) {
-                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, "generic-1");
+                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, defaultAssetCategory);
                   } else {
                      line.put(OnmsRequisitionConstants.ASSET_CATEGORY, deviceEquipmentDisplayName);
                   }
                   
-                  // sets display category which determines which customer - needs tied to service
-                  line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, "Customer2");
+                  // sets display category which determines customer - TODO needs tied to service
+                  line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, defaultAssetDisplayCategory );
                   
                   line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
-                  line.put(OnmsRequisitionConstants.ID_, nodename);
+                  
+                  // sets the foreignId 
+                  if (useNodeLabelAsForeignId) {
+                     line.put(OnmsRequisitionConstants.ID_, nodename);
+                  } else {
+                     line.put(OnmsRequisitionConstants.ID_, deviceId);
+                  }
+                  
+                  // sets the management address of the device
                   line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipAddress.getName());
                   
                   // if port set as management then set as Primary (P) snmp interface else (N) - not management
@@ -229,6 +292,7 @@ return report;
                   if (latitude  !=null && !latitude.isEmpty() ) line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude );
                   if (longitude !=null && !longitude.isEmpty()) line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude );
                   
+                  // set the location of the minion monitoring this interface based on the 'folder' containing this address
                   if (addresslookup.containsKey(ipAddress.getName())) {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION,addresslookup.get(ipAddress.getName()));
                   } else {
