@@ -79,7 +79,7 @@ Report Tester is a maven project to help build and test groovy scripts against t
 
 Provisioning integration server now uses a rest api to get the CSV report from kuwaiba.
 
-Make a call to should show requisition file http://localhost:8000/requisitions/kuwaiba
+Make a call to should show requisition file [http://localhost:8020/requisitions/kuwaiba](http://localhost:8020/requisitions/kuwaiba)
 
 
 

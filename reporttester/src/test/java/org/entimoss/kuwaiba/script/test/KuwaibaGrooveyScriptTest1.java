@@ -1,4 +1,4 @@
-package org.entimoss.kuwaiba.test;
+package org.entimoss.kuwaiba.script.test;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

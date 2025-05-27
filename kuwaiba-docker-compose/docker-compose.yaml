@@ -43,8 +43,8 @@ services:
       kuwaiba-net:
         ipv4_address: 172.30.0.55
 
-  pris:
-    container_name: pris
+  pris-kuwaiba:
+    container_name: pris-kuwaiba
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-pris}:${PRIS_VERSION:-latest}
     environment:
       - TZ=Europe/Berlin
@@ -61,7 +61,7 @@ services:
       timeout: 5s
       retries: 1
     ports:
-      - "8000:8000"
+      - "8020:8000"
     networks:
       kuwaiba-net:
         ipv4_address: 172.30.0.35

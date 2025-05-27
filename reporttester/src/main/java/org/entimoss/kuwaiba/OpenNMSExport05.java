@@ -25,6 +25,17 @@
  *    AssetDisplayCategory is currently not populated from the model
  *    AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set
  *    (this can be used in OpenNMS to determine which users can view an object)
+ *    
+ *    subnetNetSubstitutionFilter
+ *    Substitutes the network portion of the inputIpv4Address for the network portion of the substitute address
+ *    if the address being filtered is within the inside subnet range.
+ *    If null or empty, then the address is passed through unchanged.
+ *    For example:
+ *                                        <inside subnet>=<substitute subnet>
+ *       String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.0.0/24"
+ *       if the input inputIpv4AddressStr = "172.16.105.20"
+ *       the substitute is  substituteAddressStr= "192.168.105.20
+
  * 
  * Applies to: TBD
  * 
@@ -53,7 +64,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class OpenNMSExport04 { // class omitted from groovy
+public class OpenNMSExport05 { // class omitted from groovy
 
    InventoryReport returnReport() { // function omitted from groovy
 
@@ -110,6 +121,17 @@ public class OpenNMSExport04 { // class omitted from groovy
        */
       String defaultAssetDisplayCategory= parameters.getOrDefault("defaultAssetDisplayCategory", "");
       
+      /*
+       * subnetNetSubstitutionFilterStr
+       * substitutes the network portion of the inputIpv4Address for the network portion of the substitute address
+       * For example:
+       *                                 <inside subnet>=<substitute subnet>
+       *  String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.0.0/24";
+       *  String inputIpv4AddressStr = "172.16.105.20";
+       *  String substituteAddressStr= "192.168.105.20
+       */ 
+      String subnetNetSubstitutionFilterStr= parameters.getOrDefault("subnetNetSubstitutionFilter", "");
+
       StringBuffer textBuffer = new StringBuffer();
 
       // create CSV headerline
