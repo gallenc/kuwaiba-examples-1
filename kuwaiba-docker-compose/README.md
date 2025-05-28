@@ -56,7 +56,7 @@ docker compose down -v
 # Creating a zip of your own model.
 
 You can export/backup any changes to your own model as data.zip from a running container by zipping the /data folder in a running kuwaiba container.
-The followng commands will do this for a running project without logging into the container.
+The following commands will do this for a running project without logging into the container.
 
 ```
 # creates a zip of the data inside the container

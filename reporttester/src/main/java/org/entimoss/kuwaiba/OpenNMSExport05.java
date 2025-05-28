@@ -79,7 +79,9 @@ public class OpenNMSExport05 { // class omitted from groovy
 
       System.out.println("Start of "+title+" Version "+version+" Author "+author);
       
-      Map<String, String> parameters = new HashMap<>(); // remove - parameters are injected
+      BusinessEntityManager    bem = null; // remove injected in groovy
+      ApplicationEntityManager aem = null; // remove injected in groovy
+      Map<String, String> parameters = new HashMap<>(); // remove - parameters are injected in groovy
       
       System.out.println("opennms export report parameters :");
       for(Entry<String, String> entry : parameters.entrySet()){
@@ -133,7 +135,7 @@ public class OpenNMSExport05 { // class omitted from groovy
        *  String inputIpv4AddressStr = "172.16.105.20";
        *  String substituteAddressStr= "192.168.105.20
        */ 
-      String subnetNetSubstitutionFilterStr= parameters.getOrDefault("subnetNetSubstitutionFilter", "");
+      String subnetNetSubstitutionFilter= parameters.getOrDefault("subnetNetSubstitutionFilter", "");
 
       StringBuffer textBuffer = new StringBuffer();
 
@@ -150,10 +152,7 @@ public class OpenNMSExport05 { // class omitted from groovy
       textBuffer.append("\n");
 
       // now populate data lines
-      BusinessEntityManager    bem = null; // remove injected in groovy
-      ApplicationEntityManager aem = null; // remove injected in groovy
-
-      ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses, useNodeLabelAsForeignId, defaultAssetCategory,  defaultAssetDisplayCategory);
+      ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses, useNodeLabelAsForeignId, defaultAssetCategory, defaultAssetDisplayCategory, subnetNetSubstitutionFilter);
 
       for (HashMap<String, String> singleCsvlineData : csvLineData) {
 
@@ -192,7 +191,7 @@ public class OpenNMSExport05 { // class omitted from groovy
    } // function omitted from groovy
 
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
-             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory) {
+             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory, String subnetNetSubstitutionFilter) {
 
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
@@ -283,10 +282,19 @@ public class OpenNMSExport05 { // class omitted from groovy
 
                   HashMap<String, String> line = new HashMap<String, String>();
                   
+                  // use node name derived from containment hierarchy OR use the given node name
                   String nodename = locationName+"_"+rackName+"_"+name;
                   if(useAbsoluteNames){
                      nodename=name;
                   } 
+                  line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
+                  
+                  // sets the foreignId 
+                  if (useNodeLabelAsForeignId) {
+                     line.put(OnmsRequisitionConstants.ID_, nodename);
+                  } else {
+                     line.put(OnmsRequisitionConstants.ID_, deviceId);
+                  }
                   
                   // sets asset category which determines which panel is displayed in grafana
                   if(deviceEquipmentDisplayName==null || deviceEquipmentDisplayName.isEmpty()) {
@@ -297,20 +305,16 @@ public class OpenNMSExport05 { // class omitted from groovy
                   
                   // sets display category which determines customer - TODO needs tied to service
                   line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, defaultAssetDisplayCategory );
-                  
-                  line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
-                  
-                  // sets the foreignId 
-                  if (useNodeLabelAsForeignId) {
-                     line.put(OnmsRequisitionConstants.ID_, nodename);
-                  } else {
-                     line.put(OnmsRequisitionConstants.ID_, deviceId);
-                  }
-                  
-                  // sets the management address of the device
-                  line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipAddress.getName());
 
-                  // if port set as management then set as Primary (P) snmp interface else (N) - not management
+                  // sets the management address of the device
+                  // this can be a derived address to emulate multiple address spaces
+                  String ipManagement = ipAddress.getName();
+                  if (subnetNetSubstitutionFilter != null && ! subnetNetSubstitutionFilter.isEmpty()) {
+                     ipManagement = IpV4Cidr.subnetIpv4Substitution(subnetNetSubstitutionFilter, ipAddress.getName());
+                  }
+                  line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipManagement);
+
+                  // if port set as isManagement then set as Primary (P) snmp interface else (N) - not management
                   line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isManagement ? "P" : "N"));
 
                   if (latitude  !=null && !latitude.isEmpty() ) line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude );
@@ -323,7 +327,7 @@ public class OpenNMSExport05 { // class omitted from groovy
                      line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
                   }
                   
-                  // only create a line if useAllPortAddresses is true or if isManagement is true
+                  // only create a line if useAllPortAddresses is true or if isManagement is true for the port
                   if (useAllPortAddresses) {
                       csvLineData.add(line);
                   } else if (isManagement) {
@@ -584,12 +588,13 @@ public class OpenNMSExport05 { // class omitted from groovy
          String ipAddressString = parts[0];
 
          // use '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' because groovy cant parse $ in  "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$" 
-         String regex = "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$";
+         String regex = "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$"; //change for groovy
 
          Pattern pattern = Pattern.compile(regex);
          Matcher matcher = pattern.matcher(ipAddressString);
-         if (!matcher.matches())
+         if (!matcher.matches()) {
             throw new IllegalArgumentException("invalid ip v4 address: " + ipAddressString);
+         }
 
          try {
             if (parts.length > 2)
