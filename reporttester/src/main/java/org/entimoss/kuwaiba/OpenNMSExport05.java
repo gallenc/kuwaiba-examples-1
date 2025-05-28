@@ -28,16 +28,20 @@
  *    
  *    subnetNetSubstitutionFilter
  *    Substitutes the network portion of the inputIpv4Address for the network portion of the substitute address
- *    if the address being filtered is within the inside subnet range.
+ *    if the address being filtered is within the within subnet range.
  *    If null or empty, then the address is passed through unchanged.
  *    For example:
- *                                        <inside subnet>=<substitute subnet>
+ *                                        <within subnet>=<substitute subnet>
  *       String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24"
  *       if the input inputIpv4AddressStr = "172.16.105.20"
  *       the substitute is  substituteAddressStr= "192.168.105.20
 
  * 
  * Applies to: TBD
+ * 
+ * Notes - todo
+ * LOG.warn should be LOG.debug if debugging is enabled
+ * Refactor so script calls classes with static loggers etc
  * 
  */
 
@@ -67,7 +71,12 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+
 public class OpenNMSExport05 { // class omitted from groovy
+   static Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport");  // remove static in groovy
 
    InventoryReport returnReport() { // function omitted from groovy
 
@@ -77,15 +86,15 @@ public class OpenNMSExport05 { // class omitted from groovy
       String version = "0.5";
       String author = "Craig Gallen";
 
-      System.out.println("Start of "+title+" Version "+version+" Author "+author);
+      LOG.info("Start of "+title+" Version "+version+" Author "+author);
       
       BusinessEntityManager    bem = null; // remove injected in groovy
       ApplicationEntityManager aem = null; // remove injected in groovy
       Map<String, String> parameters = new HashMap<>(); // remove - parameters are injected in groovy
       
-      System.out.println("opennms export report parameters :");
+      LOG.info("opennms export report parameters :");
       for(Entry<String, String> entry : parameters.entrySet()){
-         System.out.println("   key: "+entry.getKey()+" value: "+entry.getValue());
+         LOG.info("   key: "+entry.getKey()+" value: "+entry.getValue());
       }
       
       /*
@@ -130,7 +139,7 @@ public class OpenNMSExport05 { // class omitted from groovy
        * subnetNetSubstitutionFilterStr
        * substitutes the network portion of the inputIpv4Address for the network portion of the substitute address
        * For example:
-       *                                 <inside subnet>=<substitute subnet>
+       *                                   <within subnet>=<substitute subnet>
        *  String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24";
        *  String inputIpv4AddressStr = "172.16.105.20";
        *  String substituteAddressStr= "192.168.105.20
@@ -182,7 +191,7 @@ public class OpenNMSExport05 { // class omitted from groovy
       // return a RawReport containing csv
       InventoryReport report = new RawReport(title, author, version, textBuffer.toString());
 
-      System.out.println("End of "+title);
+      LOG.info("End of "+title);
  
       return report;
 
@@ -193,6 +202,8 @@ public class OpenNMSExport05 { // class omitted from groovy
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
              Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory, String subnetNetSubstitutionFilter) {
 
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+      
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
 
@@ -215,7 +226,7 @@ public class OpenNMSExport05 { // class omitted from groovy
                addresslookup.put(address, folderName);
             }
          }
-         System.out.println("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
+         LOG.warn("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
          // Next we get all active network devices
          devices = bem.getObjectsOfClass("GenericCommunicationsElement", -1);
@@ -232,7 +243,7 @@ public class OpenNMSExport05 { // class omitted from groovy
             String deviceEquipmentDisplayName="";
             try {
                
-               System.out.println("************ attributes :"+device.getAttributes());
+               LOG.warn("************ attributes :"+device.getAttributes());
                
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
                if(equipmentModelId!=null) {
@@ -278,7 +289,7 @@ public class OpenNMSExport05 { // class omitted from groovy
 
                   // need to know the subnet of the ip address to get the location
                   List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
-                  System.out.println("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
+                  LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
                   HashMap<String, String> line = new HashMap<String, String>();
                   
@@ -345,10 +356,12 @@ public class OpenNMSExport05 { // class omitted from groovy
    }
 
    void printFolderAddresses(HashMap<String, ArrayList<String>> folderAddresses) {
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
       for (String folderName : folderAddresses.keySet()) {
          ArrayList<String> addresses = folderAddresses.get(folderName);
          for (String address : addresses) {
-            System.out.println("Folder: '" + folderName + "' Address: '" + address + "'");
+            LOG.warn("Folder: '" + folderName + "' Address: '" + address + "'");
          }
       }
    }
@@ -356,8 +369,10 @@ public class OpenNMSExport05 { // class omitted from groovy
    void poolLookup(List<InventoryObjectPool> topFolderPoolList, BusinessEntityManager bem, String ipType, HashMap<String, ArrayList<String>> folderAddresses)
             throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
       for (InventoryObjectPool topFolderPool : topFolderPoolList) {
-         System.out.println("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
+         LOG.warn("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
 
          // Look up subnets
          List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
@@ -369,7 +384,7 @@ public class OpenNMSExport05 { // class omitted from groovy
 
          // Look up Individual ip addresses in folder
          List<BusinessObjectLight> ipaddressesInFolder = bem.getPoolItemsByClassName(topFolderPool.getId(), Constants.CLASS_IP_ADDRESS, 0, 50);
-         System.out.println("individual ipaddressesInFolder " + ipaddressesInFolder);
+         LOG.warn("individual ipaddressesInFolder " + ipaddressesInFolder);
 
          for (BusinessObjectLight ip : ipaddressesInFolder) {
             addresses.add(ip.getName());
@@ -387,7 +402,9 @@ public class OpenNMSExport05 { // class omitted from groovy
    void subnetLookup(List<BusinessObjectLight> subnetsList, BusinessEntityManager bem, String ipType, ArrayList<String> addresses) throws ApplicationObjectNotFoundException,
             InvalidArgumentException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
-      System.out.println("subnetLookup subnetsList " + subnetsList);
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
+      LOG.warn("subnetLookup subnetsList " + subnetsList);
 
       for (BusinessObjectLight subnet : subnetsList) {
 
@@ -409,7 +426,7 @@ public class OpenNMSExport05 { // class omitted from groovy
             addresses.add(ip.getName());
          }
 
-         System.out.println("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
+         LOG.warn("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
       }
 
    }
@@ -460,6 +477,8 @@ public class OpenNMSExport05 { // class omitted from groovy
     */
    // remove static class in groovy
    public static class IpV4Cidr {
+      static Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
 
       private String ipv4WithCidrString;
       private InetAddress netMask;
@@ -534,17 +553,17 @@ public class OpenNMSExport05 { // class omitted from groovy
 
          try {
             byte[] testAddressBytes = testAddress.getAddress();
-            //System.out.println("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
-            //System.out.println("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
+            //LOG.warn("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
+            //LOG.warn("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
 
             byte[] testAddressNetworkBytes = andByteArrays(testAddressBytes, netMaskBytes);
 
-            //System.out.println("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
-            //System.out.println("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
+            //LOG.warn("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
+            //LOG.warn("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
 
             byte[] xor = xorByteArrays(networkAddressBytes, testAddressNetworkBytes);
 
-            //System.out.println("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
+            //LOG.warn("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
 
             for (int x = 0; x < xor.length; x++) {
                if (xor[x] != 0) {
@@ -683,6 +702,8 @@ public class OpenNMSExport05 { // class omitted from groovy
        * @return substituteAddressStr
        */
       public static String subnetIpv4Substitution(String subnetNetSubstitutionFilterStr, String inputIpv4AddressStr) {
+         
+         
          String substituteAddressStr = "";
 
          IpV4Cidr ipV4Address = null;
@@ -690,7 +711,7 @@ public class OpenNMSExport05 { // class omitted from groovy
          IpV4Cidr substituteSubnet = null;
          
          if(subnetNetSubstitutionFilterStr==null || subnetNetSubstitutionFilterStr.isEmpty()) {
-            System.out.println("no subnetNetSubstitutionFilter provided. Passing address unchanged");
+            LOG.warn("no subnetNetSubstitutionFilter provided. Passing address unchanged");
             return inputIpv4AddressStr;
          }
 
@@ -704,9 +725,9 @@ public class OpenNMSExport05 { // class omitted from groovy
             substituteSubnet = new IpV4Cidr(parts[1]);
             ipV4Address = new IpV4Cidr(inputIpv4AddressStr);
 
-            //System.out.println("\n ipAddress = " + ipV4Address);
-            //System.out.println("\n insideSubnet = " + insideSubnet);
-            //System.out.println("\n substituteSubnet = " + substituteSubnet);
+            //LOG.warn("\n ipAddress = " + ipV4Address);
+            //LOG.warn("\n insideSubnet = " + insideSubnet);
+            //LOG.warn("\n substituteSubnet = " + substituteSubnet);
 
             if (insideSubnet.networkContainsAddress(ipV4Address.getIpAddress())) {
                
@@ -722,10 +743,10 @@ public class OpenNMSExport05 { // class omitted from groovy
                
                substituteAddressStr = substitueAddress.getHostAddress();
                
-               //System.out.println("subnet contains address using substitute address string" + substituteAddressStr);
+               //LOG.warn("subnet contains address using substitute address string" + substituteAddressStr);
             } else {
                substituteAddressStr = inputIpv4AddressStr;
-               //System.out.println("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
+               //LOG.warn("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
 
             }
 

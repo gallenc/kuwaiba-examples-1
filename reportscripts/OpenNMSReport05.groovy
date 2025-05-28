@@ -39,6 +39,9 @@
  * 
  * Applies to: TBD
  *
+ * Notes
+ * LOG.warn should be LOG.debug if debugging is enabled
+ * 
  */
 
 //package org.entimoss.kuwaiba; // package omitted from groovy
@@ -67,7 +70,12 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 // public class OpenNMSExport05 { // class omitted from groovy
+
+Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // remove static in groovy
 
 // InventoryReport returnReport() { // function omitted from groovy
 
@@ -77,15 +85,15 @@ String title = "OpenNMSInventoryExport";
 String version = "0.5";
 String author = "Craig Gallen";
 
-System.out.println("Start of "+title+" Version "+version+" Author "+author);
+LOG.info("Start of "+title+" Version "+version+" Author "+author);
 
 // BusinessEntityManager    bem = null; // remove injected in groovy
 // ApplicationEntityManager aem = null; // remove injected in groovy
 // Map<String, String> parameters = new HashMap<>(); // remove - parameters are injected in groovy
 
-System.out.println("opennms export report parameters :");
+LOG.info("opennms export report parameters :");
 for(Entry<String, String> entry : parameters.entrySet()){
-   System.out.println("   key: "+entry.getKey()+" value: "+entry.getValue());
+   LOG.info("   key: "+entry.getKey()+" value: "+entry.getValue());
 }
 
 /*
@@ -182,7 +190,7 @@ for (HashMap<String, String> singleCsvlineData : csvLineData) {
 // return a RawReport containing csv
 InventoryReport report = new RawReport(title, author, version, textBuffer.toString());
 
-System.out.println("End of "+title);
+      LOG.info("End of "+title);
 
 return report;
  
@@ -193,6 +201,8 @@ return report;
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
              Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory, String subnetNetSubstitutionFilter) {
    
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+      
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
       List<BusinessObject> devices;
 
@@ -216,7 +226,7 @@ return report;
                addresslookup.put(address, folderName);
             }
          }
-         System.out.println("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
+         LOG.debug("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
          // Next we get all active network devices
          devices = bem.getObjectsOfClass("GenericCommunicationsElement", -1);
@@ -233,7 +243,7 @@ return report;
             String deviceEquipmentDisplayName="";
             try {
                
-               System.out.println("************ attributes :"+device.getAttributes());
+               LOG.debug("************ attributes :"+device.getAttributes());
 
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
                if(equipmentModelId!=null) {
@@ -279,7 +289,7 @@ return report;
 
                   // need to know the subnet of the ip address to get the location
                   List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
-                  System.out.println("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
+                  LOG.debug("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
                   HashMap<String, String> line = new HashMap<String, String>();
                   
@@ -346,10 +356,12 @@ return report;
    }
 
   void printFolderAddresses(HashMap<String,ArrayList<String>> folderAddresses){
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
       for (String folderName : folderAddresses.keySet()) {
          ArrayList<String> addresses = folderAddresses.get(folderName);
          for (String address : addresses) {
-            System.out.println("Folder: '"+folderName+"' Address: '"+address+"'");
+            LOG.debug("Folder: '" + folderName + "' Address: '" + address + "'");
          }
       }
    }
@@ -357,8 +369,10 @@ return report;
    void poolLookup(List<InventoryObjectPool> topFolderPoolList, BusinessEntityManager bem, String ipType, HashMap<String,ArrayList<String>> folderAddresses )
             throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
       for (InventoryObjectPool topFolderPool : topFolderPoolList) {
-         System.out.println("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
+         LOG.debug("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
 
          // Look up subnets
          List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
@@ -370,7 +384,7 @@ return report;
 
          // Look up Individual ip addresses in folder
          List<BusinessObjectLight> ipaddressesInFolder = bem.getPoolItemsByClassName(topFolderPool.getId(), Constants.CLASS_IP_ADDRESS, 0, 50);
-         System.out.println("individual ipaddressesInFolder " + ipaddressesInFolder);
+         LOG.debug("individual ipaddressesInFolder " + ipaddressesInFolder);
          
          for(BusinessObjectLight ip : ipaddressesInFolder) {
             addresses.add(ip.getName());
@@ -388,7 +402,9 @@ return report;
    void subnetLookup(List<BusinessObjectLight> subnetsList, BusinessEntityManager bem, String ipType, ArrayList<String> addresses ) throws ApplicationObjectNotFoundException,
             InvalidArgumentException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
-      System.out.println("subnetLookup subnetsList " + subnetsList);
+      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
+      LOG.debug("subnetLookup subnetsList " + subnetsList);
 
       for (BusinessObjectLight subnet : subnetsList) {
 
@@ -410,8 +426,7 @@ return report;
             addresses.add(ip.getName());
          }
 
-         
-         System.out.println("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
+         LOG.debug("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
       }
 
    }
@@ -462,6 +477,7 @@ class OnmsRequisitionConstants {
  */
 //remove static class in groovy
 public class IpV4Cidr {
+   static Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
 
    private String ipv4WithCidrString;
    private InetAddress netMask;
@@ -537,17 +553,17 @@ public class IpV4Cidr {
 
       try {
          byte[] testAddressBytes = testAddress.getAddress();
-         //System.out.println("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
-         //System.out.println("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
+            //LOG.debug("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
+            //LOG.debug("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
 
          byte[] testAddressNetworkBytes = andByteArrays(testAddressBytes, netMaskBytes);
 
-         //System.out.println("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
-         //System.out.println("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
+            //LOG.debug("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
+            //LOG.debug("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
 
          byte[] xor = xorByteArrays(networkAddressBytes, testAddressNetworkBytes);
 
-         //System.out.println("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
+            //LOG.debug("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
 
          for (int x = 0; x < xor.length; x++) {
             if (xor[x] != 0) {
@@ -596,7 +612,7 @@ public class IpV4Cidr {
       Pattern pattern = Pattern.compile(regex);
       Matcher matcher = pattern.matcher(ipAddressString);
       if (!matcher.matches()) {
-         throw new IllegalArgumentException("invalid ip v4 address: " + ipAddressString);
+            throw new IllegalArgumentException("invalid ip v4 address: " + ipAddressString);
       }
 
       try {
@@ -693,7 +709,7 @@ public class IpV4Cidr {
       IpV4Cidr substituteSubnet = null;
 
       if(subnetNetSubstitutionFilterStr==null || subnetNetSubstitutionFilterStr.isEmpty()) {
-         System.out.println("no subnetNetSubstitutionFilter provided. Passing address unchanged");
+         LOG.debug("no subnetNetSubstitutionFilter provided. Passing address unchanged");
          return inputIpv4AddressStr;
       }
 
@@ -707,9 +723,9 @@ public class IpV4Cidr {
          substituteSubnet = new IpV4Cidr(parts[1]);
          ipV4Address = new IpV4Cidr(inputIpv4AddressStr);
 
-         //System.out.println("\n ipAddress = " + ipV4Address);
-         //System.out.println("\n insideSubnet = " + insideSubnet);
-         //System.out.println("\n substituteSubnet = " + substituteSubnet);
+         //LOG.debug("\n ipAddress = " + ipV4Address);
+         //LOG.debug("\n insideSubnet = " + insideSubnet);
+         //LOG.debug("\n substituteSubnet = " + substituteSubnet);
 
          if (insideSubnet.networkContainsAddress(ipV4Address.getIpAddress())) {
             
@@ -725,10 +741,10 @@ public class IpV4Cidr {
             
             substituteAddressStr = substitueAddress.getHostAddress();
             
-            //System.out.println("subnet contains address using substitute address string" + substituteAddressStr);
+            //LOG.debug("subnet contains address using substitute address string" + substituteAddressStr);
          } else {
             substituteAddressStr = inputIpv4AddressStr;
-            //System.out.println("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
+            //LOG.debug("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
 
          }
 
