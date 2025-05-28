@@ -29,7 +29,7 @@ public class GrooveyScriptTestBase {
 
    @Test
    public void baseTest() throws IOException, InvalidArgumentException {
-      System.out.println("running baseTest");
+      System.out.println("Running baseTest");
       
       String testFile="./GrooveyScripts/BaseTest.groovy";
       
@@ -48,7 +48,7 @@ public class GrooveyScriptTestBase {
       
       System.out.println("Result of script execution\n"+str);
       
-      System.out.println("end of baseTest");
+      System.out.println("End of baseTest");
    }
 
    // adapted from org.neotropic.kuwaiba.core.persistence.reference.neo4j.BusinessEntityManagerImpl
@@ -69,6 +69,11 @@ public class GrooveyScriptTestBase {
           
           try {
               GroovyShell shell = new GroovyShell(GrooveyScriptTestBase.class.getClassLoader(), environmentParameters);
+              
+              System.out.println("Parsing test script");
+              shell.parse(reportgroovyscript);
+              
+              System.out.println("Script parsed successfully. Evaluating test script");
               Object theResult = shell.evaluate(reportgroovyscript);
               
               if (theResult == null)

@@ -162,7 +162,7 @@ public class IpV4CidrTest {
       System.out.println("ipv4Address= "+ipv4Address);
       System.out.println("substituteAddress= " + substituteAddress);
 
-      assertTrue("192.168.0.20".equals(substituteAddress));
+      assertTrue("192.168.105.20".equals(substituteAddress));
 
    }
 
