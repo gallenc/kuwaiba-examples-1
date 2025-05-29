@@ -40,7 +40,7 @@
  * Applies to: TBD
  *
  * Notes
- * LOG.warn should be LOG.debug if debugging is enabled
+ * TODO LOG.warn should be LOG.debug if debugging is enabled
  * 
  */
 
@@ -226,7 +226,7 @@ return report;
                addresslookup.put(address, folderName);
             }
          }
-         LOG.debug("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
+         LOG.warn("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
          // Next we get all active network devices
          devices = bem.getObjectsOfClass("GenericCommunicationsElement", -1);
@@ -243,7 +243,7 @@ return report;
             String deviceEquipmentDisplayName="";
             try {
                
-               LOG.debug("************ attributes :"+device.getAttributes());
+               LOG.warn("************ attributes :"+device.getAttributes());
 
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
                if(equipmentModelId!=null) {
@@ -289,7 +289,7 @@ return report;
 
                   // need to know the subnet of the ip address to get the location
                   List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
-                  LOG.debug("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
+                  LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
                   HashMap<String, String> line = new HashMap<String, String>();
                   
@@ -361,7 +361,7 @@ return report;
       for (String folderName : folderAddresses.keySet()) {
          ArrayList<String> addresses = folderAddresses.get(folderName);
          for (String address : addresses) {
-            LOG.debug("Folder: '" + folderName + "' Address: '" + address + "'");
+            LOG.warn("Folder: '" + folderName + "' Address: '" + address + "'");
          }
       }
    }
@@ -372,7 +372,7 @@ return report;
       Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
 
       for (InventoryObjectPool topFolderPool : topFolderPoolList) {
-         LOG.debug("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
+         LOG.warn("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
 
          // Look up subnets
          List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
@@ -384,7 +384,7 @@ return report;
 
          // Look up Individual ip addresses in folder
          List<BusinessObjectLight> ipaddressesInFolder = bem.getPoolItemsByClassName(topFolderPool.getId(), Constants.CLASS_IP_ADDRESS, 0, 50);
-         LOG.debug("individual ipaddressesInFolder " + ipaddressesInFolder);
+         LOG.warn("individual ipaddressesInFolder " + ipaddressesInFolder);
          
          for(BusinessObjectLight ip : ipaddressesInFolder) {
             addresses.add(ip.getName());
@@ -404,7 +404,7 @@ return report;
 
       Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
 
-      LOG.debug("subnetLookup subnetsList " + subnetsList);
+      LOG.warn("subnetLookup subnetsList " + subnetsList);
 
       for (BusinessObjectLight subnet : subnetsList) {
 
@@ -426,7 +426,7 @@ return report;
             addresses.add(ip.getName());
          }
 
-         LOG.debug("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
+         LOG.warn("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
       }
 
    }
@@ -553,17 +553,17 @@ public class IpV4Cidr {
 
       try {
          byte[] testAddressBytes = testAddress.getAddress();
-            //LOG.debug("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
-            //LOG.debug("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
+            //LOG.warn("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
+            //LOG.warn("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
 
          byte[] testAddressNetworkBytes = andByteArrays(testAddressBytes, netMaskBytes);
 
-            //LOG.debug("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
-            //LOG.debug("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
+            //LOG.warn("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
+            //LOG.warn("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
 
          byte[] xor = xorByteArrays(networkAddressBytes, testAddressNetworkBytes);
 
-            //LOG.debug("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
+            //LOG.warn("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
 
          for (int x = 0; x < xor.length; x++) {
             if (xor[x] != 0) {
@@ -709,7 +709,7 @@ public class IpV4Cidr {
       IpV4Cidr substituteSubnet = null;
 
       if(subnetNetSubstitutionFilterStr==null || subnetNetSubstitutionFilterStr.isEmpty()) {
-         LOG.debug("no subnetNetSubstitutionFilter provided. Passing address unchanged");
+         LOG.warn("no subnetNetSubstitutionFilter provided. Passing address unchanged");
          return inputIpv4AddressStr;
       }
 
@@ -723,9 +723,9 @@ public class IpV4Cidr {
          substituteSubnet = new IpV4Cidr(parts[1]);
          ipV4Address = new IpV4Cidr(inputIpv4AddressStr);
 
-         //LOG.debug("\n ipAddress = " + ipV4Address);
-         //LOG.debug("\n insideSubnet = " + insideSubnet);
-         //LOG.debug("\n substituteSubnet = " + substituteSubnet);
+         //LOG.warn("\n ipAddress = " + ipV4Address);
+         //LOG.warn("\n insideSubnet = " + insideSubnet);
+         //LOG.warn("\n substituteSubnet = " + substituteSubnet);
 
          if (insideSubnet.networkContainsAddress(ipV4Address.getIpAddress())) {
             
@@ -741,10 +741,10 @@ public class IpV4Cidr {
             
             substituteAddressStr = substitueAddress.getHostAddress();
             
-            //LOG.debug("subnet contains address using substitute address string" + substituteAddressStr);
+            //LOG.warn("subnet contains address using substitute address string" + substituteAddressStr);
          } else {
             substituteAddressStr = inputIpv4AddressStr;
-            //LOG.debug("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
+            //LOG.warn("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
 
          }
 
