@@ -41,7 +41,6 @@
  *
  * Notes - todo
  * LOG.warn should be LOG.debug if debugging is enabled
- * Refactor so script calls classes with static loggers etc
  * 
  */
 

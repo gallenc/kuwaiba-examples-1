@@ -41,7 +41,6 @@
  * 
  * Notes - todo
  * LOG.warn should be LOG.debug if debugging is enabled
- * Refactor so script calls classes with static loggers etc
  * 
  */
 
@@ -243,7 +242,7 @@ public class OpenNMSExport06 {
 
          for (BusinessObject device : devices) {
 
-            String name = device.getName().strip().replaceAll(" ", "_");
+            String name = device.getName().strip().replace(" ", "_");
             String deviceId = device.getId();
 
             String latitude = "";
@@ -269,7 +268,7 @@ public class OpenNMSExport06 {
                // get the first parent location of each device for latitude/longitude
                BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
                if (location != null && location.getName() != null) {
-                  locationName = location.getName().strip().replaceAll(" ", "_");
+                  locationName = location.getName().strip().replace(" ", "_");
                   latitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "latitude");
                   longitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "longitude");
                }
@@ -293,7 +292,7 @@ public class OpenNMSExport06 {
                // get the first rack containing each device for rackName
                BusinessObject rack = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "Rack");
                if (rack != null && rack.getName() != null) {
-                  rackName = rack.getName().strip().replaceAll(" ", "_");
+                  rackName = rack.getName().strip().replace(" ", "_");
 
                   // if there is no service with customer name associated with the device then try to use the service associated with the parent rack
                   if ("NOT_ASSIGNED".equals(serviceName)) {
@@ -368,7 +367,7 @@ public class OpenNMSExport06 {
 
                   // sets display category which indicates customer
                   String cName= "NOT_ASSIGNED".equals(customerName) ? defaultAssetDisplayCategory : customerName ;
-                  cName.replace(" ","_");
+                  cName= cName.replace(" ","_");
                   line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, cName  );
                   
                   line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_ID, customerId.replace(" ","_"));
@@ -441,7 +440,7 @@ public class OpenNMSExport06 {
          List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
 
          ArrayList<String> addresses = new ArrayList<String>();
-         folderAddresses.put(topFolderPool.getName().strip().replaceAll(" ", "_"), addresses);
+         folderAddresses.put(topFolderPool.getName().strip().replace(" ", "_"), addresses);
 
          subnetLookup(subnetsInfolder, bem, ipType, addresses);
 
