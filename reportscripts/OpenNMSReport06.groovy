@@ -36,12 +36,12 @@
  *       if the input inputIpv4AddressStr = "172.16.105.20"
  *       the substitute is  substituteAddressStr= "192.168.105.20
 
- * 
+ *
  * Applies to: TBD
  *
  * Notes - todo
  * LOG.warn should be LOG.debug if debugging is enabled
- * 
+ *
  */
 
 //package org.entimoss.kuwaiba; // package omitted from groovy
@@ -77,7 +77,7 @@ import org.slf4j.Logger;
 OpenNMSExport06 opennmsExport = new OpenNMSExport06(bem, aem, parameters);
 return opennmsExport.returnReport();
 
-public class OpenNMSExport06 { // class omitted from groovy
+public class OpenNMSExport06 {
    static Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport");  // remove static in groovy
    
    BusinessEntityManager    bem = null; // injected in groovy
@@ -88,7 +88,8 @@ public class OpenNMSExport06 { // class omitted from groovy
    String version = "0.6";
    String author = "Craig Gallen";
    
-   public OpenNMSExport06() {};
+   public OpenNMSExport06() {
+   };
 
    public OpenNMSExport06(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> parameters) {
       super();
@@ -98,7 +99,7 @@ public class OpenNMSExport06 { // class omitted from groovy
    }
 
    // main report function
-   InventoryReport returnReport() { // function omitted from groovy
+   InventoryReport returnReport() {
       LOG.info("Start of "+title+" Version "+version+" Author "+author);
 
       LOG.info("opennms export report parameters :");
@@ -115,7 +116,7 @@ public class OpenNMSExport06 { // class omitted from groovy
       
       /*
        * useAbsoluteNames
-       * If blank or false, the report uses parent location and rack to generate each node name. 
+       * If blank or false, the report uses parent location and rack to generate each node name.
        * if true it uses only the name of the node given in the model
        */
       Boolean useAbsoluteNames = Boolean.valueOf(parameters.getOrDefault("useAbsoluteNames", "false"));
@@ -152,7 +153,7 @@ public class OpenNMSExport06 { // class omitted from groovy
        *  String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24";
        *  String inputIpv4AddressStr = "172.16.105.20";
        *  String substituteAddressStr= "192.168.105.20
-       */ 
+       */
       String subnetNetSubstitutionFilter= parameters.getOrDefault("subnetNetSubstitutionFilter", "");
 
       StringBuffer textBuffer = new StringBuffer();
@@ -207,8 +208,9 @@ public class OpenNMSExport06 { // class omitted from groovy
    }
 
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
-             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory, String subnetNetSubstitutionFilter) {
-
+            Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory,
+            String subnetNetSubstitutionFilter) {
+      
       Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
       
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
@@ -248,6 +250,11 @@ public class OpenNMSExport06 { // class omitted from groovy
             String locationName="";
             String rackName="";
             String deviceEquipmentDisplayName="";
+            String customerName = "NOT_ASSIGNED";
+            String customerId="";
+            String serviceName = "NOT_ASSIGNED";
+            String serviceId="";
+
             try {
                
                LOG.warn("************ attributes :"+device.getAttributes());
@@ -260,17 +267,54 @@ public class OpenNMSExport06 { // class omitted from groovy
                
                // get the first parent location of each device for latitude/longitude
                BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
-               if (location!=null && location.getName()!=null) { 
-                  locationName=location.getName().strip().replaceAll(" ", "_");
+               if (location!=null && location.getName()!=null) {
+                  locationName = location.getName().strip().replace(" ", "_");
                   latitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "latitude");
                   longitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "longitude");
                }
                
+               // get any service / customer associated with the device
+               List<BusinessObjectLight> associatedServices = bem.getSpecialAttribute(device.getClassName(), device.getId(), "uses");
+               if (associatedServices != null) {
+                  // only take first associated service even if there are more
+                  for (BusinessObjectLight associatedSvc : associatedServices) {
+                     serviceName = associatedSvc.getName();
+                     serviceId= associatedSvc.getId();
+                     BusinessObject customer = bem.getFirstParentOfClass(associatedSvc.getClassName(), associatedSvc.getId(), "GenericCustomer");
+                     if (customer != null) {
+                        customerName = customer.getName();
+                        customerId=customer.getId();
+                        break;
+                     }
+                  }
+               }
+
                // get the first rack containing each device for rackName
                BusinessObject rack = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "Rack");
                if(rack!=null && rack.getName()!=null) {
-                  rackName= rack.getName().strip().replaceAll(" ", "_");
+                  rackName = rack.getName().strip().replace(" ", "_");
+
+                  // if there is no service with customer name associated with the device then try to use the service associated with the parent rack
+                  if ("NOT_ASSIGNED".equals(serviceName)) {
+                     // get any service / customer associated with the parent rack
+                     associatedServices = bem.getSpecialAttribute(rack.getClassName(), rack.getId(), "uses");
+                     if (associatedServices != null) {
+                        // only take first associated service even if there are more
+                        for (BusinessObjectLight associatedSvc : associatedServices) {
+                           serviceName = associatedSvc.getName();
+                           serviceId= associatedSvc.getId();
+                           BusinessObject customer = bem.getFirstParentOfClass(associatedSvc.getClassName(), associatedSvc.getId(), "GenericCustomer");
+                           if (customer != null) {
+                              customerName = customer.getName();
+                              customerId=customer.getId();
+                              break;
+                           }
+                        }
+                        LOG.warn("assocaitedService assigned from rack "+rack.getName()+" serviceName:"+serviceName+ " serviceId:"+serviceId+ " customerName: "+customerName+ " customerId "+customerId);
+                     }
+                  }
                }
+               LOG.warn("assocaitedService serviceName:"+serviceName+ " serviceId:"+serviceId+ " customerName: "+customerName+ " customerId "+customerId);
                
             } catch (Exception ex) {
                ex.printStackTrace();
@@ -281,7 +325,7 @@ public class OpenNMSExport06 { // class omitted from groovy
 
             for (BusinessObjectLight aPort : commPorts) {
 
-               // not used
+               // TODO not used
                String portStatus = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "state");
                
                String isManagementStr = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "isManagement");
@@ -304,10 +348,10 @@ public class OpenNMSExport06 { // class omitted from groovy
                   String nodename = locationName+"_"+rackName+"_"+name;
                   if(useAbsoluteNames){
                      nodename=name;
-                  } 
+                  }
                   line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
                   
-                  // sets the foreignId 
+                  // sets the foreignId
                   if (useNodeLabelAsForeignId) {
                      line.put(OnmsRequisitionConstants.ID_, nodename);
                   } else {
@@ -321,8 +365,15 @@ public class OpenNMSExport06 { // class omitted from groovy
                      line.put(OnmsRequisitionConstants.ASSET_CATEGORY, deviceEquipmentDisplayName);
                   }
                   
-                  // sets display category which determines customer - TODO needs tied to service
-                  line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, defaultAssetDisplayCategory );
+                  // sets display category which indicates customer
+                  String cName= "NOT_ASSIGNED".equals(customerName) ? defaultAssetDisplayCategory : customerName ;
+                  cName= cName.replace(" ","_");
+                  line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, cName  );
+                  
+                  line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_ID, customerId.replace(" ","_"));
+                  line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_NAME, customerName.replace(" ","_"));
+                  line.put(OnmsRequisitionConstants.METADATA_SERVICE_ID, serviceId.replace(" ","_"));
+                  line.put(OnmsRequisitionConstants.METADATA_SERVICE_NAME, serviceName.replace(" ","_"));
 
                   // sets the management address of the device
                   // this can be a derived address to emulate multiple address spaces
@@ -335,8 +386,12 @@ public class OpenNMSExport06 { // class omitted from groovy
                   // if port set as isManagement then set as Primary (P) snmp interface else (N) - not management
                   line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isManagement ? "P" : "N"));
 
-                  if (latitude  !=null && !latitude.isEmpty() ) line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude );
-                  if (longitude !=null && !longitude.isEmpty()) line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude );
+                  if (latitude != null && !latitude.isEmpty()) {
+                     line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude);
+                  }
+                  if (longitude != null && !longitude.isEmpty()) {
+                     line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude);
+                  }
 
                   // set the location of the minion monitoring this interface based on the 'folder' containing this address
                   if (addresslookup.containsKey(ipAddress.getName())) {
@@ -385,7 +440,7 @@ public class OpenNMSExport06 { // class omitted from groovy
          List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
 
          ArrayList<String> addresses = new ArrayList<String>();
-         folderAddresses.put(topFolderPool.getName().strip().replaceAll(" ", "_"), addresses);
+         folderAddresses.put(topFolderPool.getName().strip().replace(" ", "_"), addresses);
 
          subnetLookup(subnetsInfolder, bem, ipType, addresses);
 
@@ -468,16 +523,21 @@ public class OpenNMSExport06 { // class omitted from groovy
       public static final String ASSET_CIRCUITID = "Asset_circuitId";
       public static final String ASSET_DESCRIPTION = "Asset_description";
 
+      public static final String METADATA_SERVICE_ID = "MetaData_requisition:serviceId";
+      public static final String METADATA_SERVICE_NAME = "MetaData_requisition:serviceName";
+      public static final String METADATA_CUSTOMER_ID = "MetaData_requisition:customerId";
+      public static final String METADATA_CUSTOMER_NAME = "MetaData_requisition:customerName";
+
       // this is same order as in csv header line
-      public static final List<String> OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID, PARENT_FOREIGN_SOURCE, IP_MANAGEMENT,
-               MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY, ASSET_REGION, ASSET_SERIALNUMBER, ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY,
+      public static final List<String> OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID,
+               PARENT_FOREIGN_SOURCE, IP_MANAGEMENT, MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY, ASSET_REGION, ASSET_SERIALNUMBER,
+               ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY,
                ASSET_NOTIFYCATEGORY, ASSET_POLLERCATEGORY, ASSET_DISPLAYCATEGORY, ASSET_MANAGEDOBJECTTYPE, ASSET_MANAGEDOBJECTINSTANCE, ASSET_CIRCUITID,
-               ASSET_DESCRIPTION);
+               ASSET_DESCRIPTION, METADATA_SERVICE_ID, METADATA_SERVICE_NAME,METADATA_CUSTOMER_ID,METADATA_CUSTOMER_NAME);
 
       public static final String DEFAULT_MINION_LOCATION = "Default"; // used when OpenNMS core is the poller.
 
    }
-
    
    /**
     * Class to decode IP V4 Address with or without a cidr address prefix
@@ -520,7 +580,7 @@ public class OpenNMSExport06 { // class omitted from groovy
 
          int value = mask;
          // not in groovy netMaskBytes = new byte[] { (byte) (value >>> 24), (byte) (value >> 16 & 0xff), (byte) (value >> 8 & 0xff), (byte) (value & 0xff) };
-         netMaskBytes = new byte[4] ; 
+         netMaskBytes = new byte[4] ;
          netMaskBytes[0] =(byte) (value >>> 24);
          netMaskBytes[1] =(byte) (value >> 16 & 0xff);
          netMaskBytes[2] =(byte) (value >> 8 & 0xff);
@@ -614,7 +674,7 @@ public class OpenNMSExport06 { // class omitted from groovy
          String ipAddressString = parts[0];
 
          // TODO change for groovy
-         // use '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' because groovy cant parse $ in  "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$" 
+         // use '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' because groovy cant parse $ in  "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$"
          String regex = '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$'; //change " to 'for groovy
 
          Pattern pattern = Pattern.compile(regex);
@@ -704,7 +764,7 @@ public class OpenNMSExport06 { // class omitted from groovy
        *  String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.0.0/24";
        *  String inputIpv4AddressStr = "172.16.105.20";
        *  String substituteAddressStr= "192.168.105.20
-       *  
+       *
        * @param subnetNetSubstitutionFilterStr
        * @param inputIpv4AddressStr
        * @return substituteAddressStr
@@ -726,8 +786,9 @@ public class OpenNMSExport06 { // class omitted from groovy
          try {
 
             String[] parts = subnetNetSubstitutionFilterStr.split("=");
-            if (parts.length != 2)
+            if (parts.length != 2) {
                throw new IllegalArgumentException("no '=' seperating parts in subnetNetSubstitution: " + subnetNetSubstitutionFilterStr);
+            }
 
             insideSubnet = new IpV4Cidr(parts[0]);
             substituteSubnet = new IpV4Cidr(parts[1]);
