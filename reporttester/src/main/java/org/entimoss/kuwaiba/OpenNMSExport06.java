@@ -1,7 +1,7 @@
 /**
  * Exports inventory of nodes and interface IP addresses as OpenNMS PRIS CSV format.
  * (see https://docs.opennms.com/pris/latest/ )
- * Entimoss Ltd - version 0.5
+ * Entimoss Ltd - version 0.6
  * Parameters:
  *    useNodeLabelAsForeignId
  *    If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
@@ -74,23 +74,33 @@ import java.util.regex.Pattern;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+// uncomment in groovy script
+//OpenNMSExport06 opennmsExport = new OpenNMSExport06(bem, aem, parameters);
+//return opennmsExport.returnReport();
 
 public class OpenNMSExport06 { // class omitted from groovy
    static Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport");  // remove static in groovy
+   
+   BusinessEntityManager    bem = null; // injected in groovy
+   ApplicationEntityManager aem = null; // injected in groovy
+   Map<String, String> parameters = new HashMap<>();
+   
+   String title = "OpenNMSInventoryExport";
+   String version = "0.6";
+   String author = "Craig Gallen";
+   
+   public OpenNMSExport06() {};
 
+   public OpenNMSExport06(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> parameters) {
+      super();
+      this.bem = bem;
+      this.aem = aem;
+      this.parameters = parameters;
+   }
+
+   // main report function
    InventoryReport returnReport() { // function omitted from groovy
-
-      // main report function
-
-      String title = "OpenNMSInventoryExport";
-      String version = "0.5";
-      String author = "Craig Gallen";
-
       LOG.info("Start of "+title+" Version "+version+" Author "+author);
-      
-      BusinessEntityManager    bem = null; // remove injected in groovy
-      ApplicationEntityManager aem = null; // remove injected in groovy
-      Map<String, String> parameters = new HashMap<>(); // remove - parameters are injected in groovy
       
       LOG.info("opennms export report parameters :");
       for(Entry<String, String> entry : parameters.entrySet()){
@@ -195,9 +205,7 @@ public class OpenNMSExport06 { // class omitted from groovy
  
       return report;
 
-      // end of main report function
-
-   } // function omitted from groovy
+   }
 
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
              Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory, String subnetNetSubstitutionFilter) {
@@ -606,8 +614,9 @@ public class OpenNMSExport06 { // class omitted from groovy
          String[] parts = ipv4WithCidrString.split("/");
          String ipAddressString = parts[0];
 
+         // TODO change for groovy
          // use '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' because groovy cant parse $ in  "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$" 
-         String regex = "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$"; //change for groovy
+         String regex = "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$"; //change " to 'for groovy
 
          Pattern pattern = Pattern.compile(regex);
          Matcher matcher = pattern.matcher(ipAddressString);
@@ -807,7 +816,7 @@ public class OpenNMSExport06 { // class omitted from groovy
          return networkAddressString;
       }
 
-      // note in groovy do NOT start new line in string aggregation with +
+      // TODO note in groovy do NOT start new line in string aggregation with +
       @Override
       public String toString() {
          return "IpV4Cidr [ipv4WithCidrString=" + ipv4WithCidrString + ", netMask=" + netMask + ", netMaskString=" + netMaskString +
@@ -817,4 +826,4 @@ public class OpenNMSExport06 { // class omitted from groovy
 
    }
    
-} // omit in groovy
+}
