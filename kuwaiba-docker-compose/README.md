@@ -69,17 +69,22 @@ docker compose cp kuwaiba:/tmp/kuwaiba/data.zip ./container-fs/kuwaiba/data-zip
 # Model Contents
 The Radio Network is modelled under country `United Kingdom`.
 
-See the OpenNMS Export Inventory report under the `Reports` tab in `Inventory report`s. 
-Running this report exports the mode in CSV format for import to OpenNMS Pris.
+See the `OpenNMSInventoryExport` report under the `Reports` tab in `Inventory report`s. 
+
+Running this report exports the model in CSV format for import to OpenNMS Pris.
 
 # Report Tester
 Report Tester is a maven project to help build and test groovy scripts against the kuwaiba api in an ide like eclipse.
 
 # Pris
 
-Provisioning integration server now uses a rest api to get the CSV report from kuwaiba.
+Provisioning integration server now uses the kuwaiba rest api to get the pris CSV report from kuwaiba.
 
-Make a call to should show requisition file [http://localhost:8020/requisitions/kuwaiba](http://localhost:8020/requisitions/kuwaiba)
+Make a call to should show requisition file for all devices with IP address [http://localhost:8020/requisitions/kuwaiba-all](http://localhost:8020/requisitions/kuwaiba-all)
 
+
+Make a call to should show requisition file for only devices in Hampshire with an IP address[http://localhost:8020/requisitions/kuwaiba-hampshire](http://localhost:8020/requisitions/kuwaiba-hampshire)
+
+A test requisition which uses a local CSV file is provided using [http://localhost:8020/requisitions/testrequisition](http://localhost:8020/requisitions/testrequisition)
 
 

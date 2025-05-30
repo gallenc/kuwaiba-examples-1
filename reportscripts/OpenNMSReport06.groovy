@@ -22,7 +22,8 @@
  *    (this can be used in grafana to determine which display template to use)
  *
  *    defaultAssetDisplayCategory
- *    AssetDisplayCategory is currently not populated from the model
+ *    AssetDisplayCategory is populated from the customer name associated with a service attached to a device or a parent rack in the model.
+ *    if AssetDisplayCategory is not populated from the model, a default value can be used.
  *    AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set
  *    (this can be used in OpenNMS to determine which users can view an object)
  *
@@ -35,13 +36,19 @@
  *       String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24"
  *       if the input inputIpv4AddressStr = "172.16.105.20"
  *       the substitute is  substituteAddressStr= "192.168.105.20
-
- *
+ * 
+ *    rangeParentValue
+ *    rangeParentValue is used to find the parent visible object of the devices to include in the device list.
+ *    If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.
+ *    The rangeParentValue can be the name property of the object or the kuwaiba objectID of the object.
+ *    If the rangeParentValue is not set or is empty, all devices will be included in the tree.
+ *    If the rangeParentValue is not found, an exception will be thrown and the report will not complete.
+ * 
  * Applies to: TBD
  *
  * Notes - todo
  * LOG.warn should be LOG.debug if debugging is enabled
- *
+ * 
  */
 
 //package org.entimoss.kuwaiba; // package omitted from groovy
@@ -116,7 +123,7 @@ public class OpenNMSExport06 {
       
       /*
        * useAbsoluteNames
-       * If blank or false, the report uses parent location and rack to generate each node name.
+       * If blank or false, the report uses parent location and rack to generate each node name. 
        * if true it uses only the name of the node given in the model
        */
       Boolean useAbsoluteNames = Boolean.valueOf(parameters.getOrDefault("useAbsoluteNames", "false"));
@@ -153,8 +160,18 @@ public class OpenNMSExport06 {
        *  String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24";
        *  String inputIpv4AddressStr = "172.16.105.20";
        *  String substituteAddressStr= "192.168.105.20
-       */
+       */ 
       String subnetNetSubstitutionFilter= parameters.getOrDefault("subnetNetSubstitutionFilter", "");
+
+      /*
+       * rangeParentValue
+       * The rangeParentValue can be the name property of the object or the kuwaiba objectID of the object.
+       * If the rangeParentValue is not set, all devices will be included in the tree.
+       * If the rangeParentValue is not found, an exception will be thrown and the report will not complete
+       * Finds the parent visable object of the devices to include in the device list. 
+       * If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.
+       */
+      String rangeParentValue = parameters.getOrDefault("rangeParentValue", "");
 
       StringBuffer textBuffer = new StringBuffer();
 
@@ -171,7 +188,8 @@ public class OpenNMSExport06 {
       textBuffer.append("\n");
 
       // now populate data lines
-      ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses, useNodeLabelAsForeignId, defaultAssetCategory, defaultAssetDisplayCategory, subnetNetSubstitutionFilter);
+      ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses, useNodeLabelAsForeignId, defaultAssetCategory,
+               defaultAssetDisplayCategory, subnetNetSubstitutionFilter, rangeParentValue);
 
       for (HashMap<String, String> singleCsvlineData : csvLineData) {
 
@@ -209,7 +227,7 @@ public class OpenNMSExport06 {
 
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory,
-            String subnetNetSubstitutionFilter) {
+            String subnetNetSubstitutionFilter, String rangeParentValue) {
       
       Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
       
@@ -237,12 +255,47 @@ public class OpenNMSExport06 {
          }
          LOG.warn("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
+         // tries to find parent object of all devices to include in range
+         // parent must be a viewable object which can have a generic communications element as a child 
+         // range parent value can be an absolute object id or an object name
+         BusinessObjectLight rangeParent = null;
+         String rangeParentClassName = null;
+         String rangeParentId = null;
+         
+         String searchErrorMsg=null;
+         if (rangeParentValue != null && !rangeParentValue.isEmpty()) {
+            try {
+               // see if there is an object with the same name
+               List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(Constants.CLASS_VIEWABLEOBJECT, Constants.PROPERTY_NAME, rangeParentValue);
+               if (!rangeParents.isEmpty())
+                  rangeParent = rangeParents.get(0);
+            } catch (Exception ex) {
+               searchErrorMsg=ex.getMessage();
+            }
+            if (rangeParent == null)
+               // else see if there is an object with the object id = viewable object
+               try {
+                  // see if there is an object with the same id
+                  List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(Constants.CLASS_VIEWABLEOBJECT, Constants.PROPERTY_UUID, rangeParentValue);
+                  if (!rangeParents.isEmpty())
+                     rangeParent = rangeParents.get(0);
+               } catch (Exception ex) {
+                   searchErrorMsg=ex.getMessage();
+               }
+            if(rangeParent ==null) {
+               throw new IllegalArgumentException("cannot find parent wiewable object with rangeParentValue="+rangeParentValue+ " search error:"+searchErrorMsg );
+            }
+            rangeParentClassName = rangeParent.getClassName();
+            rangeParentId = rangeParent.getId();
+            LOG.warn("finding devices with parent object rangeParentClassName="+rangeParentClassName + " rangeParentId="+rangeParentId +" "+rangeParent);
+         }
+
          // Next we get all active network devices
-         devices = bem.getObjectsOfClass("GenericCommunicationsElement", -1);
+         devices = bem.getObjectsOfClass(Constants.CLASS_GENERICCOMMUNICATIONSELEMENT, -1);
 
          for (BusinessObject device : devices) {
 
-            String name = device.getName().strip().replaceAll(" ", "_");
+            String name = device.getName().strip().replace(" ", "_");
             String deviceId = device.getId();
 
             String latitude = "";
@@ -257,8 +310,36 @@ public class OpenNMSExport06 {
 
             try {
                
-               LOG.warn("************ attributes :"+device.getAttributes());
-               
+               LOG.warn("************ processing device with attributes :"+device.getAttributes());
+
+               // if rangeParent is set do not proceed if device is not a child of rangeParent
+
+               // TODO this is correct method but doesn't work because transaction is not closed in BusinessEntityManagerImpl.isParent (no txSuccess())
+               //if (rangeParentId != null) {
+               //   if (! bem.isParent(rangeParentClassName, rangeParentId, device.getClassName(), device.getId())) {
+               //      break;
+               //   }
+               //}
+               // TODO work around
+               if (rangeParentId != null) {
+                  List<BusinessObjectLight> parents = bem.getParents(device.getClassName(), device.getId());
+                  
+                  LOG.warn("parents of device name: "+device.getClassName()+" Id: "+ device.getId()+" : "+ parents);
+                  
+                  boolean isParent=false;
+                  for(BusinessObjectLight parent : parents) {
+                     if (parent.getId().equals(rangeParentId)) {
+                        isParent=true;
+                        break;
+                     }
+                  }
+                  // if parent doesn't match process next device
+                  if(! isParent) {
+                     continue;
+                  }
+               }
+
+
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
                if(equipmentModelId!=null) {
                    BusinessObject equipmentModel = aem.getListTypeItem(Constants.CLASS_EQUIPMENTMODEL, equipmentModelId);
@@ -267,7 +348,7 @@ public class OpenNMSExport06 {
                
                // get the first parent location of each device for latitude/longitude
                BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
-               if (location!=null && location.getName()!=null) {
+               if (location!=null && location.getName()!=null) { 
                   locationName = location.getName().strip().replace(" ", "_");
                   latitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "latitude");
                   longitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "longitude");
@@ -310,7 +391,8 @@ public class OpenNMSExport06 {
                               break;
                            }
                         }
-                        LOG.warn("assocaitedService assigned from rack "+rack.getName()+" serviceName:"+serviceName+ " serviceId:"+serviceId+ " customerName: "+customerName+ " customerId "+customerId);
+                        LOG.warn("assocaitedService assigned from rack "+rack.getName()+" serviceName:"+serviceName+ " serviceId:"+serviceId+ " customerName: "+customerName+ 
+                                 " customerId "+customerId);
                      }
                   }
                }
@@ -348,10 +430,10 @@ public class OpenNMSExport06 {
                   String nodename = locationName+"_"+rackName+"_"+name;
                   if(useAbsoluteNames){
                      nodename=name;
-                  }
+                  } 
                   line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
                   
-                  // sets the foreignId
+                  // sets the foreignId 
                   if (useNodeLabelAsForeignId) {
                      line.put(OnmsRequisitionConstants.ID_, nodename);
                   } else {
@@ -529,8 +611,8 @@ public class OpenNMSExport06 {
       public static final String METADATA_CUSTOMER_NAME = "MetaData_requisition:customerName";
 
       // this is same order as in csv header line
-      public static final List<String> OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID,
-               PARENT_FOREIGN_SOURCE, IP_MANAGEMENT, MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY, ASSET_REGION, ASSET_SERIALNUMBER,
+      public static final List<String> OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID, 
+               PARENT_FOREIGN_SOURCE, IP_MANAGEMENT, MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY, ASSET_REGION, ASSET_SERIALNUMBER, 
                ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY,
                ASSET_NOTIFYCATEGORY, ASSET_POLLERCATEGORY, ASSET_DISPLAYCATEGORY, ASSET_MANAGEDOBJECTTYPE, ASSET_MANAGEDOBJECTINSTANCE, ASSET_CIRCUITID,
                ASSET_DESCRIPTION, METADATA_SERVICE_ID, METADATA_SERVICE_NAME,METADATA_CUSTOMER_ID,METADATA_CUSTOMER_NAME);
@@ -580,7 +662,7 @@ public class OpenNMSExport06 {
 
          int value = mask;
          // not in groovy netMaskBytes = new byte[] { (byte) (value >>> 24), (byte) (value >> 16 & 0xff), (byte) (value >> 8 & 0xff), (byte) (value & 0xff) };
-         netMaskBytes = new byte[4] ;
+         netMaskBytes = new byte[4] ; 
          netMaskBytes[0] =(byte) (value >>> 24);
          netMaskBytes[1] =(byte) (value >> 16 & 0xff);
          netMaskBytes[2] =(byte) (value >> 8 & 0xff);
@@ -674,7 +756,7 @@ public class OpenNMSExport06 {
          String ipAddressString = parts[0];
 
          // TODO change for groovy
-         // use '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' because groovy cant parse $ in  "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$"
+         // use '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' because groovy cant parse $ in  "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$" 
          String regex = '^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$'; //change " to 'for groovy
 
          Pattern pattern = Pattern.compile(regex);
@@ -764,7 +846,7 @@ public class OpenNMSExport06 {
        *  String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.0.0/24";
        *  String inputIpv4AddressStr = "172.16.105.20";
        *  String substituteAddressStr= "192.168.105.20
-       *
+       *  
        * @param subnetNetSubstitutionFilterStr
        * @param inputIpv4AddressStr
        * @return substituteAddressStr
