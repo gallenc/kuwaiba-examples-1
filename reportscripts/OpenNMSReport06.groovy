@@ -339,7 +339,7 @@ public class OpenNMSExport06 {
                   }
                }
 
-
+               
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
                if(equipmentModelId!=null) {
                    BusinessObject equipmentModel = aem.getListTypeItem(Constants.CLASS_EQUIPMENTMODEL, equipmentModelId);
@@ -876,24 +876,33 @@ public class OpenNMSExport06 {
             substituteSubnet = new IpV4Cidr(parts[1]);
             ipV4Address = new IpV4Cidr(inputIpv4AddressStr);
 
-            //LOG.warn("\n ipAddress = " + ipV4Address);
-            //LOG.warn("\n insideSubnet = " + insideSubnet);
-            //LOG.warn("\n substituteSubnet = " + substituteSubnet);
+            LOG.warn("\n ipV4Address = " + ipV4Address+"\n insideSubnet = " + insideSubnet+"\n substituteSubnet = " + substituteSubnet);
 
             if (insideSubnet.networkContainsAddress(ipV4Address.getIpAddress())) {
                
                byte[] substituteNetmaskBytes = substituteSubnet.getNetMask().getAddress();
+               LOG.warn("\n substituteNetmaskBytes           = " + bytesToBinary( substituteNetmaskBytes));
+               
                byte[] complimentSubstituteNetmaskBytes = complimentByteArray(substituteNetmaskBytes);
+               LOG.warn("\n complimentSubstituteNetmaskBytes = " + bytesToBinary( complimentSubstituteNetmaskBytes));
+               
                byte[] substituteNetworkAddressBytes = substituteSubnet.getNetworkAddress().getAddress();
-               byte[] ipV4AddressBytes = ipV4Address.getNetworkAddress().getAddress();
+               LOG.warn("\n substituteNetworkAddressBytes    = " + bytesToBinary( substituteNetworkAddressBytes));
                
-               byte[] newAddressBytes = andByteArrays(ipV4AddressBytes,complimentSubstituteNetmaskBytes );
-               newAddressBytes =  orByteArrays(newAddressBytes, substituteNetworkAddressBytes);
+               byte[] ipV4AddressBytes = ipV4Address.getIpAddress().getAddress();
+               LOG.warn("\n ipV4AddressBytes                 = " + bytesToBinary(ipV4AddressBytes));
+
+               byte[] andAddressBytes = andByteArrays(ipV4AddressBytes, complimentSubstituteNetmaskBytes);
+               LOG.warn("\n andAddressBytes                  = " + bytesToBinary(andAddressBytes));
                
-               InetAddress substitueAddress = InetAddress.getByAddress(newAddressBytes);
+               byte[] substitueAddressBytes = orByteArrays(andAddressBytes, substituteNetworkAddressBytes);
+               
+               InetAddress substitueAddress = InetAddress.getByAddress(substitueAddressBytes);
                
                substituteAddressStr = substitueAddress.getHostAddress();
                
+               LOG.warn("\n substitueAddressBytes            = " + bytesToBinary(substitueAddressBytes)+ " substituteAddress: "+substituteAddressStr);
+
                //LOG.warn("subnet contains address using substitute address string" + substituteAddressStr);
             } else {
                substituteAddressStr = inputIpv4AddressStr;
