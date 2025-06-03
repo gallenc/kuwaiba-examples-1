@@ -11,3 +11,5 @@ Further work would be required to create a production system.
 [kuwaiba-simple](../kuwaiba-simple)  contains a simple Kuwaiba docker compose project to start experimenting with Kuwaiba
 
 [kuwaiba-opennms-radio](../kuwaiba-opennms-radio) contains a more complete Kuwaiba project with OpenNMS integration to manage a broadcast radio network
+
+[workup](../workup) contains incomplete work in progress for improvements to the integration and additional models.
