@@ -74,8 +74,7 @@ See the `OpenNMSInventoryExport` report under the `Reports` tab in `Inventory re
 
 Running this report exports the model in CSV format for import to OpenNMS Pris.
 
-# Report Tester
-Report Tester is a maven project to help build and test groovy scripts against the kuwaiba api in an ide like eclipse.
+
 
 # Pris
 
