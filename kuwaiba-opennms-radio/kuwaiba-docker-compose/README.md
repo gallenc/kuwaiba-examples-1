@@ -11,7 +11,7 @@ This docker compose project contains a kuwaiba test project which uses the stand
 
 The project demonstrates modelling a small broadcast radio network.
 It also contains a report for exporting a configuration in a CSV format which can be directly imported to OpenNMS
-using the [provisioning inegration server PRIS](https://docs.opennms.com/pris/2.1.0/index.html).
+using the [provisioning integration server PRIS](https://docs.opennms.com/pris/2.1.0/index.html).
 
 The docker compose project extends the container so that it can automatically import an external model from a data.zip file contained in this project.
 This means that a full working kuwaiba network model and report scripts can be included in the project for demonstration purposes.
@@ -49,6 +49,7 @@ Any changes to this model will be persisted to the docker kuwaiba-data volume ac
 
 
 You can clear the model back to the original data.zip by running
+
 ```
 docker compose down -v
 ```

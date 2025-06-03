@@ -69,7 +69,7 @@ docker compose logs -f kuwaiba
 # to shut down
 docker compose down
 ```
-After a short time, kuwaiba will be available at http://localhost:8080/kuwaiba
+After a short time, kuwaiba will be available at [http://localhost:8080/kuwaiba](http://localhost:8080/kuwaiba)
 
 The new kawaiba model will be imported from `container-fs/kuwaiba/data-zip/data.zip` on the first run.
 (If data.zip is not present, the default kuwiba model from the container will be used).

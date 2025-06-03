@@ -1,12 +1,13 @@
-# Kuwaiba
+# Kuwaiba Examples with OpenNMS
 
-## checkout and build 
+This folder contains experimental docker demos running kuwaiba 2.1.1 and integration with OpenNMS Horizon 33.
 
-code on sourceforge: https://sourceforge.net/p/kuwaiba/code/HEAD/tree/
+It is intended as a tutorial and a working proof of concept for integration. 
+Further work would be required to create a production system.
 
-svn checkout https://svn.code.sf.net/p/kuwaiba/code/ kuwaiba-code
+* [Kuwaiba](https://www.kuwaiba.org/) is an open source Service Provider Inventory solution
+* [OpenNMS](https://github.com/OpenNMS/opennms) is an open source enterprise grade network management platform.
 
+[kuwaiba-simple](../kuwaiba-simple)  contains a simple Kuwaiba docker compose project to start experimenting with Kuwaiba
 
-https://www.kuwaiba.org/docs/dev/build/
-note needs java 8 https://www.java.com/en/download/manual.jsp
-netbeans 8 https://dlc-cdn.sun.com/netbeans/8.2/final/start.html?platform=windows&lang=en&option=javaee&pagelang=
+[kuwaiba-opennms-radio](../kuwaiba-opennms-radio) contains a more complete Kuwaiba project with OpenNMS integration to manage a broadcast radio network
