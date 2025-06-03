@@ -1,7 +1,7 @@
 # Kuwaiba Simple Example
 
 This is a basic stand alone docker compose project to allow you to experiment with Kuwaiba and store a backup of your
-database externally within in your docker compose project.
+database externally within your docker compose project.
 
 This means that a complete working Kuwaiba network model with report scripts can be included in each project for demonstration purposes.
 Different projects can maintain separate models which makes it easy to create multiple demonstrators which are simple to run for testing and demonstration purposes.
