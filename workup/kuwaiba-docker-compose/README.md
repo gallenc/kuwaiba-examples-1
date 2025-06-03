@@ -2,7 +2,7 @@
 
 Note: This project is work in progress and subject to change.
 
-This project containes a demonstration of modelling a network using Kuwaiba and exporting a network configuration from Kuwaiba to OpenNMS. 
+This project contains a demonstration of modelling a network using Kuwaiba and exporting a network configuration from Kuwaiba to OpenNMS. 
 * [Kuwaiba](https://www.kuwaiba.org/) is an open source Service Provider Inventory solution
 * [OpenNMS](https://github.com/OpenNMS/opennms) is an open source enterprise grade network manamgent platform.
 
