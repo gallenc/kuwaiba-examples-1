@@ -207,7 +207,7 @@ services:
       kuwaiba-net:
         ipv4_address: 172.30.0.20
 
-# minion1 is a simulation of a minion on testradiosite network. Used to access devices simulated using snmpsim
+# minion1 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION ftwidley1
   minion1:
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
@@ -222,7 +222,6 @@ services:
       JAVA_OPTS: -Xmx2048m -Xms512m -agentlib:jdwp=transport=dt_socket,server=y,address=*:8001,suspend=n
     volumes:
       - './container-fs/minion1/opt/minion/minion-config.yaml:/opt/minion/minion-config.yaml'
-   #   - './container-fs/minion1/opt/minion/etc/grok-patterns.txt:/opt/minion/etc/grok-patterns.txt'
     command: ["-f"]
 #    depends_on:
 #      horizon:
@@ -248,7 +247,7 @@ services:
       testradiosite1:
         ipv4_address: 192.168.105.245
 
-# minion 2 is a simulation of a minion on testradiosite network. Used to access devices simulated using snmpsim
+# minion 2 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION crabwoodFarm1
   minion2:
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
@@ -290,7 +289,7 @@ services:
       testradiosite1:
         ipv4_address: 192.168.105.246
 
-# minion 3 is a simulation of a minion on testradiosite network. Used to access devices simulated using snmpsim
+# minion 3 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION rowridge1
   minion3:
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
@@ -304,7 +303,7 @@ services:
       JAVA_MAX_MEM: 2048M # doesnt work
       JAVA_OPTS: -Xmx2048m -Xms512m -agentlib:jdwp=transport=dt_socket,server=y,address=*:8001,suspend=n
     volumes:
-      - './container-fs/minion2/opt/minion/minion-config.yaml:/opt/minion/minion-config.yaml'
+      - './container-fs/minion3/opt/minion/minion-config.yaml:/opt/minion/minion-config.yaml'
     command: ["-f"]
 #    depends_on:
 #      horizon:
@@ -332,7 +331,7 @@ services:
       testradiosite1:
         ipv4_address: 192.168.105.247
 
-# minion 4 is a simulation of a minion on testradiosite network. Used to access devices simulated using snmpsim
+# minion 4 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION campHill1
   minion4:
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
@@ -346,7 +345,7 @@ services:
       JAVA_MAX_MEM: 2048M # doesnt work
       JAVA_OPTS: -Xmx2048m -Xms512m -agentlib:jdwp=transport=dt_socket,server=y,address=*:8001,suspend=n
     volumes:
-      - './container-fs/minion2/opt/minion/minion-config.yaml:/opt/minion/minion-config.yaml'
+      - './container-fs/minion4/opt/minion/minion-config.yaml:/opt/minion/minion-config.yaml'
     command: ["-f"]
 #    depends_on:
 #      horizon:
