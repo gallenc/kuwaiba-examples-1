@@ -32,6 +32,7 @@ services:
       - ./container-fs/nginx/conf.d:/etc/nginx/conf.d
       - ./container-fs/nginx/certs:/etc/ssl/certs
       - ./container-fs/nginx/private:/etc/ssl/private
+      - ./container-fs/nginx/html/index.html:/usr/share/nginx/html/index.html
     ports:
       - "80:80"
       - "443:443"
@@ -411,7 +412,7 @@ services:
     environment:
       EXTRA_FLAGS: "--v3-user=testing --v3-auth-key=testing123"
     volumes:
-      - ./container-fs/snmpsim/data/DEVA9000.snmprec:/usr/local/snmpsim/data/DEVA9000.snmprec
+      - ./container-fs/snmpsim/data/DEVA9000.snmprec:/usr/local/snmpsim/data/public.snmprec
 
       # note empty public.snmprec so that there is no response to a community name public request
       - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
@@ -432,7 +433,7 @@ services:
     environment:
       EXTRA_FLAGS: "--v3-user=testing --v3-auth-key=testing123"
     volumes:
-      - ./container-fs/snmpsim/data/DEVA8008.snmprec:/usr/local/snmpsim/data/DEVA8008.snmprec
+      - ./container-fs/snmpsim/data/DEVA8008.snmprec:/usr/local/snmpsim/data/public.snmprec
 
       # note empty public.snmprec so that there is no response to a community name public request
       - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
@@ -453,7 +454,7 @@ services:
     environment:
       EXTRA_FLAGS: "--v3-user=testing --v3-auth-key=testing123"
     volumes:
-      - ./container-fs/snmpsim/data/DEVA7012.snmprec:/usr/local/snmpsim/data/DEVA7012.snmprec
+      - ./container-fs/snmpsim/data/DEVA7012.snmprec:/usr/local/snmpsim/data/public.snmprec
 
       # note empty public.snmprec so that there is no response to a community name public request
       - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec

@@ -87,4 +87,37 @@ Make a call to should show requisition file for only devices in Hampshire with a
 
 A test requisition which uses a local CSV file is provided using [http://localhost:8020/requisitions/testrequisition](http://localhost:8020/requisitions/testrequisition)
 
+### Importing Requisition from PRIS
 
+
+An event can be sent to OpenNMS to request that it imports a requisition from an external URL.
+
+See [OpenNMS import provisioning to OpenNMS](https://docs.opennms.com/pris/2.0.0/provision-to-opennms.html)
+
+[PRIS](https://docs.opennms.com/pris/2.0.0/index.html) is used as source of data to generate this requisition from an excel spreadsheet testradiosite1.csv.
+
+A docker image for PRIS is used to run the PRIS service. 
+
+You can see the requisiton by pointing a browser at http://localhost:8000/requisitions/testradiosite1  but within the docker network, the requisition is found at http://pris:8000/requisitions/testradiosite1
+
+To tell OpenNMS to import PRIS use the following event (change address as necessary)
+
+POST http://localhost:8980/opennms/rest/events
+
+Content-Type Application/xml
+
+Accept Application/xml
+
+```
+<event><uei>uei.opennms.org/internal/importer/reloadImport</uei>
+     <parms><parm>
+         <parmName>url</parmName><value>http://pris-kuwaiba:8000/requisitions/kuwaiba-UK</value>
+     </parm></parms> 
+</event>
+```
+
+## reloading using send event pl
+
+```
+docker compose exec horizon /usr/share/opennms/bin/send-event.pl uei.opennms.org/internal/importer/reloadImport -p 'url http://pris-kuwaiba:8000/requisitions/kuwaiba-UK' 
+```
