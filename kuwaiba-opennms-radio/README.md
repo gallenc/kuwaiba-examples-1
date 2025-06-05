@@ -1,6 +1,6 @@
 # Broadcast Radio Network Management Example
 
-This example shows how Kuwaiba and OpenNMS can be used to model and manage a broadcast radio netork.
+This example shows how Kuwaiba and OpenNMS can be used to model and manage a broadcast radio network.
 
 [Documentation](./docs) Full documentation on the project.
 
