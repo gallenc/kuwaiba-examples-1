@@ -3,7 +3,8 @@
 [Main Menu](../README.md) | [Radio Management Case Study](./README.md)
 
 ## Introduction
-The Office of Communications (OFCOM) has licenced a network of small community radio stations to operate across the UK as illustrated in map below.
+
+The Office of Communications (OFCOM) has licensed a network of small community radio stations to operate across the UK as illustrated in map below.
 
 ![alt text](./images/communityRadioUKOfcom-small.png "Figure communityRadioUKOfcom-small.png")
 
@@ -11,7 +12,7 @@ The Office of Communications (OFCOM) has licenced a network of small community r
 
 Many of these small stations are operated independently by small local organisation but some larger companies operate collections of stations.
 Community local radio typically operates on a very tight budget and in many cases the stations have expertise in studio equipment but not in radio frequency transmitters. 
-This leads them to outsource the construction and maintenance of the radio broadcast transmitters to small independent engineering companies who specialise in provisioning low cost broadcast infrastructure provided by OEM broadcast equipment manufacturers.
+This leads them to out-source the construction and maintenance of the radio broadcast transmitters to small independent engineering companies who specialise in provisioning low cost broadcast infrastructure provided by OEM broadcast equipment manufacturers.
 
 The stations cannot afford to have any breaks in transmission as this can significantly affect market share, audience perception and advertising revenues. 
 For this reason, most of the transmission chain is often duplicated so that in the event of a single equipment failure, the station can remain on air.
@@ -29,11 +30,9 @@ We also show how the Kuwaiba model can be used to populate OpenNMS and provide a
 
 ## A Typical Broadcast Site
 
-A schematic of the equipment on a typical broadcast site is shown below.
+The schematic below shows the design of a typical FM and DAB transmitter for a small radio station. 
 The specific station and site have been anonymised.
 The manufacturers of each broadcast function may change from station to station but the structure is fairly typical.
-
-The schematic below shows the design of a typical FM and DAB transmitter for a small radio station. 
 
 The power is distributed from the top of the rack using a managed distribution unit (iMDU).
 This monitors power to all of the devices and allows remote turning on and off of each box. 
@@ -54,8 +53,6 @@ Some of the equipment also supports SYSLOG events although these have proven not
 
 The DAB transmitter chain uses a set of separate components which do not provide a unified management interface but do provide programming API's which could be used for monitoring. 
 
-
-
 ![alt text](./images/radiosite1.png "Figure radiosite1.png")
 
 An image of this equipment in a rack is shown below. 
@@ -63,6 +60,8 @@ An image of this equipment in a rack is shown below.
 ![alt text](./images/RackImage-anonymised-small.png "Figure RackImage-anonymised-small.png")
 
 ## Requirements
+
+We 
 
 ## Menu
 
