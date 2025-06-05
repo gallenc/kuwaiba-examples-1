@@ -1,6 +1,6 @@
 # Modelling a Radio Network in Kuwaiba
 
-[Main Menu](../README.md) | [Radio Modelling](../docs/README.md) | [Kuwaiba Model](../docs/kuwaibaRadioModel.md)
+[Main Menu](../README.md) | [Radio Modelling](../docs/README.md) | [Kuwaiba Radio Model](../docs/kuwaibaRadioModel.md)
 
 TBD
 
