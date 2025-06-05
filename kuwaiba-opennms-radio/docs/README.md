@@ -25,7 +25,7 @@ In this project we demonstrate how comprehensive monitoring solution could be co
 
 In addition we demonstrate how Kuwaiba could be used to store a network inventory which documents all of the equipment on multiple sites and the topology of relationships between this equipment and the transmission services.
 
-We also show hoe the Kuwaiba model can be used to populate OpenNMS and provide an end to end design and provisioning solution for broadcast networks.
+We also show how the Kuwaiba model can be used to populate OpenNMS and provide an end to end design and provisioning solution for broadcast networks.
 
 ## A Typical Broadcast Site
 
