@@ -1,2 +1,2 @@
-# Broadcast Radio Netowrk Management Example
+# Broadcast Radio Network Management Example
 
