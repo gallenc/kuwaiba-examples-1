@@ -6,9 +6,9 @@
 
 [Kuwaiba OpenNMS Integration](./opennmsRadioModel.md)
 
-[Grafana Radio Model](../grafanaRadioModel.md)
+[Grafana Radio Model](./grafanaRadioModel.md)
 
-[Kuwaiba Radio Model](../kuwaibaRadioModel.md)
+[Kuwaiba Radio Model](./kuwaibaRadioModel.md)
 
-[Kuwaiba OpenNMS Integration](../opennmsKuwaibaIntegration.md)
+[Kuwaiba OpenNMS Integration](./opennmsKuwaibaIntegration.md)
 
