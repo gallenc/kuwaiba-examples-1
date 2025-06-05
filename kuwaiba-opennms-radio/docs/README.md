@@ -2,15 +2,13 @@
 
 [Main Menu](../README.md) | [Radio Management Overview](./README.md)
 
-## Introduction
+## Menu
 
-This final session will pull together what we have learnt and introduce a few new topics.
+[Kuwaiba OpenNMS Integration](../opennmsRadioModel.md)
 
-This session covers
-* HTTPS terminating proxy for OpenNMS using Nginx
-* Nginx  monitoring using HttpDataCollector
-* Business Service Monitoring
-* Brief introduction to Drools
-* Brief introduction to Scriptd
+[Grafana Radio Model](../grafanaRadioModel.md)
 
+[Kuwaiba Radio Model](../kuwaibaRadioModel.md)
+
+[Kuwaiba OpenNMS Integration](../opennmsKuwaibaIntegration.md)
 
