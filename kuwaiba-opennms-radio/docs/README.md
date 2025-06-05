@@ -30,16 +30,39 @@ We also show how the Kuwaiba model can be used to populate OpenNMS and provide a
 ## A Typical Broadcast Site
 
 A schematic of the equipment on a typical broadcast site is shown below.
+The specific station and site have been anonymised.
 The manufacturers of each broadcast function may change from station to station but the structure is fairly typical.
+
+The schematic below shows the design of a typical FM and DAB transmitter for a small radio station. 
+
+The power is distributed from the top of the rack using a managed distribution unit (iMDU).
+This monitors power to all of the devices and allows remote turning on and off of each box. 
+
+The station is connected to the studio through an optical network backed up by a 5G connection. 
+Two Draytek routers are designated as Primary and Secondary connections and present a single virtual address to the subnet which is the same no matter which primary or the secondary router is currently being used.
+
+The Audio program input equipment controls what happens if the studio input fails.
+The silence switcher can choose between re-broadcasting a DAB or FM signal received from another station off air or if this fails, playing out a pre-recorded MP3 program or announcement.
+
+An off the shelf FM transmitter broadcasts the audio signal along side an injected RDS signal.
+
+The DAB Transmitter chain is more complicated because it uses a set of open source software defined radio components to create the DAB multiplex before amplification through an RF amplifier.
+
+Most of the equipment supports SNMP although the broadcast MIBs are proprietary to each manufacturer and SNMP Traps are not always supported. 
+
+Some of the equipment also supports SYSLOG events although these have proven not to provide very useful messages.
+
+The DAB transmitter chain uses a set of separate components which do not provide a unified management interface but do provide programming API's which could be used for monitoring. 
+
+
 
 ![alt text](./images/radiosite1.png "Figure radiosite1.png")
 
-
-
 An image of this equipment in a rack is shown below. 
-The specific station and site have been anonymised.
 
 ![alt text](./images/RackImage-anonymised-small.png "Figure RackImage-anonymised-small.png")
+
+## Requirements
 
 ## Menu
 
