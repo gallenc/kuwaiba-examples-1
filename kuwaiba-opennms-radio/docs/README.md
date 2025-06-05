@@ -4,7 +4,9 @@
 
 ## Introduction
 The Office of Communications (OFCOM) has licenced a network of small community radio stations to operate across the UK as illustrated in map below.
+
 ![alt text](./images/communityRadioUKOfcom-small.png "Figure communityRadioUKOfcom-small.png")
+
 [source OFCOM](https://www.ofcom.org.uk/siteassets/resources/documents/manage-your-licence/community-radio/community-map.pdf?v=331663)
 
 Many of these small stations are operated independently by small local organisation but some larger companies operate collections of stations.
@@ -27,10 +29,15 @@ We also show hoe the Kuwaiba model can be used to populate OpenNMS and provide a
 
 ## A Typical Broadcast Site
 
-
-
+A schematic of the equipment on a typical broadcast site is shown below.
+The manufacturers of each broadcast function may change from station to station but the structure is fairly typical.
 
 ![alt text](./images/radiosite1.png "Figure radiosite1.png")
+
+
+
+An image of this equipment in a rack is shown below. 
+The specific station and site have been anonymised.
 
 ![alt text](./images/RackImage-anonymised-small.png "Figure RackImage-anonymised-small.png")
 
