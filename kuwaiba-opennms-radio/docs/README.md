@@ -2,7 +2,11 @@
 
 [Main Menu](../README.md) | [Radio Management Overview](./README.md)
 
+![alt text](./images/communityRadioUKOfcom.png "Figure communityRadioUKOfcom.png")
+
 ![alt text](./images/radiosite1.png "Figure radiosite1.png")
+
+![alt text](./images/RackImage-anonymised.png "Figure RackImage-anonymised.png")
 
 ## Menu
 
