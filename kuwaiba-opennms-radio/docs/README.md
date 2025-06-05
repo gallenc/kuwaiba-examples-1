@@ -1,8 +1,15 @@
-# Overview of Broadcast Radio Management with Kuwaiba and OpenNMS
+# Case Study - Broadcast Radio Management using OpenNMS and Kuwaiba
 
 [Main Menu](../README.md) | [Radio Management Case Study](./README.md)
 
 ## Introduction
+
+This project demonstrates a proof of concept of Broadcast Radio Management using Kuwaiba and OpenNMS.
+
+This project has been created partly as a result of a number of student investigations at Solent University UK with additional work by Dr Craig Gallen Invocom Ltd and Alan Beech of Comtronnix Ltd. Additional support was provided by Charles Edward Bedon Cortazar
+CTO of Neotropic SAS, Ryan Jeffery of Passionate About OSS and Ronny Trommer of OpenNMS Group.
+
+## Overview of Broadcast Radio Management Requirements
 
 The Office of Communications (OFCOM) has licensed a network of small community radio stations to operate across the UK as illustrated in map below.
 
@@ -37,6 +44,9 @@ The manufacturers of each broadcast function may change from station to station 
 The power is distributed from the top of the rack using a managed distribution unit (iMDU).
 This monitors power to all of the devices and allows remote turning on and off of each box. 
 
+The equipment on each site is connected to a separate private network which is behind a NAT firewall and can only be accessed through a VPN.
+The overall network has overlapping private address spaces for each station. 
+
 The station is connected to the studio through an optical network backed up by a 5G connection. 
 Two Draytek routers are designated as Primary and Secondary connections and present a single virtual address to the subnet which is the same no matter which primary or the secondary router is currently being used.
 
@@ -59,17 +69,35 @@ An image of this equipment in a rack is shown below.
 
 ![alt text](./images/RackImage-anonymised-small.png "Figure RackImage-anonymised-small.png")
 
-## Requirements
+## Solution Requirements
 
-We 
+THe following are a minimal set of requirements to be investigated in the overall solution.
 
-## Menu
+1. Useful service affecting alarms should be presented for any site having a problem. These should identify the services affected and urgency of action required.
+2. Useful time series performance data should be stored from each site showing the ongoing performance and availability of the equipment.
+3. An overview of the whole broadcast network should be shown for the radio network operating company.
+4. A customer specific view should be available for each customer showing only their services and equipment.
+5. Where possible the proprietary SNMP MIBs from each manufacturer should be supported.
+6. Alternative management protocols such as SYSLOGs or proprietary API's should be considered if there is no more standard solution.
+7. The management system should be able to monitor the broadcast equipment without permanent VPN's being in place between the NOC and each station.
+8. The management solution should be deployable to the Cloud with remote access to each broadcast station.
+8. The design and layout of the site should be stored in a suitable inventory model / CMDB solution
+9. the overall IP address space should be managed by a central IPAM solution.
+10. The inventory system should be able to provision the management system automatically with IP addresses, Equipment Naming and Service relationships as new equipment is added.
+11. The inventory system should be able to track spares and quickly provision new sites with flow through provisioning to he management system.
+12. The overall solution should allow for secure sign-on and TLS/SSH security by design.
+13. Once installed, any remote equipment should be securely configurable and upgrade-able without human visits to site.
 
-[Kuwaiba OpenNMS Integration](./opennmsRadioModel.md)
+## Solution Overview
 
-[Grafana Radio Model](./grafanaRadioModel.md)
+Not all of the above requirements have been fully addressed in the present proof of concept but a large proportion of them have been achieved with a recommended route to final delivery. 
+However the following sections describe how the requirements have been addressed in each component of the solution.
 
-[Kuwaiba Radio Model](./kuwaibaRadioModel.md)
+[Kuwaiba OpenNMS Integration](./opennmsRadioModel.md) Discussion of how the radio equipment can be monitored by OpenNMS
 
-[Kuwaiba OpenNMS Integration](./opennmsKuwaibaIntegration.md)
+[Grafana Radio Model](./grafanaRadioModel.md) Discussion of how the network and service state can be visualised on Grafana
+
+[Kuwaiba Radio Model](./kuwaibaRadioModel.md) Discussion of the Kuwaiba data model for this project
+
+[Kuwaiba OpenNMS Integration](./opennmsKuwaibaIntegration.md) Discussion of the initial integration between OpenNMS and Kuwaiba.
 
