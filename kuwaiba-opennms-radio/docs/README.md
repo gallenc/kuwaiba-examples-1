@@ -71,7 +71,7 @@ An image of this equipment in a rack is shown below.
 
 ## Solution Requirements
 
-THe following are a minimal set of requirements to be investigated in the overall solution.
+The following are a minimal set of requirements to be investigated in the overall solution.
 
 1. Useful service affecting alarms should be presented for any site having a problem. These should identify the services affected and urgency of action required.
 2. Useful time series performance data should be stored from each site showing the ongoing performance and availability of the equipment.
