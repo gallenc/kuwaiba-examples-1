@@ -1,6 +1,6 @@
 # Broadcast Radio Management with Kuwaiba and OpenNMS
 
-[Main Menu](../README.md) | [Session 7](../session7/README.md)
+[Main Menu](../README.md) | [Kuwaiba Radio Model](../kuwaibaRadioModel.md)
 
 ## Introduction
 
