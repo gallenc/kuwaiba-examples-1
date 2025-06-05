@@ -93,9 +93,9 @@ THe following are a minimal set of requirements to be investigated in the overal
 Not all of the above requirements have been fully addressed in the present proof of concept but a large proportion of them have been achieved with a recommended route to final delivery. 
 However the following sections describe how the requirements have been addressed in each component of the solution.
 
-[Kuwaiba OpenNMS Integration](./opennmsRadioModel.md) Discussion of how the radio equipment can be monitored by OpenNMS
+[OpenNMS Radio Integration](./opennmsRadioModel.md) Discussion of how the radio equipment can be monitored by OpenNMS
 
-[Grafana Radio Model](./grafanaRadioModel.md) Discussion of how the network and service state can be visualised on Grafana
+[Grafana Radio Visualisation](./grafanaRadioModel.md) Discussion of how the network and service state can be visualised on Grafana
 
 [Kuwaiba Radio Model](./kuwaibaRadioModel.md) Discussion of the Kuwaiba data model for this project
 
