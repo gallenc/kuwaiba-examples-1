@@ -91,7 +91,7 @@ The following are a minimal set of requirements to be investigated in the overal
 ## Solution Overview
 
 Not all of the above requirements have been fully addressed in the present proof of concept but a large proportion of them have been achieved with a recommended route to final delivery. 
-However the following sections describe how the requirements have been addressed in each component of the solution.
+The following sections describe how the requirements have been addressed in each component of the solution.
 
 [OpenNMS Radio Integration](./opennmsRadioModel.md) Discussion of how the radio equipment can be monitored by OpenNMS
 
