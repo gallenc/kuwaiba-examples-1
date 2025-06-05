@@ -4,7 +4,7 @@
 
 ## Menu
 
-[Kuwaiba OpenNMS Integration](../opennmsRadioModel.md)
+[Kuwaiba OpenNMS Integration](./opennmsRadioModel.md)
 
 [Grafana Radio Model](../grafanaRadioModel.md)
 
