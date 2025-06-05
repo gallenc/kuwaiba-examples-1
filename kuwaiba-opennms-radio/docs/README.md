@@ -1,6 +1,8 @@
-# Broadcast Radio Management with Kuwaiba and OpenNMS
+# Overview of Broadcast Radio Management with Kuwaiba and OpenNMS
 
 [Main Menu](../README.md) | [Radio Management Overview](./README.md)
+
+![alt text](./images/radiosite1.png "Figure radiosite1.png")
 
 ## Menu
 
