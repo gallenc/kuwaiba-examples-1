@@ -2,7 +2,7 @@
 
 This example shows how Kuwaiba and OpenNMS can be used to model and manage a broadcast radio network.
 
-[Documentation](./docs) Full documentation on the project.
+[Documentation](./docs) More detailed documentation on the project.
 
 [kuwaiba-docker-compose-radio](./kuwaiba-docker-compose-radio) docker compose project for running examples.
 
