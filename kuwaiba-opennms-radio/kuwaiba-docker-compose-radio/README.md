@@ -81,22 +81,30 @@ The docker compose script has a profile to start opennms and the simulation as w
 ```
 docker compose  --profile opennms up -d
 ```
-With the [opennms] profile set all the containers will start.
-kuwaiba, pris and opennms, grafana, 4 minions, simulated radio network
+With the [opennms] profile set all the containers will start (kuwaiba, pris and opennms, grafana, 4 minions and the simulated radio network).
+
+![alt text](./images/docker-compose-start1.png "Figure docker-compose-start1.png")
 
 Note the simulation will take a few minutes to start first time.
+
 To follow progress use
 
 ```
 docker compose  --profile opennms ps
 ```
-when all of the containers are running and/or show 'healthy', the simulator is running.
+
+When all of the containers are running and/or show `healthy`, the simulator is running.
+Wait until all the minions become `healthy`
+
+![alt text](./images/docker-compose-healthy1.png "Figure docker-compose-healthy1.png")
 
 You can access the containers usign the nginx hosted front page at
 
 [https://localhost/index.html](https://localhost/index.html)
 
-This gives links to all of the components behind the proxy and also buttons to use rest calls to load and synchronise requisitions into OpenNMS.
+![alt text](./images/nginx-index-page.png "Figure nginx-index-page.png")
+
+This page gives links to all of the components behind the proxy and also buttons which make rest calls to load and synchronise requisitions into OpenNMS.
 
 
 To ensure complete shutdown use
