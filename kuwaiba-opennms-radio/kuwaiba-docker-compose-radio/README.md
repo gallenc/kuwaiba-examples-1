@@ -106,7 +106,6 @@ You can access the containers usign the nginx hosted front page at
 
 This page gives links to all of the components behind the proxy and also buttons which make rest calls to load and synchronise requisitions into OpenNMS.
 
-
 To ensure complete shutdown use
 
 ```
@@ -138,36 +137,53 @@ docker compose exec kuwaiba sh -c "rm -rf /tmp/kuwaiba && mkdir /tmp/kuwaiba && 
 docker compose cp kuwaiba:/tmp/kuwaiba/data.zip ./container-fs/kuwaiba/data-zip
 ```
 
-# Model Contents
+## Model Contents
 The Radio Network is modelled under country `United Kingdom`.
 
 See the `OpenNMSInventoryExport` report under the `Reports` tab in `Inventory report`s. 
 
 Running this report exports the model in CSV format for import to OpenNMS Pris.
 
-# Pris
+## Pris
 
 The provisioning integration server can use the kuwaiba rest api to get the pris CSV report directly from kuwaiba.
 
-Make a call to should show requisition file for all devices with IP address [http://localhost:8020/requisitions/kuwaiba-all](http://localhost:8020/requisitions/kuwaiba-all)
+To generate a requisition file for all devices in the model with IP address use
 
-Make a call to should show a requisition CSV file for only devices with an IP address in the UK [http://localhost:8020/requisitions/kuwaiba-UK](http://localhost:8020/requisitions/kuwaiba-UK)
+[https://localhost/requisitions/kuwaiba-all](https://localhost/requisitions/kuwaiba-all)
 
-A test requisition which uses a local CSV file is also provided using [http://localhost:8020/requisitions/testrequisition](http://localhost:8020/requisitions/testrequisition)
+or
+
+[http://localhost:8020/requisitions/kuwaiba-all](http://localhost:8020/requisitions/kuwaiba-all)
+
+
+To generate a requisition file for only devices with an IP address in the UK use
+
+ [https://localhost/requisitions/kuwaiba-UK](https://localhost/requisitions/kuwaiba-UK)
+ 
+ or
+
+ [http://localhost:8020/requisitions/kuwaiba-UK](http://localhost:8020/requisitions/kuwaiba-UK)
+
+A test requisition which uses a local CSV file is also provided using 
+
+[http://localhost:8020/requisitions/testrequisition](http://localhost:8020/requisitions/testrequisition)
+
+or
+
+[https://localhost/requisitions/testrequisition](https://localhost/requisitions/testrequisition)
 
 ### Importing Requisition from PRIS
 
 An event can be sent to OpenNMS to request that it imports a requisition from an external URL.
 
-See [OpenNMS import provisioning to OpenNMS](https://docs.opennms.com/pris/2.0.0/provision-to-opennms.html)
+See [OpenNMS import provisioning to OpenNMS](https://docs.opennms.com/pris/2.1.1/provision-to-opennms.html)
 
-[PRIS](https://docs.opennms.com/pris/2.0.0/index.html) is used as source of data to generate this requisition from an excel spreadsheet testradiosite1.csv.
+[The Provisioning Integration Server PRIS](https://docs.opennms.com/pris/2.1.1/index.html) is used as source of data to generate this requisition from external sources such as an excel spreadsheet or a csv file or using a groovy script.
 
-A docker image for PRIS is used to run the PRIS service. 
+In this case, a groovy script is called in Pris which makes a rest call to kuwaiba to run a report which returns csv data to pris for onward translation to an OpenNMs requisition
 
-You can see the requisition by pointing a browser at http://localhost:8000/requisitions/testradiosite1 but within the docker network, the requisition is found at http://pris-kuwaiba:8000/requisitions/testradiosite1
-
-To tell OpenNMS to import PRIS post the following event (change address as necessary)
+To tell OpenNMS to import from PRIS,  post the following event to the OpenNMS REST api (change address as necessary)
 
 ```
 POST http://localhost:8980/opennms/rest/events
@@ -182,14 +198,15 @@ Accept Application/xml
      </parm></parms> 
 </event>
 ```
-
-Once the requisition is loaded it can be synchronised with the database using
+Once the requisition is loaded it can be synchronised with the opennms database using
 
 ```
 PUT http://localhost:8980/opennms/rest/requisitions/kuwaiba-UK/import?rescanExisting=true
 ```
 
-The Nginx hosted front page contains two buttons load and synchronize which can be used to send these requests events to OpenNMS
+The Nginx hosted demo front page contains two buttons `Import Requisition to OpenNMS` and `Synchronise Requisition with OpenNMS Database` which can be used to send these request to OpenNMS.
+
+(Note that on first startup you may need to retry these buttons because Kuwaiba may not respond to the first request if the application is not fully started)
 
 [https://localhost/index.html](https://localhost/index.html)
 
