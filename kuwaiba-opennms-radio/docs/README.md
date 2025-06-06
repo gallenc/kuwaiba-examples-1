@@ -67,16 +67,9 @@ The DAB transmitter chain uses a set of separate components which do not provide
 
 Images of this equipment in a rack along side their kuwaiba rack position is shown below. 
 
-<table>
-  <tr>
-    <td>
-    ![alt text](./images/RackImage-anonymised-small.png "Figure RackImage-anonymised-small.png")
-    </td>
-    <td>
-    ![alt text](./images/Rack1.png "Figure Rack1.png")
-    </td>
-  </tr>
-</table>
+
+![alt text](./images/RackImage-anonymised-small.png "Figure RackImage-anonymised-small.png")  ![alt text](./images/Rack1.png "Figure Rack1.png")
+
 
 ## Solution Requirements
 
