@@ -50,18 +50,13 @@ docker compose logs -f kuwaiba
 # to shut down
 docker compose down
 ```
-After a short time, 
+After a short time Kuwaiba will be available through the Nginx proxy at 
 
-Kuwaiba will be available through the Nginx proxy
+[https://localhost/kuwaiba](https://localhost/kuwaiba)
 
-```
-https://localhost/kuwaiba
-```
-or at
+or directly at
 
-```
-http://localhost:8080/kuwaiba
-```
+[http://localhost:8080/kuwaiba](http://localhost:8080/kuwaiba)
 
 The new Kuwaiba model will be imported from `container-fs/kuwaiba/data-zip/data.zip` on the first run.
 (If data.zip is not present, the default kuwiba model from the container will be used).
@@ -73,10 +68,21 @@ You can clear the model back to the original data.zip by running
 ```
 docker compose down -v
 ```
+## default credentials
+
+The following default credentials are used in this demo. 
+(They may be changed in a publicly hosted version)
+
+| Component         |URL                         | Username | Password |
+| :---------------- | :------------------------- |:-------- | :------- |
+| OpenNMS           | https://localhost/opennms  | admin     | admin   |
+| Grafana          | https://localhost/grafana  | admin     | mypass  |
+| Kuwaiba           | https://localhost/kuwaiba  | admin     | kuwaiba |
+
 
 ## Running the complete simulation
 
-The docker compose script has a profile to start opennms and the simulation as well as Kuwaiba and pris.
+The docker compose script has a profile to start OpenNMS and the simulation as well as Kuwaiba and pris.
 
 ```
 docker compose  --profile opennms up -d
@@ -112,7 +118,7 @@ To ensure complete shutdown use
 docker compose  --profile opennms down
 ```
 
-You can look at opennms logs using
+You can look at OpenNMS logs using
 
 ```
 docker compose --profile opennms logs -f opennms 
@@ -212,7 +218,7 @@ The Nginx hosted demo front page contains two buttons `Import Requisition to Ope
 
 ## reloading using send event pl
 
-Note this works on most linux distributions of OpenNMS but perl is not installed in latest opennms containers so this will not work
+Note this works on most linux distributions of OpenNMS but perl is not installed in latest OpenNMS containers so this will not work
 ```
 docker compose exec horizon /usr/share/opennms/bin/send-event.pl uei.opennms.org/internal/importer/reloadImport -p 'url http://pris-kuwaiba:8000/requisitions/kuwaiba-UK' 
 ```
