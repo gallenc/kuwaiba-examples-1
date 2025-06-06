@@ -3,30 +3,40 @@
 Note: This project is work in progress and subject to change.
 
 This project contains a demonstration of modelling a network using Kuwaiba and exporting a network configuration from Kuwaiba to OpenNMS. 
+
 * [Kuwaiba](https://www.kuwaiba.org/) is an open source Service Provider Inventory solution
 * [OpenNMS](https://github.com/OpenNMS/opennms) is an open source enterprise grade network manamgent platform.
 
-# Brief Description
-This docker compose project contains a kuwaiba test project which uses the standard [kuwaiba 2.1.1 container](https://hub.docker.com/r/neotropic/kuwaiba).
+
+## Brief Description
+This docker compose project contains a Kuwaiba test project which uses the standard [kuwaiba 2.1.1 container](https://hub.docker.com/r/neotropic/kuwaiba).
 
 The project demonstrates modelling a small broadcast radio network.
 It also contains a report for exporting a configuration in a CSV format which can be directly imported to OpenNMS
 using the [provisioning integration server PRIS](https://docs.opennms.com/pris/2.1.0/index.html).
 
 The docker compose project extends the container so that it can automatically import an external model from a data.zip file contained in this project.
-This means that a full working kuwaiba network model and report scripts can be included in the project for demonstration purposes.
-Different projects can maintain seperate models which makes it easy to create multiple demonstrators which are easy to run for testing and demonstration purposes.
+This means that a full working Kuwaiba network model and report scripts can be included in the project for demonstration purposes.
+Different projects can maintain separate models which makes it easy to create multiple demonstrators which are easy to run for testing and demonstration purposes.
 
-# Running the project
+The project also contains an OpenNNS installation and a simulated network using [snmpsim](https://github.com/etingof/snmpsim) to simulate the SNMP agents of the monitored devices.
+
+Nginx is used to provide a front end and home page for the simulation including buttons to control the import of models from OpenNMS.
+
+## Running only Nginx, Kuwaiba and opennms-pris
+
+The full demo uses a lot of memory so there is an option to only run the Kuwaiba and opennms-pris containers.
+With no profile set only Kuwaiba and kuwaiba-pris containers will start.
+
 To run the project, wou should have Docker installed on your system.
 ([Docker Desktop](https://docs.docker.com/desktop/) on a PC).
 
-Check out the project using git and cd to the `kuwaiba-docker-compose` project.
+Check out the project using git and cd to the `kuwaiba-docker-compose-radio` project.
 
 Commands (in power shell or terminal window) when docker is running:
 
 ```
-cd kuwaiba-docker-compose
+cd kuwaiba-docker-compose-radio
 
 # build the extended kuwaiba container (only needed before first run - and may automaticlaly happen anyway)
 docker compose build
@@ -40,13 +50,23 @@ docker compose logs -f kuwaiba
 # to shut down
 docker compose down
 ```
-After a short time, kuwaiba will be available at http://localhost:8080/kuwaiba
+After a short time, 
 
-The new kawaiba model will be imported from `container-fs/kuwaiba/data-zip/data.zip` on the first run.
+Kuwaiba will be available through the Nginx proxy
+
+```
+https://localhost/kuwaiba
+```
+or at
+
+```
+http://localhost:8080/kuwaiba
+```
+
+The new Kuwaiba model will be imported from `container-fs/kuwaiba/data-zip/data.zip` on the first run.
 (If data.zip is not present, the default kuwiba model from the container will be used).
 
 Any changes to this model will be persisted to the docker kuwaiba-data volume across restarts.
-
 
 You can clear the model back to the original data.zip by running
 
@@ -54,7 +74,50 @@ You can clear the model back to the original data.zip by running
 docker compose down -v
 ```
 
-# Creating a zip of your own model.
+## Running the complete simulation
+
+The docker compose script has a profile to start opennms and the simulation as well as Kuwaiba and pris.
+
+```
+docker compose  --profile opennms up -d
+```
+With the [opennms] profile set all the containers will start.
+kuwaiba, pris and opennms, grafana, 4 minions, simulated radio network
+
+Note the simulation will take a few minutes to start first time.
+To follow progress use
+
+```
+docker compose  --profile opennms ps
+```
+when all of the containers are running and/or show 'healthy', the simulator is running.
+
+You can access the containers usign the nginx hosted front page at
+
+[https://localhost/index.html](https://localhost/index.html)
+
+This gives links to all of the components behind the proxy and also buttons to use rest calls to load and synchronise requisitions into OpenNMS.
+
+
+To ensure complete shutdown use
+
+```
+docker compose  --profile opennms down
+```
+
+You can look at opennms logs using
+
+```
+docker compose --profile opennms logs -f opennms 
+```
+
+To clear the simulation including OpenNMS back to the virgin state use
+
+```
+docker compose  --profile opennms down -v
+```
+
+## Creating a zip of your own kuwaiba model.
 
 You can export/backup any changes to your own model as data.zip from a running container by zipping the /data folder in a running kuwaiba container.
 The following commands will do this for a running project without logging into the container.
@@ -74,21 +137,17 @@ See the `OpenNMSInventoryExport` report under the `Reports` tab in `Inventory re
 
 Running this report exports the model in CSV format for import to OpenNMS Pris.
 
-
-
 # Pris
 
-Provisioning integration server now uses the kuwaiba rest api to get the pris CSV report from kuwaiba.
+The provisioning integration server can use the kuwaiba rest api to get the pris CSV report directly from kuwaiba.
 
 Make a call to should show requisition file for all devices with IP address [http://localhost:8020/requisitions/kuwaiba-all](http://localhost:8020/requisitions/kuwaiba-all)
 
+Make a call to should show a requisition CSV file for only devices with an IP address in the UK [http://localhost:8020/requisitions/kuwaiba-UK](http://localhost:8020/requisitions/kuwaiba-UK)
 
-Make a call to should show requisition file for only devices in Hampshire with an IP address[http://localhost:8020/requisitions/kuwaiba-hampshire](http://localhost:8020/requisitions/kuwaiba-hampshire)
-
-A test requisition which uses a local CSV file is provided using [http://localhost:8020/requisitions/testrequisition](http://localhost:8020/requisitions/testrequisition)
+A test requisition which uses a local CSV file is also provided using [http://localhost:8020/requisitions/testrequisition](http://localhost:8020/requisitions/testrequisition)
 
 ### Importing Requisition from PRIS
-
 
 An event can be sent to OpenNMS to request that it imports a requisition from an external URL.
 
@@ -98,17 +157,17 @@ See [OpenNMS import provisioning to OpenNMS](https://docs.opennms.com/pris/2.0.0
 
 A docker image for PRIS is used to run the PRIS service. 
 
-You can see the requisiton by pointing a browser at http://localhost:8000/requisitions/testradiosite1  but within the docker network, the requisition is found at http://pris:8000/requisitions/testradiosite1
+You can see the requisition by pointing a browser at http://localhost:8000/requisitions/testradiosite1 but within the docker network, the requisition is found at http://pris-kuwaiba:8000/requisitions/testradiosite1
 
-To tell OpenNMS to import PRIS use the following event (change address as necessary)
+To tell OpenNMS to import PRIS post the following event (change address as necessary)
 
+```
 POST http://localhost:8980/opennms/rest/events
 
 Content-Type Application/xml
 
 Accept Application/xml
 
-```
 <event><uei>uei.opennms.org/internal/importer/reloadImport</uei>
      <parms><parm>
          <parmName>url</parmName><value>http://pris-kuwaiba:8000/requisitions/kuwaiba-UK</value>
@@ -116,8 +175,19 @@ Accept Application/xml
 </event>
 ```
 
+Once the requisition is loaded it can be synchronised with the database using
+
+```
+PUT http://localhost:8980/opennms/rest/requisitions/kuwaiba-UK/import?rescanExisting=true
+```
+
+The Nginx hosted front page contains two buttons load and synchronize which can be used to send these requests events to OpenNMS
+
+[https://localhost/index.html](https://localhost/index.html)
+
 ## reloading using send event pl
 
+Note this works on most linux distributions of OpenNMS but perl is not installed in latest opennms containers so this will not work
 ```
 docker compose exec horizon /usr/share/opennms/bin/send-event.pl uei.opennms.org/internal/importer/reloadImport -p 'url http://pris-kuwaiba:8000/requisitions/kuwaiba-UK' 
 ```

@@ -1,5 +1,27 @@
 ---
-# using fixed ip addresses so opennms provisoning config works
+
+# Docker compose project containing kuwaiba opennms wireless simulation
+# Craig Gallen Entimoss LTD
+#
+# USAGE
+# The full demo uses a lot of memory so there is an option to only run thekuwaiba and opennms-pris containers.
+# With no profile set only kuwaiba and kuwaiba-pris containers will start
+#
+# docker compose up -d 
+#
+# The docker compose script has a profile to start opennms and the simulation as well as kuwaiba and pris.
+#
+# docker compose  --profile opennms up -d
+#
+# With the [opennms] profile set all the containers will start.
+# kuwaiba, pris and opennms, grafana, 4 minions, simulated radio network
+
+# to ensure complete shutdown use
+#
+# docker compose  --profile opennms down
+#
+
+# using fixed ip addresses so opennms provisoning config works with known addresses
 # to see all network use docker network ls
 # to see config use docker network inspect kuwabia-docker-compose_kuwaiba-net
 # note gateway is 172.30.0.1 
@@ -93,6 +115,7 @@ services:
         ipv4_address: 172.30.0.35
         
   database:
+    profiles: [opennms]
     image: ${DOCKER_REGISTRY:-docker.io}/postgres:${POSTGRES_VERSION:-13}
     container_name: database
     hostname: database
@@ -114,6 +137,7 @@ services:
         ipv4_address: 172.30.0.10
 
   pgadmin:
+    profiles: [opennms]
     image: dpage/pgadmin4
     container_name: pgadmin
     restart: always
@@ -131,6 +155,7 @@ services:
         ipv4_address: 172.30.0.11
 
   horizon:
+    profiles: [opennms]
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${HORIZON_OCI:-horizon}:${ONMS_VERSION:-bleeding}
     container_name: horizon
     hostname: horizon
@@ -174,6 +199,7 @@ services:
         ipv4_address: 172.30.0.15
       
   grafana:
+    profiles: [opennms]
     image: ${DOCKER_REGISTRY:-docker.io}/grafana/grafana:${GRAFANA_VERSION:-latest}
     container_name: grafana
     hostname: grafana
@@ -211,6 +237,7 @@ services:
 # minion1 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION ftwidley1
   minion1:
+    profiles: [opennms]
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
     container_name: minion1
     hostname: minion1
@@ -251,6 +278,7 @@ services:
 # minion 2 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION crabwoodFarm1
   minion2:
+    profiles: [opennms]
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
     container_name: minion2
     hostname: minion2
@@ -293,6 +321,7 @@ services:
 # minion 3 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION rowridge1
   minion3:
+    profiles: [opennms]
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
     container_name: minion3
     hostname: minion3
@@ -335,6 +364,7 @@ services:
 # minion 4 is an instance of a minion on testradiosite network. Used to access devices simulated using snmpsim
 # LOCATION campHill1
   minion4:
+    profiles: [opennms]
     image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_ORG:-opennms}/${MINION_OCI:-minion}:${ONMS_VERSION:-bleeding}
     container_name: minion4
     hostname: minion4
@@ -376,6 +406,7 @@ services:
 
   # snmpsim container in network default - all radio mibs (used for testing)
   snmpsim:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
@@ -404,6 +435,7 @@ services:
 
   # snmpsim container in testradiosite1
   DB9000RX:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
@@ -425,6 +457,7 @@ services:
         ipv4_address: 192.168.105.99
 
   DB8008:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
@@ -446,6 +479,7 @@ services:
         ipv4_address: 192.168.105.100
 
   DB7012:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
@@ -467,6 +501,7 @@ services:
         ipv4_address: 192.168.105.101
 
   VIGOR2927-PRI:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
@@ -489,6 +524,7 @@ services:
         ipv4_address: 192.168.105.10 # note in the simulation we are using address .10 because .1 conflicts with default gateway in docker network 192.168.105.1
         
   VIGOR2927L-SEC:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
@@ -511,6 +547,7 @@ services:
         ipv4_address: 192.168.105.2
         
   VIGOR2927L-VIRTUAL:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
@@ -533,6 +570,7 @@ services:
         ipv4_address: 192.168.105.254
         
   cardinalImdu:
+    profiles: [opennms]
 #    image: ${DOCKER_REGISTRY:-docker.io}/tandrup/snmpsim:${SNMPSIM_VERSION:-v0.4}
     image: onms-training/snmpsim
     build: ./container-fs/snmpsim/
