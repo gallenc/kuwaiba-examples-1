@@ -79,7 +79,7 @@ Some of the separate components in a rack may be further contained in a shelf.
 
 ### Electrical connections
 
-The ports on each equipment an the electrical connections between equipment ports are modelled for power, Ethernet, Analogue Audio and RF signals.
+The ports on each equipment and the electrical connections between equipment ports are modelled for power, Ethernet, Analogue Audio and RF signals.
 THis is shown in the somewhat busy Rack Object diagram below.
 
 ( PLEASE NOTE only the Portsmouth/Fort Widley site has all of it's wiring modelled as an example. 
