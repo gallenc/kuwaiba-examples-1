@@ -75,7 +75,7 @@ If the Kuwaiba API is used, pris must first request an access token and then use
 
 Reports are numbered depending on their order of provisioning, so PRIS requests the report number from a list of reports and then uses that number in the request. 
 
-PRIS also injects external parametes into the request which are set in the requisition.properties file.
+PRIS also injects external report parameters into the request which are set in the `requisition.properties` file for each requisition deefinition.
 
 
 
