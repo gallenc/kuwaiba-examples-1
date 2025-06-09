@@ -101,7 +101,11 @@ Ports on devices within each sight are associated with the relavant address in t
 
 ## Service modelling
 
-![alt text](./images/servicePools.png "Figure servicePools.png")
+This example uses a very simple service model.
+
+A Broadcasting customer pool is added with two customers `ILR Contractor1`, `ILR Contractor2`, `ILR Contractor3`.
+
+Each Broadcast Customer has a pool of `Radio Station` services.
 
 ```
 Class Name:
@@ -109,6 +113,15 @@ BroadcastService
 Containment Path
 : Radio Stations [Pool of GenericService]: ILR Contractor 1 [Broadcaster]: Broadcasters [Pool of GenericCustomer]
 ```
+
+In this model, all of the equipment in a given rack are delivering the same radio service (DAB and FM).
+So any alarms detected on one of the devices in the rack will be affecting that particular service.
+
+This service data can be used to create metadata which helps annotate Grafana displays. 
+This means that only devices related to a certain customer service will be displayed on a given Grafana page.
+
+![alt text](./images/servicePools.png "Figure servicePools.png")
+
 
 
 
