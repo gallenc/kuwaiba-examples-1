@@ -61,34 +61,13 @@ The Report has several properties which control report generation.
 
 | Parameters | description |
 |:----------:|:-----------:|
-|useNodeLabelAsForeignId | If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default) 
-<BR>If true the report uses the generated object label as node foreignId in the requisition. |
-| useAbsoluteNames  | <BR>If blank or false, the report uses parent location and rack to generate each node name.
-<BR>if true it uses only the name of the node given in the model  |
-|  useAllPortAddresses  | <BR>If blank or false, the report only uses ports designated as isManagement. (default)
-<BR>If true it uses all port addresses assigned to a device and designates the interface snmp-primary P (primary snmp) if isManagment is true
-<BR>or N (Not managed) if isManagment is false  |
-| defaultAssetCategory  | <BR>AssetCategory is populated from device EquipmentModel displayName
-<BR>if the displayName is not set then the AssetCategory is set to the defaultAssetCategory or blank if the defaultAssetCategory is not set
-<BR>(this can be used in grafana to determine which display template to use)  |
-|    defaultAssetDisplayCategory  | <BR>AssetDisplayCategory is populated from the customer name associated with a service attached to a device or a parent rack in the model.
-<BR>if AssetDisplayCategory is not populated from the model, a default value can be used.
-<BR>AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set
-<BR>(this can be used in OpenNMS to determine which users can view an object)  |
-|    subnetNetSubstitutionFilter  | <BR>Substitutes the network portion of the inputIpv4Address for the network portion of the substitute address
-<BR>if the address being filtered is within the within subnet range.
-<BR>If null or empty, then the address is passed through unchanged.
-<BR>For example:
-<BR>                                    <within subnet>=<substitute subnet>
-<BR>   String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24"
-<BR>   if the input inputIpv4AddressStr = "172.16.105.20"
-<BR>   the substitute is  substituteAddressStr= "192.168.105.20  |
-| rangeParentValue |
-<BR>rangeParentValue is used to find the parent visible object of the devices to include in the device list.
-<BR>If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.
-<BR>The rangeParentValue can be the name property of the object or the kuwaiba objectID of the object.
-<BR>If the rangeParentValue is not set or is empty, all devices will be included in the tree.
-<BR>If the rangeParentValue is not found, an exception will be thrown and the report will not complete.  |
+|useNodeLabelAsForeignId | If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default) <BR>If true the report uses the generated object label as node foreignId in the requisition. |
+| useAbsoluteNames  | <BR>If blank or false, the report uses parent location and rack to generate each node name.<BR>if true it uses only the name of the node given in the model  |
+|  useAllPortAddresses  | <BR>If blank or false, the report only uses ports designated as isManagement. (default)<BR>If true it uses all port addresses assigned to a device and designates the interface snmp-primary P (primary snmp) if isManagment is true<BR>or N (Not managed) if isManagment is false  |
+| defaultAssetCategory  | <BR>AssetCategory is populated from device EquipmentModel displayName<BR>if the displayName is not set then the AssetCategory is set to the defaultAssetCategory or blank if the defaultAssetCategory is not set<BR>(this can be used in grafana to determine which display template to use)  |
+| defaultAssetDisplayCategory  | <BR>AssetDisplayCategory is populated from the customer name associated with a service attached to a device or a parent rack in the model.<BR>if AssetDisplayCategory is not populated from the model, a default value can be used.<BR>AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set<BR>(this can be used in OpenNMS to determine which users can view an object)  |
+|    subnetNetSubstitutionFilter  | <BR>Substitutes the network portion of the inputIpv4Address for the network portion of the substitute address<BR>if the address being filtered is within the within subnet range.<BR>If null or empty, then the address is passed through unchanged.<BR>For example:<BR>                                    <within subnet>=<substitute subnet><BR>   String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24"<BR>   if the input inputIpv4AddressStr = "172.16.105.20"<BR>   the substitute is  substituteAddressStr= "192.168.105.20  |
+| rangeParentValue |<BR>rangeParentValue is used to find the parent visible object of the devices to include in the device list.<BR>If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.<BR>The rangeParentValue can be the name property of the object or the kuwaiba objectID of the object.<BR>If the rangeParentValue is not set or is empty, all devices will be included in the tree.<BR>If the rangeParentValue is not found, an exception will be thrown and the report will not complete.  |
 
  
 
