@@ -2,6 +2,15 @@
 
 This example shows how Kuwaiba and OpenNMS can be used to model and manage a broadcast radio network.
 
+<table>
+  <tr>
+    <td><img src="./docs/images/OutsidePlant.png" width="400" title="Kuwaiba Radio Network" alt="OutsidePlant.png"/></td>
+    <td><img src="./docs/images/logo_kuwaiba1.png" width="400" alt=logo_kuwaiba1.png"/><BR>
+    <img src="./docs/images/OpenNMSLogo.png" width="400" alt=OpenNMSLogo.png"/>
+    </td>
+  </tr>
+</table>
+
 ## Contents
 
 [docs](./docs) Case Study - Broadcast Radio Management using OpenNMS and Kuwaiba contains detailed documentation on the project.
