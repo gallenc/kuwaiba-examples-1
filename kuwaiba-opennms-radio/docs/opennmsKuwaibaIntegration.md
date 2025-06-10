@@ -71,7 +71,7 @@ The Report has several properties which control report generation.
 |    subnetNetSubstitutionFilter  | <BR>Substitutes the network portion of the inputIpv4Address for the network portion of the substitute address<BR>if the address being filtered is within the within subnet range.<BR>If null or empty, then the address is passed through unchanged.<BR>For example:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -within subnet-=-substitute subnet-<BR>   String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24"<BR>   if the input inputIpv4AddressStr = "172.16.105.20"<BR>   the substitute is  substituteAddressStr= "192.168.105.20  |
 | rangeParentValue |<BR>rangeParentValue is used to find the parent visible object of the devices to include in the device list.<BR>If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.<BR>The rangeParentValue can be the name property of the object or the kuwaiba objectID of the object.<BR>If the rangeParentValue is not set or is empty, all devices will be included in the tree.<BR>If the rangeParentValue is not found, an exception will be thrown and the report will not complete.  |
 
-If the Kuwaiba API is used, pris must first request an access token and then use that token for all other actions. 
+If the Kuwaiba API is used, PRIS must first request an access token and then use that token for all other actions. 
 
 Reports are numbered depending on their order of provisioning, so PRIS selects the report number from a retrieved list of reports and then uses that number in the execute request. 
 
