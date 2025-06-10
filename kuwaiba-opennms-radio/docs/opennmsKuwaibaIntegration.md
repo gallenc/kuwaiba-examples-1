@@ -39,7 +39,7 @@ The Kuwaiba requisition definition consists of a `requisition.properties` file a
 
 PRIS makes a ReST call to Kuwaiba to run a named inventory report. 
 The Inventory report must return a CSV file with columns corresponding to the [ CSV import definition](https://docs.opennms.com/pris/2.1.0/sources/csv.html)
-and Asset Field Mapping (https://docs.opennms.com/pris/2.1.0/mapper/asset-fields.html)
+and [Asset Field Mapping](https://docs.opennms.com/pris/2.1.0/mapper/asset-fields.html)
 
 PRIS turns the CSV returned from Kuwaiba
 
