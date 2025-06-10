@@ -20,7 +20,7 @@ The project demonstrates modelling a small broadcast radio network.
 It also contains a report for exporting a configuration in a CSV format which can be directly imported to OpenNMS
 using the [provisioning integration server PRIS](https://docs.opennms.com/pris/2.1.0/index.html).
 
-The docker compose project extends the container so that it can automatically import an external model from a data.zip file contained in this project.
+The docker compose project extends the Kuwaiba container so that it can automatically import an external model from a data.zip file contained in this project.
 This means that a full working Kuwaiba network model and report scripts can be included in the project for demonstration purposes.
 Different projects can maintain separate models which makes it easy to create multiple demonstrators which are easy to run for testing and demonstration purposes.
 
