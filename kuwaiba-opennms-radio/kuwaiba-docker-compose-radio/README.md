@@ -49,7 +49,7 @@ docker compose build
 # start kuwaiba as a service
 docker compose up -d
 
-# to see logs
+# to see kuwaiba logs
 docker compose logs -f kuwaiba
 
 # to shut down
