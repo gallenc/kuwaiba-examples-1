@@ -1,8 +1,8 @@
 # Grafana Visualisation of Radio Network
 
-[Main Menu](../README.md) | [Radio Modelling](../docs/README.md) | [Exercise-7-2](../session7/Exercise-7-2.md)
+[Main Menu](../README.md) | [Radio Modelling](../docs/README.md) | [Grafana Visualisation](../docs/grafanaRadioModel.md)
 
-TBD
+The following diagram shows the type of data driven Grafana visualisation rendered by this model.
 
-![alt text](../session7/images/BSMTopology1.png "Figure BSMTopology1.png")
+![alt text](./images/GrafanaDashboard1.png "Figure GrafanaDashboard1.png")
 
