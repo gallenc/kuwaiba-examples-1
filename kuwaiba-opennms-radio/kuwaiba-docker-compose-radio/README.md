@@ -1,4 +1,4 @@
-# Kuwaiba Demonstration and Test project
+# Kuwaiba Broadcast Radio Demonstration and Test project
 
 Note: This project is work in progress and subject to change.
 
