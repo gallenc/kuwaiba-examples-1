@@ -5,14 +5,14 @@ https://www.deva-broadcast-tools.com/products/db8008
 ## SNMP WALK
 
 ```
-snmpwalk -v1 -On 192.168.105.100 -c DEVA8008 .1.3
+snmpwalk -v1 -On 192.168.105.100 -c public .1.3
 ```
 
 
 ## SNMPSIM recording
 
 ```
- snmprec.py --community=DEVA8008  --protocol-version=1   --agent-udpv4-endpoint=192.168.105.100 --output-file=./DEVA8008.snmprec
+ snmprec.py --community=public  --protocol-version=1   --agent-udpv4-endpoint=192.168.105.100 --output-file=./DEVA8008.snmprec
 ```
 
 ## DB8008 Test Events (netsnmp)
@@ -30,7 +30,7 @@ varbind2 - snmpaid .1.3.6.1.4.1.35833.6.2.7.3.5.0
 (not clear what this trap is for)
 
 ```
-snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.1   .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Angel audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
+snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.1   .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Portsmouth audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
 
 ```
 
@@ -57,14 +57,14 @@ varbind4 - snmpaid .1.3.6.1.4.1.35833.6.2.7.3.5.0
 #### example source changed to insel2MainAudio
 
 ```
-snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.2  .1.3.6.1.4.1.35833.6.3.2.0 i 1  .1.3.6.1.4.1.35833.6.3.2.0 i 0 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Angel audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
+snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.2  .1.3.6.1.4.1.35833.6.3.2.0 i 1  .1.3.6.1.4.1.35833.6.3.2.0 i 0 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Portsmouth audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
 
 ```
 
 #### example source changed to insel2AUXAudio
 
 ```
-snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.2  .1.3.6.1.4.1.35833.6.3.2.0 i 2  .1.3.6.1.4.1.35833.6.3.2.0 i 0 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Angel audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
+snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.2  .1.3.6.1.4.1.35833.6.3.2.0 i 2  .1.3.6.1.4.1.35833.6.3.2.0 i 0 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Portsmouth audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
 
 ```
 
@@ -102,14 +102,14 @@ varbind4 - snmpaid .1.3.6.1.4.1.35833.6.2.7.3.5.0
 #### example digital sync loss insel2MainAudio (change the mntrSource for other alarm raises)
 
 ```
-snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.3   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Angel audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
+snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.3   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Portsmouth audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
 
 ```
 
 #### example digital sync recover insel2MainAudio  (change the mntrSource for other clears)
 
 ```
-snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.43   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Angel audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
+snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.43   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Portsmouth audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
 
 ```
 
@@ -146,13 +146,13 @@ varbind4 - snmpaid .1.3.6.1.4.1.35833.6.2.7.3.5.0
 #### example  audio loss insel2MainAudio (change the mntrSource for other alarm raises)
 
 ```
-snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.5   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Angel audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
+snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.5   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Portsmouth audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
 
 ```
 
 #### example  audio recover insel2MainAudio  (change the mntrSource for other clears)
 
 ```
-snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.6   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Angel audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
+snmptrap -v 2c -c public horizon:1162 ""  .1.3.6.1.4.1.35833.6.254.0.6   .1.3.6.1.4.1.35833.6.3.1.0 i 1 .1.3.6.1.4.1.35833.6.2.8.1.0 s 'Portsmouth audio switch 98.6'  .1.3.6.1.4.1.35833.7.1.2.0 i 0
 
 ```

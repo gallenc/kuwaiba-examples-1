@@ -8,14 +8,14 @@ The DB9000-RX is a reliable IP to Audio decoder, designed to support HE-AAC and 
 ## SNMP WALK DB9000RX
 
 ```
-snmpwalk -v1 -On 192.168.105.99 -c DEVA9000 .1.3
+snmpwalk -v1 -On 192.168.105.99 -c public .1.3
 ```
 
 
 ## SNMPSIM recording
 
 ```
- snmprec.py --community=DEVA9000  --protocol-version=1   --agent-udpv4-endpoint=192.168.105.99 --output-file=./DEVA9000.snmprec
+ snmprec.py --community=public  --protocol-version=1   --agent-udpv4-endpoint=192.168.105.99 --output-file=./DEVA9000.snmprec
 ```
 
 
