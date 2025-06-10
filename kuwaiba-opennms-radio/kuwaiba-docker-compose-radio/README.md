@@ -5,8 +5,13 @@ Note: This project is work in progress and subject to change.
 This project contains a demonstration of modelling a network using Kuwaiba and exporting a network configuration from Kuwaiba to OpenNMS. 
 
 * [Kuwaiba](https://www.kuwaiba.org/) is an open source Service Provider Inventory solution
-* [OpenNMS](https://github.com/OpenNMS/opennms) is an open source enterprise grade network manamgent platform.
+* [OpenNMS](https://github.com/OpenNMS/opennms) is an open source enterprise grade network management platform.
 
+The docker compose network model of the complete simulation is shown below.
+
+The network devices are simulated using snmpsim containers and four minions scan these devices but represent them to OpenNMS as separate devices on four site locations.
+
+![alt text](./images/radioNetworkSimulation1.png "Figure radioNetworkSimulation1.png")
 
 ## Brief Description
 This docker compose project contains a Kuwaiba test project which uses the standard [kuwaiba 2.1.1 container](https://hub.docker.com/r/neotropic/kuwaiba).
