@@ -446,8 +446,6 @@ services:
     volumes:
       - ./container-fs/snmpsim/data/DEVA9000.snmprec:/usr/local/snmpsim/data/public.snmprec
 
-      # note empty public.snmprec so that there is no response to a community name public request
-      - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
       # mibs folder so we can compile mibs if needed
       - ./container-fs/snmpsim/mibs:/usr/local/snmpsim/mibs
     ports:
@@ -468,8 +466,6 @@ services:
     volumes:
       - ./container-fs/snmpsim/data/DEVA8008.snmprec:/usr/local/snmpsim/data/public.snmprec
 
-      # note empty public.snmprec so that there is no response to a community name public request
-      - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
       # mibs folder so we can compile mibs if needed
       - ./container-fs/snmpsim/mibs:/usr/local/snmpsim/mibs
     ports:
@@ -490,8 +486,6 @@ services:
     volumes:
       - ./container-fs/snmpsim/data/DEVA7012.snmprec:/usr/local/snmpsim/data/public.snmprec
 
-      # note empty public.snmprec so that there is no response to a community name public request
-      - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
       # mibs folder so we can compile mibs if needed
       - ./container-fs/snmpsim/mibs:/usr/local/snmpsim/mibs
     ports:
@@ -513,8 +507,6 @@ services:
       # mapping to public community string
       - ./container-fs/snmpsim/data/draytek2860-pri.snmprec:/usr/local/snmpsim/data/public.snmprec
 
-      # note empty public.snmprec so that there is no response to a community name public request
-      #- ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
       # mibs folder so we can compile mibs if needed
       - ./container-fs/snmpsim/mibs:/usr/local/snmpsim/mibs
     ports:
@@ -536,8 +528,6 @@ services:
       # mapping to public community string
       - ./container-fs/snmpsim/data/draytek2860-sec.snmprec:/usr/local/snmpsim/data/public.snmprec
 
-      # note empty public.snmprec so that there is no response to a community name public request
-      #- ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
       # mibs folder so we can compile mibs if needed
       - ./container-fs/snmpsim/mibs:/usr/local/snmpsim/mibs
     ports:
@@ -559,8 +549,6 @@ services:
       # mapping to public community string
       - ./container-fs/snmpsim/data/draytek2860-virtual.snmprec:/usr/local/snmpsim/data/public.snmprec
 
-      # note empty public.snmprec so that there is no response to a community name public request
-      # - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
       # mibs folder so we can compile mibs if needed
       - ./container-fs/snmpsim/mibs:/usr/local/snmpsim/mibs
     ports:
@@ -581,8 +569,6 @@ services:
     volumes:
       - ./container-fs/snmpsim/data/cardinalImdu.snmprec:/usr/local/snmpsim/data/public.snmprec
 
-      # note empty public.snmprec so that there is no response to a community name public request
-      # - ./container-fs/snmpsim/data/public.snmprec:/usr/local/snmpsim/data/public.snmprec
       # mibs folder so we can compile mibs if needed
       - ./container-fs/snmpsim/mibs:/usr/local/snmpsim/mibs
     ports:
