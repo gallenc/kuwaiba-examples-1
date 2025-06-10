@@ -1,5 +1,8 @@
 # Broadcast Radio Network Management Example
 
+> **Note**  
+> A video demonstrating this project is available at https://youtu.be/KAJs3QmSp4A
+
 This example shows how Kuwaiba and OpenNMS can be used to model and manage a broadcast radio network.
 
 * [Kuwaiba](https://www.kuwaiba.org/) is an open source Service Provider Inventory solution
