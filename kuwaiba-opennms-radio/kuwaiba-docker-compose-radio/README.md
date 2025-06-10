@@ -66,7 +66,7 @@ or directly at
 The new Kuwaiba model will be imported from `container-fs/kuwaiba/data-zip/data.zip` on the first run.
 (If data.zip is not present, the default kuwiba model from the container will be used).
 
-Any changes to this model will be persisted to the docker kuwaiba-data volume across restarts.
+Any changes to this model will be persisted to the docker `kuwaiba-data` volume across restarts.
 
 You can clear the model back to the original data.zip by running
 
@@ -81,13 +81,12 @@ The following default credentials are used in this demo.
 | Component         |URL                         | Username | Password |
 | :---------------- | :------------------------- |:-------- | :------- |
 | OpenNMS           | https://localhost/opennms  | admin     | admin   |
-| Grafana          | https://localhost/grafana  | admin     | mypass  |
+| Grafana           | https://localhost/grafana  | admin     | mypass  |
 | Kuwaiba           | https://localhost/kuwaiba  | admin     | kuwaiba |
-
 
 ## Running the complete simulation
 
-The docker compose script has a profile to start OpenNMS and the simulation as well as Kuwaiba and pris.
+The docker compose script has a profile to start OpenNMS and the simulated devices as well as Kuwaiba and PRIS.
 
 ```
 docker compose  --profile opennms up -d
@@ -129,7 +128,7 @@ You can look at OpenNMS logs using
 docker compose --profile opennms logs -f opennms 
 ```
 
-To clear the simulation including OpenNMS back to the virgin state use
+To clear the simulation including OpenNMS and Kuwaiba back to the initial state use
 
 ```
 docker compose  --profile opennms down -v
@@ -159,14 +158,13 @@ Running this report exports the model in CSV format for import to OpenNMS Pris.
 
 The provisioning integration server can use the kuwaiba rest api to get the pris CSV report directly from kuwaiba.
 
-To generate a requisition file for all devices in the model with IP address use
+To generate a requisition file for all devices in the model with an IP address use
 
 [https://localhost/requisitions/kuwaiba-all](https://localhost/requisitions/kuwaiba-all)
 
 or
 
 [http://localhost:8020/requisitions/kuwaiba-all](http://localhost:8020/requisitions/kuwaiba-all)
-
 
 To generate a requisition file for only devices with an IP address in the UK use
 
@@ -176,7 +174,7 @@ To generate a requisition file for only devices with an IP address in the UK use
 
  [http://localhost:8020/requisitions/kuwaiba-UK](http://localhost:8020/requisitions/kuwaiba-UK)
 
-A test requisition which uses a local CSV file is also provided using 
+A test requisition which uses a local CSV file and runs without Kuwaiba running is also provided using 
 
 [http://localhost:8020/requisitions/testrequisition](http://localhost:8020/requisitions/testrequisition)
 
@@ -209,7 +207,8 @@ Accept Application/xml
      </parm></parms> 
 </event>
 ```
-Once the requisition is loaded it can be synchronised with the opennms database using
+The requisition should also be synchronised if this event is used to import it.
+However it can also be synchronised with the opennms database using
 
 ```
 PUT http://localhost:8980/opennms/rest/requisitions/kuwaiba-UK/import?rescanExisting=true
@@ -223,7 +222,7 @@ The Nginx hosted demo front page contains two buttons `Import Requisition to Ope
 
 ## reloading using send event pl
 
-Note this works on most linux distributions of OpenNMS but perl is not installed in latest OpenNMS containers so this will not work
+Note this is included because it works on most linux distributions of OpenNMS but perl is not installed in latest OpenNMS containers so send-event.pl will not work in this demo.
 ```
 docker compose exec horizon /usr/share/opennms/bin/send-event.pl uei.opennms.org/internal/importer/reloadImport -p 'url http://pris-kuwaiba:8000/requisitions/kuwaiba-UK' 
 ```
