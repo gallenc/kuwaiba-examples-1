@@ -2,6 +2,9 @@
 
 This example shows how Kuwaiba and OpenNMS can be used to model and manage a broadcast radio network.
 
+* [Kuwaiba](https://www.kuwaiba.org/) is an open source Service Provider Inventory solution
+* [OpenNMS](https://github.com/OpenNMS/opennms) is an open source enterprise grade network management platform.
+
 <table>
   <tr>
     <td><img src="./docs/images/OutsidePlant.png" width="400" title="Kuwaiba Radio Network" alt="OutsidePlant.png"/></td>
