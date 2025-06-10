@@ -13,11 +13,12 @@ This example shows how Kuwaiba and OpenNMS can be used to model and manage a bro
 
 ## Contents
 
-[docs](./docs) Case Study - Broadcast Radio Management using OpenNMS and Kuwaiba contains detailed documentation on the project.
+[docs](./docs) Case Study: Broadcast Radio Management using OpenNMS and Kuwaiba. Contains detailed documentation on the project.
 
-[kuwaiba-docker-compose-radio](./kuwaiba-docker-compose-radio) contains a docker compose project for running examples.
+[kuwaiba-docker-compose-radio](./kuwaiba-docker-compose-radio) Contains a docker compose project for running the example.
 
-[report-scripts](./report-scripts) Kuwaiba report scripts used in project.
+[report-scripts](./report-scripts) Kuwaiba report scripts used in the project.
 
-[radio-mibs](./radio-mibs) Radio Manufacturer MIB files, snmpsim simulator files and OpenNMS compiled MIBs for each device. (THese are also copied into the OpenNMS horizon configuration in the docker compose project) 
+[radio-mibs](./radio-mibs) Radio Manufacturer MIB files, snmpsim simulator files and OpenNMS compiled MIBs for each device.
+(These are also copied into the OpenNMS horizon configuration in the docker compose project).
 
