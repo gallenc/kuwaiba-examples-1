@@ -8,8 +8,10 @@ This example shows how Kuwaiba and OpenNMS can be used to model and manage a bro
 <table>
   <tr>
     <td><img src="./docs/images/OutsidePlant.png" width="400" title="Kuwaiba Radio Network" alt="OutsidePlant.png"/></td>
-    <td><img src="./docs/images/logo_kuwaiba1.png" width="400" alt=logo_kuwaiba1.png"/><BR>
-    <img src="./docs/images/OpenNMSLogo.png" width="400" alt=OpenNMSLogo.png"/>
+    <td>
+     <a href="https://www.kuwaiba.org/"><img src="./docs/images/logo_kuwaiba1.png" width="400" alt=logo_kuwaiba1.png"/></a>
+     <BR>
+     <a href="https://github.com/OpenNMS/opennms"><img src="./docs/images/OpenNMSLogo.png" width="400" alt=OpenNMSLogo.png"/></a>
     </td>
   </tr>
 </table>
