@@ -5,7 +5,7 @@
 ## Introduction
 
 This section describes the initial integration between OpenNMS and Kuwaiba. 
-Full details of running the simulation are provided in the [accompanying docker compose project](../../kuwaiba-docker-compose-radio).
+Full details of running the simulation are provided in the [accompanying docker compose project](../kuwaiba-docker-compose-radio).
 
 The primary mechanism for provisioning OpenNMS is an XML `provisioning requisition` which is explained under [Opennms Documentation Provisioning](https://docs.opennms.com/meridian/2022/operation/provisioning/introduction.html).
 A requisition can provide all of the data for managing a node or a seed from which OpenNMS scans each node and discovers additional interfaces, services and other SNMP information.
