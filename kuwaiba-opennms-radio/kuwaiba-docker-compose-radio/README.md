@@ -95,7 +95,7 @@ The docker compose script has a profile to start OpenNMS and the simulated devic
 ```
 docker compose  --profile opennms up -d
 ```
-With the [opennms] profile set all the containers will start (kuwaiba, pris and opennms, grafana, 4 minions and the simulated radio network).
+With the [opennms] profile set all the containers will start (kuwaiba, opennms-pris horizon (OpenNMS core), grafana, 4 minions and the simulated radio network).
 
 ![alt text](./images/docker-compose-start1.png "Figure docker-compose-start1.png")
 
@@ -138,9 +138,9 @@ To clear the simulation including OpenNMS and Kuwaiba back to the initial state 
 docker compose  --profile opennms down -v
 ```
 
-## Creating a zip of your own kuwaiba model.
+## Creating a zip of your own Kuwaiba model.
 
-You can export/backup any changes to your own model as data.zip from a running container by zipping the /data folder in a running kuwaiba container.
+You can export/backup any changes to your own model as data.zip from a running container by zipping the /data folder in a running Kuwaiba container.
 The following commands will do this for a running project without logging into the container.
 
 ```
@@ -154,13 +154,13 @@ docker compose cp kuwaiba:/tmp/kuwaiba/data.zip ./container-fs/kuwaiba/data-zip
 ## Model Contents
 The Radio Network is modelled under country `United Kingdom`.
 
-See the `OpenNMSInventoryExport` report under the `Reports` tab in `Inventory report`s. 
+See the `OpenNMSInventoryExport` report under the `Reports` tab in `Inventory reports`. 
 
-Running this report exports the model in CSV format for import to OpenNMS Pris.
+Running this report exports the model in a CSV format suitable for import into OpenNMS PRIS.
 
 ## Pris
 
-The provisioning integration server can use the kuwaiba rest api to get the pris CSV report directly from kuwaiba.
+The provisioning integration server can use the Kuwaiba rest api to get the pris CSV report directly from Kuwaiba.
 
 To generate a requisition file for all devices in the model with an IP address use
 
@@ -194,7 +194,7 @@ See [OpenNMS import provisioning to OpenNMS](https://docs.opennms.com/pris/2.1.1
 
 [The Provisioning Integration Server PRIS](https://docs.opennms.com/pris/2.1.1/index.html) is used as source of data to generate this requisition from external sources such as an excel spreadsheet or a csv file or using a groovy script.
 
-In this case, a groovy script is called in Pris which makes a rest call to kuwaiba to run a report which returns csv data to pris for onward translation to an OpenNMs requisition
+In this case, a groovy script is called in Pris which makes a rest call to Kuwaiba to run a report which returns csv data to PRIS for onward translation to an OpenNMs requisition
 
 To tell OpenNMS to import from PRIS,  post the following event to the OpenNMS REST api (change address as necessary)
 
@@ -212,7 +212,7 @@ Accept Application/xml
 </event>
 ```
 The requisition should also be synchronised if this event is used to import it.
-However it can also be synchronised with the opennms database using
+However it can also be synchronised with the OpenNMS database using
 
 ```
 PUT http://localhost:8980/opennms/rest/requisitions/kuwaiba-UK/import?rescanExisting=true
