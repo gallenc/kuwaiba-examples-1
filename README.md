@@ -7,13 +7,16 @@ Further work would be required to create  production systems.
 
 * [Kuwaiba](https://www.kuwaiba.org/) is an open source Service Provider Inventory solution
 * [OpenNMS](https://github.com/OpenNMS/opennms) is an open source enterprise grade network management platform.
-
-<a href="https://www.kuwaiba.org/"><img src="../main/images/logo_kuwaiba1.png" width="400" alt=logo_kuwaiba1.png"/></a>
-
-
-<a href="https://github.com/OpenNMS/opennms"><img src="../main/images/OpenNMSLogo.png" width="400" alt=OpenNMSLogo.png"/></a>
-
-
+  
+<table>
+  <tr>
+    <td>
+     <a href="https://www.kuwaiba.org/"><img src="../main/images/logo_kuwaiba1.png" width="400" alt=logo_kuwaiba1.png"/></a>
+     <BR>
+     <a href="https://github.com/OpenNMS/opennms"><img src="../main/images/OpenNMSLogo.png" width="400" alt=OpenNMSLogo.png"/></a>
+    </td>
+  </tr>
+</table>
 ## Project Folders in this repository
 
 Each of these folders contains stand alone projects with their own getting started documentation.
