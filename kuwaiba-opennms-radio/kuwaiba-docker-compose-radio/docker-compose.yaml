@@ -577,5 +577,30 @@ services:
       testradiosite1:
         ipv4_address: 192.168.105.250
 
-
+  # netsnmp used to sumulate computers
+  nuc1:
+    profiles: [opennms]
+    image: polinux/snmpd
+    container_name: nuc1
+    hostname: nuc1
+    volumes:
+      - ./container-fs/snmp/snmpd.conf:/etc/snmp/snmpd.conf
+    ports:
+      - "11361:161/udp"
+    networks:
+      testradiosite1:
+        ipv4_address: 192.168.105.200
+        
+  win7pc:
+    profiles: [opennms]
+    image: polinux/snmpd
+    container_name: win7pc
+    hostname: win7pc
+    volumes:
+      - ./container-fs/snmp/snmpd.conf:/etc/snmp/snmpd.conf
+    ports:
+      - "11361:161/udp"
+    networks:
+      testradiosite1:
+        ipv4_address: 192.168.105.240
         
