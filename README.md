@@ -48,6 +48,8 @@ The following is useful reference documentation for the thord party Kuwaiba and 
 
 ### Passionate About OSS Sandbox Use Cases for Kuwaiba
 
+Some of the examples in this repository have been inspired by the OSS Sandbox case studies by [Passionate About OSS](https://passionateaboutoss.com)
+
 [General Overview / Broadcast Radio & TV](https://passionateaboutoss.com/oss-sandpit-resource-inventory-module/)
 
 [Modeling a 5G network in Kuwaiba](https://passionateaboutoss.com/oss-sandpit-5g-network-inventory-prototype/)
