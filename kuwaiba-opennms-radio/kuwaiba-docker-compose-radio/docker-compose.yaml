@@ -599,7 +599,7 @@ services:
     volumes:
       - ./container-fs/snmp/snmpd.conf:/etc/snmp/snmpd.conf
     ports:
-      - "11361:161/udp"
+      - "11362:161/udp"
     networks:
       testradiosite1:
         ipv4_address: 192.168.105.240
