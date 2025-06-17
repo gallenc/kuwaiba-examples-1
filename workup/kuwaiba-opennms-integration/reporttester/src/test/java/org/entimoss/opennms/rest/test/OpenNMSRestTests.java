@@ -218,11 +218,11 @@ public class OpenNMSRestTests {
    }
   
   // /api/v2/snmpinterfaces
-  // // problem cannot search ipinterfaces by nodeId http://localhost:8980/opennms/api/v2/snmpinterfaces/?_s=id==69 
-  // http://localhost:8980/opennms/api/v2/snmpinterfaces/?_s=nodeId==26 -- really useless  but node id is in api
+  // 
+  // http://localhost:8980/opennms/api/v2/snmpinterfaces/?_s=node.id==38 
   public String getSnmpInterfaces(String nodeId, String openNMSUrl, String username, String password, int count, int offset) {
      
-     String requestUrl = openNMSUrl + "/api/v2/snmpinterfaces/?_s=nodeId=="+nodeId; //";node.foreignId=="+foreignId; //+"&count="+count+"&offset="+offset;
+     String requestUrl = openNMSUrl + "/api/v2/snmpinterfaces/?_s=node.id=="+nodeId; //";node.foreignId=="+foreignId; //+"&count="+count+"&offset="+offset;
      
      System.out.println("requuestUrl: "+requestUrl);
 
@@ -317,7 +317,7 @@ public class OpenNMSRestTests {
       
       // foreignSource="selfmonitor";
       //String foreignId="1";
-      String nodeId="1";
+      String nodeId="38";
       getSnmpInterfaces(nodeId, OPENNMS_URL, USERNAME, PASSWORD, 10, 0);
       
       //
