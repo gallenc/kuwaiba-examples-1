@@ -153,6 +153,7 @@ services:
       KAFKA_CLUSTERS_0_NAME: onms-stack-play
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      SERVER_SERVLET_CONTEXT_PATH: /kafka-ui
     ports:
       - "8085:8080/tcp"
     networks:
