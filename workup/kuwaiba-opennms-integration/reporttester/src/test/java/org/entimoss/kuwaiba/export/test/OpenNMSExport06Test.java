@@ -1,12 +1,12 @@
-package org.entimoss.kuwaiba.test;
+package org.entimoss.kuwaiba.export.test;
 
 import static org.junit.Assert.*;
 
-import org.entimoss.kuwaiba.OpenNMSExport07;
-import org.entimoss.kuwaiba.OpenNMSExport07.IpV4Cidr;
+import org.entimoss.kuwaiba.export.OpenNMSExport06;
+import org.entimoss.kuwaiba.export.OpenNMSExport06.IpV4Cidr;
 import org.junit.Test;
 
-public class OpenNMSExport07Test {
+public class OpenNMSExport06Test {
 
    @Test
    public void ipV4SubnetSubstitutionTest() {

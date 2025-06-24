@@ -51,7 +51,7 @@
  * 
  */
 
-package org.entimoss.kuwaiba; // package omitted from groovy
+package org.entimoss.kuwaiba.export; // package omitted from groovy
 
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.InventoryObjectPool;
