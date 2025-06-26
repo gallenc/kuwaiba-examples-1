@@ -49,3 +49,7 @@ https://www.premierenergy.co.uk/wp-content/uploads/2018/09/Openreach-Developers-
 
 
 https://www.premierenergy.co.uk/wp-content/uploads/2018/09/Openreach-Developers-Guide-Telecoms-Infrastructure-and-Installation_8.0.pdf
+
+https://telephone-exchanges.org.uk/exchanges/southampton-exchanges/
+
+nokia https://amt.com/wp-content/uploads/2024/10/Nokia_Lightspan_MF_2_Data_Sheet_EN.pdf  2x 16 pon port lte

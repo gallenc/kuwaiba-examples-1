@@ -2,6 +2,7 @@ package org.entimoss.kuwaiba.input;
 
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;
+import org.neotropic.kuwaiba.core.apis.persistence.application.TemplateObjectLight;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.ApplicationObjectNotFoundException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.BusinessObjectNotFoundException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.InvalidArgumentException;
@@ -15,15 +16,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight;
+import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
 //uncomment in groovy script
-//KuwaibaImportModel1 kuwaibaImport = new KuwaibaImportModel1(bem, aem, scriptParameters);
+//KuwaibaImportModel2 kuwaibaImport = new KuwaibaImportModel2(bem, aem, scriptParameters);
 //return kuwaibaImport.runTask();
 
 /**
@@ -40,7 +43,7 @@ import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight;
  */
 
 public class KuwaibaImportModel2 {
-   static Logger LOG = LoggerFactory.getLogger("KuwaibaImportModel1"); // remove static in groovy
+   static Logger LOG = LoggerFactory.getLogger("KuwaibaImportModel2"); // remove static in groovy
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
@@ -56,118 +59,64 @@ public class KuwaibaImportModel2 {
       this.scriptParameters = scriptParameters;
    }
 
+   /*
+    *  // https://www.thefoa.org/tech/ColCodes.htm
+    *  Inside the cable or inside each tube in a loose tube cable, individual fibers will be color coded for identification
+    *  1  Blue,    2  Orange, 3  Green, 4  Brown ,5  Slate, 6  White, 7  Red, 8  Black, 9  Yellow, 10    Violet, 11    Rose, 12    Aqua
+    */
+   static final List<String> orderedFibreColours = Arrays.asList("Blue", "Orange", "Green", "Brown", "Slate", "White", "Red", "Black", "Yellow", "Violet", "Rose", "Aqua");
+
+   public static String getColourForStrand(int no) {
+      if (no < 1 || no > orderedFibreColours.size()) {
+         throw new IllegalArgumentException("strand size out of range: " + no);
+      }
+      return orderedFibreColours.get(no - 1);
+   }
+
+   public static int getStrandForColour(String colour) {
+      int no = orderedFibreColours.indexOf(colour);
+      if (no < 0)
+         throw new IllegalArgumentException("unknown fibre colour: " + colour);
+      return no + 1;
+   }
+
    public TaskResult runTask() {
       TaskResult taskResult = new TaskResult();
 
-      //Check if the parameters exist and are set
-      if (scriptParameters.get("fileName") == null || scriptParameters.get("fileName").isEmpty())
-         return TaskResult.createErrorResult("Parameter fileName not set");
-
-      if (scriptParameters.get("defaultCountry") != null && !scriptParameters.get("defaultCountry").isEmpty())
-         countryName = scriptParameters.get("defaultCountry");
-
-      // Check if the file exists and it's readable
-      String fileName = scriptParameters.get("fileName");
-
-      File importFile = new File(fileName);
-      if (!importFile.exists())
-         return TaskResult.createErrorResult(String.format("File %s does not exist", fileName));
-
-      if (!importFile.canRead())
-         return TaskResult.createErrorResult(String.format("File %s exists, but it's not readable", fileName));
-
+      String templateId = null;
       try {
+
+         // create primary splice box
+         // create secondary splice box
+         // create 
          
-         List<BusinessObjectLight> matchingCountries = bem.getObjectsWithFilterLight("Country", "name", countryName);
-         if (matchingCountries.isEmpty())
-            return TaskResult.createErrorResult(String.format("Default country %s could not be found", countryName));
 
-         BusinessObjectLight defaultCountry = matchingCountries.get(0);
-
-         // Parses and processes every line
-
-         try (BufferedReader br = new BufferedReader(new FileReader(importFile))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-
-               String[] tokens = line.split(SEPARATOR);
-               if (tokens.length != 6) // All columns are mandatory, even if they're just empty
-                  taskResult.getMessages().add(TaskResult.createErrorMessage(String.format("Line %s does not have 6 columns as expected but %s", line, tokens.length)));
-
-               else {
-
-                  try {
-
-                     String stateName = tokens[0];
-
-                     // Get or create the state
-                     List<BusinessObjectLight> matchingStates = bem.getObjectsWithFilterLight("State", "name", stateName);
-                     BusinessObjectLight currentState = null;
-
-                     if (matchingStates.isEmpty()) {// If the state does not exist, create one
-                        HashMap<String, String> stateProperties = new HashMap<String, String>();
-                        stateProperties.put("name", tokens[0]);
-                        stateProperties.put("acronym", tokens[1]);
-
-                        String newStateId = bem.createObject("State", "Country", defaultCountry.getId(), stateProperties, null);
-
-                        currentState = new BusinessObjectLight("State", newStateId, tokens[0]);
-                        taskResult.getMessages().add(TaskResult.createInformationMessage(
-                                 String.format("State %s created in line %s", tokens[0], line)));
-
-                     } else {
-                        currentState = matchingStates.get(0);
-
-                        // Get or create the city
-                        List<BusinessObjectLight> matchingCities = bem.getObjectsWithFilterLight("City", "name", tokens[2]);
-                        BusinessObjectLight currentCity;
-
-                        if (matchingCities.isEmpty()) {// If the city does not exist, create one
-                           HashMap<String, String> cityProperties = new HashMap<String, String>();
-                           cityProperties.put("name", tokens[2]);
-                           String newCityId = bem.createObject("City", "State", currentState.getId(), cityProperties, null);
-                           currentCity = new BusinessObjectLight("City", newCityId, tokens[2]);
-                           taskResult.getMessages().add(TaskResult.createInformationMessage(
-                                    String.format("City %s created in line %s", tokens[2], line)));
-
-                        } else {
-                           currentCity = matchingCities.get(0);
-
-                           // New central office. No previous existence checks made
-                           HashMap<String, String> centralOfficeProperties = new HashMap<String, String>();
-                           centralOfficeProperties.put("name", tokens[3]);
-                           centralOfficeProperties.put("address", tokens[4]);
-                           String newCentraOfficeId = bem.createObject("Building", "City", currentCity.getId(), centralOfficeProperties, null);
-                           taskResult.getMessages().add(TaskResult.createInformationMessage(
-                                    String.format("Central office %s created in line %s", tokens[3], line)));
-
-                           // New rack room. No previous existence checks made. This might be improved by using a CO template 
-                           HashMap<String, String> rackRoomProperties = new HashMap<String, String>();
-                           rackRoomProperties.put("name", tokens[5]);
-                           bem.createObject("Room", "Building", newCentraOfficeId, rackRoomProperties, null);
-                           taskResult.getMessages().add(TaskResult.createInformationMessage(
-                                    String.format("Rack room %s created in line %s", tokens[5], line)));
-                        }
-                     }
-
-                  } catch (InventoryException ie) {
-                     taskResult.getMessages().add(TaskResult.createErrorMessage(
-                              String.format("Error processing line %s: %s", line, ie.getMessage())));
-                  }
-               }
-
-            }
-         }
-
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (InvalidArgumentException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+      } catch (Exception ex) {
+         taskResult.getMessages().add(TaskResult.createErrorMessage(
+                  String.format("error running task " + ex)));
       }
 
+      taskResult.getMessages().add(TaskResult.createInformationMessage(
+               String.format("created temptemplate templateId= " + templateId)));
+
       return taskResult;
+   }
+   
+   
+   
+
+   public String createWireContainer(String containerName, int sections, int tubes) throws MetadataObjectNotFoundException, OperationNotPermittedException {
+      String templateClass = Constants.CLASS_WIRECONTAINER;
+
+      List<TemplateObjectLight> templatesForClass = aem.getTemplatesForClass(templateClass);
+      if (!templatesForClass.isEmpty()) {
+         for (TemplateObjectLight t : templatesForClass) {
+            LOG.error("object already exists:" + t);
+         }
+      }
+
+      return aem.createTemplate(templateClass, containerName);
+
    }
 
 }
