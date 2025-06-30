@@ -75,6 +75,7 @@ services:
       - ./container-fs/kuwaiba/start.sh:/start.sh
       - ./container-fs/kuwaiba/data-overlay:/data-overlay
       - ./container-fs/kuwaiba/data-zip:/data-zip
+      - ./container-fs/kuwaiba/external-data:/external-data
     ports:
       - "8080:8080"
       - "8081:8081"

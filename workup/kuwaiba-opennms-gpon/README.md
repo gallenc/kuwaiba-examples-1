@@ -46,7 +46,8 @@ https://uk.prysmian.com/sites/uk.prysmian.com/files/2023-11/ip556-02m-12-16f-fdp
 https://uk.prysmian.com/sites/uk.prysmian.com/files/2023-11/ip192-02m-24fdp-installation-guide_0.pdf
 
 https://www.premierenergy.co.uk/wp-content/uploads/2018/09/Openreach-Developers-Guide-Telecoms-Infrastructure-and-Installation_8.0.pdf  multi dwelling units
-
+customer splice point CSP CSP (Customer Splice Point), is a small, usually 15cm x 13cm, box installed on the outside of a property to connect the Openreach fibre network to the building
+SDP site distribution point
 
 https://www.premierenergy.co.uk/wp-content/uploads/2018/09/Openreach-Developers-Guide-Telecoms-Infrastructure-and-Installation_8.0.pdf
 
