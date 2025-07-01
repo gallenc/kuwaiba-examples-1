@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.ArrayList;
 
 import org.junit.Test;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,13 +59,20 @@ public class NamedObjectTest {
    /*
     * Foreign source name used in naming the file and also in parent foreign source references
     */
-   String foreignSource = "testrequisition1";
+   String foreignSource = "testGponRequisition1";
 
    /*
     * used as default location for minion gathering data
     */
    String defaultLocation = "Default";
 
+   /*
+    * UPRN_limitLines defines range in file to read
+    * set to number of lines to read or null if read to end.
+    */
+   Integer UPRN_limitLines =null;
+   
+   
    /* lteRangeStartNumber
     * number to start range of lte in FEX (e.g one lte per region)
     */
@@ -80,15 +86,15 @@ public class NamedObjectTest {
    int SPLITTERS_PER_POLE = 2; // room for 2 on pole
    int SPLITTERS_TO_USE_PER_POLE = 2;
 
-   int PORTS_PER_LTE_CARD = 8;
-   int CARDS_PER_LTE = 2;
+   int PORTS_PER_OLT_CARD = 8;
+   int CARDS_PER_OLT = 2;
 
    // csv columns
    public String SEPARATOR = ",";
    public int LATITUDE_COLUMN = 0;
    public int LONGITUDE_COLUMN = 1;
    public int UPRN_COLUMN = 2;
-
+   
    @Test
    public void test1() {
       LOG.info("**** start of test1");
@@ -114,9 +120,9 @@ public class NamedObjectTest {
             // note you want to maintain the line count even if you cant read a line
             lineCount++;
 
-//             if (lineCount > 64) {
-//                break; //TODO REMOVE - BREAK ON FILE FOR TEST
-//             }
+            if (UPRN_limitLines != null && lineCount > UPRN_limitLines) {
+               break; 
+            }
 
             List<String> csvColumns = Arrays.asList(line.split(SEPARATOR));
             if (csvColumns.size() != 3) { // All columns are mandatory, even if they're just empty
@@ -146,8 +152,8 @@ public class NamedObjectTest {
                int cabinetSplitterNo = (uprnCount / SECONDARY_SPLIT_RATIO) / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
                int cabinetSplitterPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
 
-               int lteShelfNo = cabinetSplitterNo / PORTS_PER_LTE_CARD;
-               int ltePortNo = cabinetSplitterNo % PORTS_PER_LTE_CARD; // one port per primary splitter
+               int lteShelfNo = cabinetSplitterNo / PORTS_PER_OLT_CARD;
+               int ltePortNo = cabinetSplitterNo % PORTS_PER_OLT_CARD; // one port per primary splitter
 
                // one lte per cabinet (2 x 8 port shelves = 16 possible splitters)
                int lteNo = lteRangeStartNumber + cabinetNo;
@@ -206,10 +212,10 @@ public class NamedObjectTest {
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
 
                   // create lte
-                  // parentFexName_LTE_<NUMBER>   SOTN001_LTE_001
-                  String lteName = parentFexName + "_LTE_" + lteNo;
+                  // parentFexName_OLT_<NUMBER>   SOTN001_OLT_001
+                  String lteName = parentFexName + "_OLT_" + lteNo;
 
-                  // create fibre container cabinet to LTE
+                  // create fibre container cabinet to OLT
 
                   LOG.debug(String.format("ontName: %s, cspName: %s, buildingName: %s, poleName: %s, poleSplitterName: %s, cabinetName: %s, cabinetSplitterName: %s, lteName %s",
                            ontName, cspName, buildingName, poleName, poleSplitterName, cabinetName, cabinetSplitterName, lteName));
@@ -219,6 +225,7 @@ public class NamedObjectTest {
                   String ontContainerName = buildingName;
                   Double ontContainerLatitude = latitude;
                   Double ontContainerLongitude = longitude;
+                  String ontIpAddress = OpenNMSRequisitionPopulator.DUMMY_IP_ADDRESS;
                   String secondarySplitterName = poleSplitterName;
                   String secondarySplitterContainerName = poleName;
                   Double secondarySplitterContainerLatitude = poleLatitude;
@@ -231,12 +238,13 @@ public class NamedObjectTest {
                   String lteFexName = parentFexName;
                   Double lteFexLatitude = fexLatitude;
                   Double lteFexLongitude = fexLongitude;
-
+                  String lteIpAddress = OpenNMSRequisitionPopulator.DUMMY_IP_ADDRESS;
+                  
                   openNMSRequisitionPopulator.addLineToOpenNMSRequisition(
-                           ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude,
+                           ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
                            secondarySplitterName, secondarySplitterContainerName, secondarySplitterContainerLatitude, secondarySplitterContainerLongitude,
                            primarySplitterName, primarySplitterContainerName, primarySplitterContainerLatitude, primarySplitterContainerLongitude,
-                           lteLabelName, lteFexName, lteFexLatitude, lteFexLongitude);
+                           lteLabelName, lteFexName, lteFexLatitude, lteFexLongitude, lteIpAddress);
 
                   uprnCount++;
 
@@ -249,9 +257,9 @@ public class NamedObjectTest {
 
             }
          }
-         
+
          openNMSRequisitionPopulator.finaliseRequisition();
-         
+
       } catch (Exception e) {
          LOG.error("problem running script ", e);
 
@@ -263,7 +271,7 @@ public class NamedObjectTest {
             }
          }
       }
-      
+
       LOG.info("**** test1 finished");
 
    }
@@ -296,20 +304,19 @@ public class NamedObjectTest {
          this.requisitionOutputFileLocation = requisitionOutputFileLocation;
       }
 
-
       public void addLineToOpenNMSRequisition(
-               String ontLabelName, String ontContainerName, Double ontContainerLatitude, Double ontContainerLongitude,
+               String ontLabelName, String ontContainerName, Double ontContainerLatitude, Double ontContainerLongitude, String ontIpAddress,
                String secondarySplitterName, String secondarySplitterContainerName, Double secondarySplitterContainerLatitude, Double secondarySplitterContainerLongitude,
                String primarySplitterName, String primarySplitterContainerName, Double primarySplitterContainerLatitude, Double primarySplitterContainerLongitude,
-               String lteLabelName, String lteFexName, Double lteFexLatitude, Double lteFexLongitude) {
+               String lteLabelName, String lteFexName, Double lteFexLatitude, Double lteFexLongitude, String lteIpAddress) {
 
-         LOG.debug("OpenNMSRequisitionPopulator addLineToOpenNMSRequisition [ontLabelName=" + ontLabelName + ", ontContainerName=" + ontContainerName + 
+         LOG.debug("OpenNMSRequisitionPopulator addLineToOpenNMSRequisition [ontLabelName=" + ontLabelName + ", ontContainerName=" + ontContainerName +", ontIpAddress=" + ontIpAddress +
                   ", ontContainerLatitude=" + ontContainerLatitude + ", ontContainerLongitude=" + ontContainerLongitude + ", secondarySplitterName=" + secondarySplitterName +
-                  ", secondarySplitterContainerName=" + secondarySplitterContainerName + ", secondarySplitterContainerLatitude=" + secondarySplitterContainerLatitude + 
-                  ", secondarySplitterContainerLongitude=" + secondarySplitterContainerLongitude + ", primarySplitterName=" + primarySplitterName         +
-                  ", primarySplitterContainerName=" + primarySplitterContainerName + ", primarySplitterContainerLatitude=" + primarySplitterContainerLatitude + 
-                  ", primarySplitterContainerLongitude="  + primarySplitterContainerLongitude + ", lteLabelName=" + lteLabelName + ", lteFexName=" + lteFexName +
-                  ", lteFexLatitude=" + lteFexLatitude + ", lteFexLongitude=" + lteFexLongitude + "]");
+                  ", secondarySplitterContainerName=" + secondarySplitterContainerName + ", secondarySplitterContainerLatitude=" + secondarySplitterContainerLatitude +
+                  ", secondarySplitterContainerLongitude=" + secondarySplitterContainerLongitude + ", primarySplitterName=" + primarySplitterName +
+                  ", primarySplitterContainerName=" + primarySplitterContainerName + ", primarySplitterContainerLatitude=" + primarySplitterContainerLatitude +
+                  ", primarySplitterContainerLongitude=" + primarySplitterContainerLongitude + ", lteLabelName=" + lteLabelName + ", lteFexName=" + lteFexName +
+                  ", lteFexLatitude=" + lteFexLatitude + ", lteFexLongitude=" + lteFexLongitude+ ", lteIpAddresse="+lteIpAddress  + "]");
 
          // POPULATE OPENNMS REQUISITION
 
@@ -318,134 +325,165 @@ public class NamedObjectTest {
          // ***********************
          // ONT
          // create and populate empty line
-         List<String> ontLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
-         for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
-            ontLine.add("");
 
-         // add data
-         String mgmtType_ = "N";
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
-         String svc_Forced = "";
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
-         String cat_ = ONT_LABEL;
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
-         String asset_region = lteFexName;
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
-         String location = defaultLocation;
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
+         try {
+            List<String> ontLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
+            for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
+               ontLine.add("");
 
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), ontLabelName);
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), ontLabelName);
+            // add data
+            String iP_Management = DUMMY_IP_ADDRESS;
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.IP_MANAGEMENT), iP_Management);
+            String mgmtType_ = "N";
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
+            String svc_Forced = "";
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
+            String cat_ = ONT_LABEL;
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
+            String asset_region = lteFexName;
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
+            String location = defaultLocation;
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
 
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), secondarySplitterName);
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), ontLabelName);
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), ontLabelName);
 
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", ontContainerLatitude));
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", ontContainerLongitude));
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), secondarySplitterName);
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
 
-         ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), ontContainerName);
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", ontContainerLatitude));
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", ontContainerLongitude));
 
-         LOG.debug("putting ontName:" + ontLabelName + " ontLine: " + ontLine);
-         ontLines.put(ontLabelName, ontLine);
+            ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), ontContainerName);
+
+            LOG.debug("putting ontName:" + ontLabelName + " ontLine: " + ontLine);
+            ontLines.put(ontLabelName, ontLine);
+
+         } catch (Exception ex) {
+            throw new RuntimeException("problem creating ont requisition entry", ex);
+         }
 
          // ***********************
          // SECONDARY SPLITTERS (on poles)
          // create and populate empty line
-         List<String> secondarySplitterLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
-         for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
-            secondarySplitterLine.add("");
+         try {
+            List<String> secondarySplitterLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
+            for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
+               secondarySplitterLine.add("");
 
-         // add data
-         mgmtType_ = "N";
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
-         svc_Forced = "";
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
-         cat_ = SECONDARY_SPLITTER_LABEL;
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
-         asset_region = lteFexName;
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
-         location = defaultLocation;
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
+            // add data
+            String iP_Management = DUMMY_IP_ADDRESS;
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.IP_MANAGEMENT), iP_Management);
+            String mgmtType_ = "N";
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
+            String svc_Forced = "";
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
+            String cat_ = SECONDARY_SPLITTER_LABEL;
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
+            String asset_region = lteFexName;
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
+            String location = defaultLocation;
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
 
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), secondarySplitterName);
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), secondarySplitterName);
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), secondarySplitterName);
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), secondarySplitterName);
 
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), primarySplitterName);
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), primarySplitterName);
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
 
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE),
-                  "'" + String.format("%.8f", secondarySplitterContainerLatitude));
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE),
-                  "'" + String.format("%.8f", secondarySplitterContainerLongitude));
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE),
+                     "'" + String.format("%.8f", secondarySplitterContainerLatitude));
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE),
+                     "'" + String.format("%.8f", secondarySplitterContainerLongitude));
 
-         secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), secondarySplitterContainerName);
+            secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), secondarySplitterContainerName);
 
-         LOG.debug("putting poleSplitterName:" + secondarySplitterName + " secondarySplitterLine: " + secondarySplitterLine);
-         secondarySplitterLines.put(secondarySplitterName, secondarySplitterLine);
+            LOG.debug("putting poleSplitterName:" + secondarySplitterName + " secondarySplitterLine: " + secondarySplitterLine);
+            secondarySplitterLines.put(secondarySplitterName, secondarySplitterLine);
+
+         } catch (Exception ex) {
+            throw new RuntimeException("problem creating ont requisition entry", ex);
+         }
 
          // ***********************
          // PRIMARY SPLITTERS (in cabinets)
          // create and populate empty line
-         List<String> primarySplitterLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
-         for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
-            primarySplitterLine.add("");
 
-         // add data
-         mgmtType_ = "N";
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
-         svc_Forced = "";
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
-         cat_ = PRIMARY_SPLITTER_LABEL;
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
-         asset_region = lteFexName;
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
-         location = defaultLocation;
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
+         try {
+            List<String> primarySplitterLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
+            for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
+               primarySplitterLine.add("");
 
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), primarySplitterName);
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), primarySplitterName);
+            // add data
+            String iP_Management = DUMMY_IP_ADDRESS;
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.IP_MANAGEMENT), iP_Management);
+            String mgmtType_ = "N";
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
+            String svc_Forced = "";
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
+            String cat_ = PRIMARY_SPLITTER_LABEL;
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
+            String asset_region = lteFexName;
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
+            String location = defaultLocation;
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
 
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), lteLabelName);
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), primarySplitterName);
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), primarySplitterName);
 
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", primarySplitterContainerLatitude));
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE),
-                  "'" + String.format("%.8f", primarySplitterContainerLongitude));
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), lteLabelName);
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
 
-         primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), primarySplitterContainerName);
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE),
+                     "'" + String.format("%.8f", primarySplitterContainerLatitude));
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE),
+                     "'" + String.format("%.8f", primarySplitterContainerLongitude));
 
-         LOG.debug("putting cabinetSplitterName:" + primarySplitterName + " primarySplitterLine: " + primarySplitterLine);
-         primarySplitterLines.put(primarySplitterName, primarySplitterLine);
+            primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), primarySplitterContainerName);
+
+            LOG.debug("putting cabinetSplitterName:" + primarySplitterName + " primarySplitterLine: " + primarySplitterLine);
+            primarySplitterLines.put(primarySplitterName, primarySplitterLine);
+
+         } catch (Exception ex) {
+            throw new RuntimeException("problem creating primary splitter requisition entry", ex);
+         }
 
          // ***********************
-         // LTEs in FEX
+         // OLTs in FEX
          // create and populate empty line
-         List<String> lteLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
-         for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
-            lteLine.add("");
+         try {
+            List<String> lteLine = new ArrayList<>(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size());
+            for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
+               lteLine.add("");
 
-         // add data
-         mgmtType_ = "N";
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
-         svc_Forced = "";
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
-         cat_ = OLT_LABEL;
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
-         asset_region = lteFexName;
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
-         location = defaultLocation;
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
+            // add data
+            String iP_Management = DUMMY_IP_ADDRESS;
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.IP_MANAGEMENT), iP_Management);
+            String mgmtType_ = "N";
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MGMTTYPE_), mgmtType_);
+            String svc_Forced = "";
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.SVC_FORCED), svc_Forced);
+            String cat_ = OLT_LABEL;
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.CAT_), cat_);
+            String asset_region = lteFexName;
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
+            String location = defaultLocation;
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.MINION_LOCATION), location);
 
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), lteLabelName);
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), lteLabelName);
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), lteLabelName);
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), lteLabelName);
 
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", lteFexLatitude));
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", lteFexLongitude));
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", lteFexLatitude));
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", lteFexLongitude));
 
-         lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), lteFexName);
+            lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), lteFexName);
 
-         LOG.debug("putting ltename:" + lteLabelName + " lteLine" + lteLine);
-         lteLines.put(lteLabelName, lteLine);
+            LOG.debug("putting ltename:" + lteLabelName + " lteLine" + lteLine);
+            lteLines.put(lteLabelName, lteLine);
+
+         } catch (Exception ex) {
+            throw new RuntimeException("problem creating lte requisition entry", ex);
+         }
 
       }
 
@@ -629,65 +667,64 @@ public class NamedObjectTest {
       public static final String SERVICE_PASSIVE_NODE_UP_SERVICE = "passive-node-up-service";
 
    }
-   
-   
-//  TODO REMOVE
+
+   //  TODO REMOVE
    // class Temp{
-//      
-//      String ontLabelName = null ; //ontName;
-//      String ontContainerName = null ; //ontBuildingName;
-//      Double ontContainerLatitude = null ; //ontLatitude;
-//      Double ontContainerLongitude = null ; //ontLongitude;
-//      String secondarySplitterName = null ; //poleSplitterName;
-//      String secondarySplitterContainerName = null ; //poleName;
-//      Double secondarySplitterContainerLatitude = null ; //poleLatitude;
-//      Double secondarySplitterContainerLongitude = null ; //poleLongitude;
-//      String primarySplitterName = null ; //cabinetSplitterName;
-//      String primarySplitterContainerName = null ; //cabinetName;
-//      Double primarySplitterContainerLatitude = null ; //cabinetLatitude;
-//      Double primarySplitterContainerLongitude = null ; //cabinetLongitude;
-//      String lteLabelName = null ; //lteName;
-//      String lteFexName = null ; //parentFexName;
-//      Double lteFexLatitude = null ; //fexLatitude;
-//      Double lteFexLongitude = null ; //fexLongitude;
-//      
-//      public void addXXXLineToOpenNMSRequisition(
-//               String ontName, String ontBuildingName, Double ontLatitude, Double ontLongitude,
-//               String poleSplitterName, String poleName, Double poleLatitude, Double poleLongitude,
-//               String cabinetSplitterName, String cabinetName, Double cabinetLatitude, Double cabinetLongitude,
-//               String lteName, String parentFexName, Double fexLatitude, Double fexLongitude) {
-//
-//         ontLabelName = ontName;
-//         ontContainerName = ontBuildingName;
-//         ontContainerLatitude = ontLatitude;
-//         ontContainerLongitude = ontLongitude;
-//         secondarySplitterName = poleSplitterName;
-//         secondarySplitterContainerName = poleName;
-//         secondarySplitterContainerLatitude = poleLatitude;
-//         secondarySplitterContainerLongitude = poleLongitude;
-//         primarySplitterName = cabinetSplitterName;
-//         primarySplitterContainerName = cabinetName;
-//         primarySplitterContainerLatitude = cabinetLatitude;
-//         primarySplitterContainerLongitude = cabinetLongitude;
-//         lteLabelName = lteName;
-//         lteFexName = parentFexName;
-//         lteFexLatitude = fexLatitude;
-//         lteFexLongitude = fexLongitude;
-//         
-//
-//      }
-//
-//      @Override
-//      public String toString() {
-//         return "Temp [ontLabelName=" + ontLabelName + ", ontContainerName=" + ontContainerName + ", ontContainerLatitude=" + ontContainerLatitude + ", ontContainerLongitude=" + ontContainerLongitude
-//                  + ", secondarySplitterName=" + secondarySplitterName + ", secondarySplitterContainerName=" + secondarySplitterContainerName + ", secondarySplitterContainerLatitude="
-//                  + secondarySplitterContainerLatitude + ", secondarySplitterContainerLongitude=" + secondarySplitterContainerLongitude + ", primarySplitterName=" + primarySplitterName
-//                  + ", primarySplitterContainerName=" + primarySplitterContainerName + ", primarySplitterContainerLatitude=" + primarySplitterContainerLatitude + ", primarySplitterContainerLongitude="
-//                  + primarySplitterContainerLongitude + ", lteLabelName=" + lteLabelName + ", lteFexName=" + lteFexName + ", lteFexLatitude=" + lteFexLatitude + ", lteFexLongitude=" + lteFexLongitude
-//                  + "]";
-//      }
-//      
-//      
-//   }
+   //      
+   //      String ontLabelName = null ; //ontName;
+   //      String ontContainerName = null ; //ontBuildingName;
+   //      Double ontContainerLatitude = null ; //ontLatitude;
+   //      Double ontContainerLongitude = null ; //ontLongitude;
+   //      String secondarySplitterName = null ; //poleSplitterName;
+   //      String secondarySplitterContainerName = null ; //poleName;
+   //      Double secondarySplitterContainerLatitude = null ; //poleLatitude;
+   //      Double secondarySplitterContainerLongitude = null ; //poleLongitude;
+   //      String primarySplitterName = null ; //cabinetSplitterName;
+   //      String primarySplitterContainerName = null ; //cabinetName;
+   //      Double primarySplitterContainerLatitude = null ; //cabinetLatitude;
+   //      Double primarySplitterContainerLongitude = null ; //cabinetLongitude;
+   //      String lteLabelName = null ; //lteName;
+   //      String lteFexName = null ; //parentFexName;
+   //      Double lteFexLatitude = null ; //fexLatitude;
+   //      Double lteFexLongitude = null ; //fexLongitude;
+   //      
+   //      public void addXXXLineToOpenNMSRequisition(
+   //               String ontName, String ontBuildingName, Double ontLatitude, Double ontLongitude,
+   //               String poleSplitterName, String poleName, Double poleLatitude, Double poleLongitude,
+   //               String cabinetSplitterName, String cabinetName, Double cabinetLatitude, Double cabinetLongitude,
+   //               String lteName, String parentFexName, Double fexLatitude, Double fexLongitude) {
+   //
+   //         ontLabelName = ontName;
+   //         ontContainerName = ontBuildingName;
+   //         ontContainerLatitude = ontLatitude;
+   //         ontContainerLongitude = ontLongitude;
+   //         secondarySplitterName = poleSplitterName;
+   //         secondarySplitterContainerName = poleName;
+   //         secondarySplitterContainerLatitude = poleLatitude;
+   //         secondarySplitterContainerLongitude = poleLongitude;
+   //         primarySplitterName = cabinetSplitterName;
+   //         primarySplitterContainerName = cabinetName;
+   //         primarySplitterContainerLatitude = cabinetLatitude;
+   //         primarySplitterContainerLongitude = cabinetLongitude;
+   //         lteLabelName = lteName;
+   //         lteFexName = parentFexName;
+   //         lteFexLatitude = fexLatitude;
+   //         lteFexLongitude = fexLongitude;
+   //         
+   //
+   //      }
+   //
+   //      @Override
+   //      public String toString() {
+   //         return "Temp [ontLabelName=" + ontLabelName + ", ontContainerName=" + ontContainerName + ", ontContainerLatitude=" + ontContainerLatitude + ", ontContainerLongitude=" + ontContainerLongitude
+   //                  + ", secondarySplitterName=" + secondarySplitterName + ", secondarySplitterContainerName=" + secondarySplitterContainerName + ", secondarySplitterContainerLatitude="
+   //                  + secondarySplitterContainerLatitude + ", secondarySplitterContainerLongitude=" + secondarySplitterContainerLongitude + ", primarySplitterName=" + primarySplitterName
+   //                  + ", primarySplitterContainerName=" + primarySplitterContainerName + ", primarySplitterContainerLatitude=" + primarySplitterContainerLatitude + ", primarySplitterContainerLongitude="
+   //                  + primarySplitterContainerLongitude + ", lteLabelName=" + lteLabelName + ", lteFexName=" + lteFexName + ", lteFexLatitude=" + lteFexLatitude + ", lteFexLongitude=" + lteFexLongitude
+   //                  + "]";
+   //      }
+   //      
+   //      
+   //   }
 
 }
