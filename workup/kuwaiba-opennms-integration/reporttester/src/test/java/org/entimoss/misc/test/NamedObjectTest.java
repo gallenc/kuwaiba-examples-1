@@ -54,6 +54,11 @@ public class NamedObjectTest {
    Double fexLatitude = Double.valueOf("-1.3762576");
 
    Double fexLongitude = Double.valueOf("50.9178581");
+   
+   /*
+    * Foreign source name used in naming the file and also in parent foreign source references
+    */
+   String foreignSource = "testrequisition1";
 
    /* lteRangeStartNumber
     * number to start range of lte in FEX (e.g one lte per region)
@@ -237,11 +242,17 @@ public class NamedObjectTest {
                   ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
 
                   ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), ontName);
+                  ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), ontName);
+                  
+                  ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), poleSplitterName);
+                  ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
+                  
                   ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", latitude));
                   ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", longitude));
                                     
-                  ontLine.set(OnmsRequisitionConstants.ASSET_DESCRIPTION.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), buildingName);
+                  ontLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), buildingName);
 
+                  LOG.debug("putting ontName:"+ontName+" ontLine: "+ontLine);
                   ontLines.put(ontName, ontLine);
 
                   // ***********************
@@ -262,11 +273,17 @@ public class NamedObjectTest {
                   secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
 
                   secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), poleSplitterName);
+                  secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), poleSplitterName);
+                  
+                  secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), cabinetSplitterName);
+                  secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
+                  
                   secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", poleLatitude));
                   secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", poleLongitude));
                   
-                  secondarySplitterLine.set(OnmsRequisitionConstants.ASSET_DESCRIPTION.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), poleName);
+                  secondarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), poleName);
                   
+                  LOG.debug("putting poleSplitterName:"+poleSplitterName+" secondarySplitterLine: "+secondarySplitterLine);
                   secondarySplitterLines.put(poleSplitterName, secondarySplitterLine);
 
                   // ***********************
@@ -287,11 +304,17 @@ public class NamedObjectTest {
                   primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
 
                   primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), cabinetSplitterName);
+                  primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), cabinetSplitterName);
+                  
+                  primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_ID), lteName);
+                  primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE), foreignSource);
+                  
                   primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", cabinetLatitude));
                   primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", cabinetLongitude));
                   
-                  primarySplitterLine.set(OnmsRequisitionConstants.ASSET_DESCRIPTION.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), cabinetName);
+                  primarySplitterLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), cabinetName);
                   
+                  LOG.debug("putting cabinetSplitterName:"+cabinetSplitterName+" primarySplitterLine: "+primarySplitterLine);
                   primarySplitterLines.put(cabinetSplitterName, primarySplitterLine);
 
                   // ***********************
@@ -312,11 +335,14 @@ public class NamedObjectTest {
                   lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_REGION), asset_region);
 
                   lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.NODE_LABEL), lteName);
+                  lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ID_), lteName);
+                  
                   lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LATITUDE), "'" + String.format("%.8f", fexLatitude));
                   lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_LONGITUDE), "'" + String.format("%.8f", fexLongitude));
                   
-                  lteLine.set(OnmsRequisitionConstants.ASSET_DESCRIPTION.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), parentFexName);
+                  lteLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(OnmsRequisitionConstants.ASSET_DESCRIPTION), parentFexName);
                   
+                  LOG.debug("putting ltename:"+lteName+" lteLine"+lteLine);
                   lteLines.put(lteName, lteLine);
 
                   uprnCount++;
@@ -338,7 +364,7 @@ public class NamedObjectTest {
          csvData.addAll(secondarySplitterLines.values());
          csvData.addAll(ontLines.values());
 
-         File outputFile = new File("./target/requisitions/testrequisition1.csv");
+         File outputFile = new File("./target/requisitions/"+foreignSource+".csv");
          exportCsvFile(outputFile, csvData);
 
       } catch (Exception e) {
@@ -486,7 +512,7 @@ public class NamedObjectTest {
                ASSET_ADDRESS1, ASSET_ADDRESS2, ASSET_CITY, ASSET_STATE, ASSET_ZIP, ASSET_COUNTRY,
 
                // equipment description
-               ASSET_MODELNUMBER, ASSET_SERIALNUMBER, ASSET_DESCRIPTION,
+               ASSET_MODELNUMBER, ASSET_SERIALNUMBER,
                ASSET_MANUFACTURER, ASSET_VENDOR, ASSET_VENDORPHONE, ASSET_VENDORFAX,
 
                // lease contacts
