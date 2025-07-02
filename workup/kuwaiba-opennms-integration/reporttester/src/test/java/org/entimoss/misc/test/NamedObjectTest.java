@@ -52,7 +52,7 @@ public class NamedObjectTest {
     * Four letter abbreviation followed by three figures e.g SOTN001
     */
    String parentFexName = "SOTN001";
-   
+
    String vendor = "NOKIA";
 
    Double fexLatitude = Double.valueOf("50.9178581");
@@ -78,7 +78,7 @@ public class NamedObjectTest {
    /* lteRangeStartNumber
     * number to start range of lte in FEX (e.g one lte per region)
     */
-   int lteRangeStartNumber = 100;
+   int oltRangeStartNumber = 100;
 
    int PRIMARY_SPLIT_RATIO = 8; // PRIMARY SPLITTERS IN CABINETS
    int SECONDARY_SPLIT_RATIO = 16; // SECONDARY SPLITTERS ON POLES split 16
@@ -136,57 +136,47 @@ public class NamedObjectTest {
                LOG.warn(errormsg);
             } else {
 
-               int poleNo = uprnCount / (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); // pole number
-               int localPolePortNo = uprnCount % (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); // 1-16
-               int poleSplitterNo = localPolePortNo / SECONDARY_SPLIT_RATIO; // splitter no
-               int poleSplitterPortNo = localPolePortNo % SECONDARY_SPLIT_RATIO; // port on splitter
-
-               // there will be one splitter terminal per port terminal
-               //int cabinetNo = uprnCount / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO * SECONDARY_SPLIT_RATIO);
-
-               int cabinetNo = poleNo / (SPLITTERS_TO_USE_PER_POLE * SPLITTERS_TO_USE_PER_CAB);
-               int cabinetSplitterNo = (uprnCount / SECONDARY_SPLIT_RATIO) / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
-               int cabinetSplitterPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
-
-               int lteShelfNo = cabinetSplitterNo / PORTS_PER_OLT_CARD;
-               int ltePortNo = cabinetSplitterNo % PORTS_PER_OLT_CARD; // one port per primary splitter
-
-               // one lte per cabinet (2 x 8 port shelves = 16 possible splitters)
-               int lteNo = lteRangeStartNumber + cabinetNo;
-
-               // int localCabSplitterPortNo =  uprnCount / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO * SECONDARY_SPLIT_RATIO); // 1-8
-
-               //  int cabinetSplitterNo =  localCabSplitterPortNo / (PRIMARY_SPLIT_RATIO );     // splitter no
-               //  int cabSplitterPortNo = localCabSplitterPortNo % (PRIMARY_SPLIT_RATIO ); // port on splitter
-
-               //  int cabSplitterPortNo = uprnCount % SECONDARY_SPLIT_RATIO; // 0 to 29
-
-               // int cabinetSplitterNo = uprnCount % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
-
-               LOG.debug("***********");
-               LOG.debug("calculations:  uprnCount=" + uprnCount + ", poleNo=" + poleNo + ", poleSplitterNo=" + poleSplitterNo + ", poleSplitterPortNo=" + poleSplitterPortNo + ", cabinetNo="
-                        + cabinetNo +
-                        ", cabinetSplitterNo=" + cabinetSplitterNo + ", cabinetSplitterPortNo=" + cabinetSplitterPortNo + ", lteNo=" + lteNo + ", lteShelfNo=" + lteShelfNo + ", ltePortNo="
-                        + ltePortNo);
-
-
-
                try {
+
                   LOG.warn("processing line lineCount=" + lineCount + ", line=" + line);
-                  
+
                   // remove leading quote on uprn '
                   String uprn = csvColumns.get(UPRN_COLUMN).replaceFirst("'", "");
-                  
+
                   long uprnNo = Long.parseUnsignedLong(uprn);
 
-                  // create house UPRN , ONT if doesnt exist splice 2 fibres
+                  int poleNo = uprnCount / (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); // pole number
+                  int localPolePortNo = uprnCount % (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); 
+                  int poleSplitterNo = localPolePortNo / SECONDARY_SPLIT_RATIO; // splitter number on pole
+                  int poleSplitterPortNo = localPolePortNo % SECONDARY_SPLIT_RATIO; // port on splitter
+
+                  // each cabinet splitter port associated with one poleSplitter
+                  int cabinetNo = poleNo / (SPLITTERS_TO_USE_PER_POLE * SPLITTERS_TO_USE_PER_CAB);
+                  int cabinetSplitterNo = (uprnCount / SECONDARY_SPLIT_RATIO) / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
+                  int cabinetSplitterPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
+
+                  // each olt has multiple shelves each with separate ports (2 x 8 port shelves = 16 possible splitters)
+                  int oltShelfNo = cabinetSplitterNo / PORTS_PER_OLT_CARD;
+                  int oltPortNo = cabinetSplitterNo % PORTS_PER_OLT_CARD; // one port per primary splitter
+
+                  // allocate one olt per cabinet (2 x 8 port shelves = 16 possible splitters)
+                  int oltNo = oltRangeStartNumber + cabinetNo;
+
+                  LOG.debug("***********");
+                  LOG.debug("calculations:  uprnCount=" + uprnCount + ", poleNo=" + poleNo + ", poleSplitterNo=" + poleSplitterNo + ", poleSplitterPortNo=" + poleSplitterPortNo + 
+                           ", cabinetNo=" + cabinetNo +
+                           ", cabinetSplitterNo=" + cabinetSplitterNo + ", cabinetSplitterPortNo=" + cabinetSplitterPortNo + ", oltNo=" + oltNo + ", oltShelfNo=" + oltShelfNo +
+                           ", oltPortNo=" + oltPortNo);
+
+                  // create house UPRN , ONT if doesn't exist splice 2 fibres
                   // Building / House              UPRN_<uprn>  UPRN_200001919492
                   // CSP (Customer Splice Point)   CSP_<uprn>   CSP_200001919492 note CSP has two splices IN-0 OUT-0 
                   // Optical Network Terminator    ONT_<uprn>   ONT_200001919492   eth0, pon
 
+                  String buildingName = "USPRN_" + uprn;
                   String ontName = "ONT_" + uprn;
                   String cspName = "CSP_" + uprn;
-                  String buildingName = "USPRN_" + uprn;
+                  
 
                   // create pole
                   // parentLocationObjectPrefixValue_POLE_<NUMBER>   SO18BPK1_POLE_001
@@ -206,17 +196,21 @@ public class NamedObjectTest {
                   // create fibre container pole to house 2 fibres
                   // 1_2BFU_SO18BPK1_POLE_001_UPRN_200001919492
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
+                  
 
                   // create fibre container pole to cabinet 4x12 fibres
                   // 4_12BFU_SO18BPK1_CAB_001_SO18BPK1_POLE_001
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
 
-                  // create lte
+                  // create olt in fex
                   // parentFexName_OLT_<NUMBER>   SOTN001_OLT_001
-                  String lteName = parentFexName + "_OLT_" + lteNo;
+                  String oltName = parentFexName + "_OLT_" + oltNo;
 
                   // create fibre container cabinet to OLT
+                  
+                  // create circuit ont to olt
 
+                  
                   Double latitude = Double.valueOf(csvColumns.get(LATITUDE_COLUMN));
                   Double longitude = Double.valueOf(csvColumns.get(LONGITUDE_COLUMN));
 
@@ -247,38 +241,38 @@ public class NamedObjectTest {
                      cabinetLatitude = coords.get(0);
                      cabinetLongitude = coords.get(1);
                   }
-                  
-                  String ontSerialNo ="NOT_SET" ;
-                  String ontAssetNo = "NOT_SET" ;
-                  
-                  if("NOKIA".equals(vendor)) {
+
+                  String ontSerialNo = "NOT_SET";
+                  String ontAssetNo = "NOT_SET";
+
+                  if ("NOKIA".equals(vendor)) {
                      // e.g. sn ALCLFCA40FFF an 691558
 
                      // same as uprn but add
                      String hex = Long.toHexString(uprnNo).toUpperCase();
-                     
-                     ontSerialNo ="ALCLF"+hex ;
-                     
+
+                     ontSerialNo = "ALCLF" + hex;
+
                      // same as uprn but add '
-                     ontAssetNo = "'"+uprn ;
+                     ontAssetNo = "'" + uprn;
                   }
-                  
-                  if("CALEX".equals(vendor)) {
+
+                  if ("CALEX".equals(vendor)) {
                      //  
                      // e.g. sn '372106041266  an 151029
                      //           10001304957
                      //          100000000000
 
                      long ontsn = uprnNo + 100000000000L;
-                     ontSerialNo = "'"+Long.toUnsignedString(ontsn) ;
-                     
-                     //same as uprn but add '
-                     ontAssetNo = "'"+uprn ;
-                  }
-                     
+                     ontSerialNo = "'" + Long.toUnsignedString(ontsn);
 
-                  LOG.debug(String.format("vendor: %s, ontName: %s, ontAssetNo: %s, ontSerialNo: %s, cspName: %s, buildingName: %s, poleName: %s, poleSplitterName: %s, cabinetName: %s, cabinetSplitterName: %s, lteName %s",
-                           vendor, ontName, ontAssetNo, ontSerialNo, cspName, buildingName, poleName, poleSplitterName, cabinetName, cabinetSplitterName, lteName));
+                     //same as uprn but add '
+                     ontAssetNo = "'" + uprn;
+                  }
+
+                  LOG.debug(String.format(
+                           "vendor: %s, ontName: %s, ontAssetNo: %s, ontSerialNo: %s, cspName: %s, buildingName: %s, poleName: %s, poleSplitterName: %s, cabinetName: %s, cabinetSplitterName: %s, lteName %s",
+                           vendor, ontName, ontAssetNo, ontSerialNo, cspName, buildingName, poleName, poleSplitterName, cabinetName, cabinetSplitterName, oltName));
 
                   // POPULATE OPENNMS REQUISITION
                   String ontLabelName = ontName;
@@ -288,7 +282,7 @@ public class NamedObjectTest {
                   String ontIpAddress = OpenNMSRequisitionPopulator.DUMMY_IP_ADDRESS;
                   String ontComment = "";
                   String ontSerialNumber = ontSerialNo;
-                  String ontAssetNumber =  ontAssetNo;
+                  String ontAssetNumber = ontAssetNo;
 
                   String secondarySplitterName = poleSplitterName; //  (splitters on poles)
                   String secondarySplitterContainerName = poleName;
@@ -306,7 +300,7 @@ public class NamedObjectTest {
                   String primarySplitterSerialNumber = "";
                   String primarySplitterAssetNumber = "";
 
-                  String lteLabelName = lteName; // (ltes in cabinets)
+                  String lteLabelName = oltName; // (ltes in cabinets)
                   String lteFexName = parentFexName;
                   Double lteFexLatitude = fexLatitude;
                   Double lteFexLongitude = fexLongitude;
@@ -339,10 +333,9 @@ public class NamedObjectTest {
          }
 
          List<List<String>> csvData = openNMSRequisitionPopulator.finaliseRequisition();
-         
+
          File outputFile = new File(requisitionOutputFileLocation + foreignSource + ".csv");
          exportCsvFile(outputFile, csvData);
-
 
       } catch (Exception e) {
          LOG.error("problem running script ", e);
@@ -359,7 +352,7 @@ public class NamedObjectTest {
       LOG.info("**** test1 finished");
 
    }
-   
+
    public void exportCsvFile(File outputFile, List<List<String>> csvData) {
 
       PrintWriter printWriter = null;
@@ -439,10 +432,10 @@ public class NamedObjectTest {
                   ", secondarySplitterName=" + secondarySplitterName +
                   ", secondarySplitterContainerName=" + secondarySplitterContainerName + ", secondarySplitterContainerLatitude=" + secondarySplitterContainerLatitude +
                   ", secondarySplitterContainerLongitude=" + secondarySplitterContainerLongitude +
-                  ", secondarySplitterComment=" + secondarySplitterComment + ", secondarySplitterSerialNumber=" + secondarySplitterSerialNumber + 
-                  ", secondarySplitterAssetNumber="+ secondarySplitterAssetNumber +
+                  ", secondarySplitterComment=" + secondarySplitterComment + ", secondarySplitterSerialNumber=" + secondarySplitterSerialNumber +
+                  ", secondarySplitterAssetNumber=" + secondarySplitterAssetNumber +
 
-                  ", primarySplitterName=" + primarySplitterName + ", primarySplitterContainerName=" + primarySplitterContainerName + 
+                  ", primarySplitterName=" + primarySplitterName + ", primarySplitterContainerName=" + primarySplitterContainerName +
                   ", primarySplitterContainerLatitude=" + primarySplitterContainerLatitude +
                   ", primarySplitterContainerLongitude=" + primarySplitterContainerLongitude +
                   ", primarySplitterComment=" + primarySplitterComment + ", primarySplitterSerialNumber=" + primarySplitterSerialNumber + ", primarySplitterAssetNumber=" + primarySplitterAssetNumber +
@@ -647,12 +640,10 @@ public class NamedObjectTest {
          csvData.addAll(primarySplitterLines.values());
          csvData.addAll(secondarySplitterLines.values());
          csvData.addAll(ontLines.values());
-         
+
          return csvData;
 
       }
-
- 
 
    }
 
