@@ -338,7 +338,11 @@ public class NamedObjectTest {
             }
          }
 
-         openNMSRequisitionPopulator.finaliseRequisition();
+         List<List<String>> csvData = openNMSRequisitionPopulator.finaliseRequisition();
+         
+         File outputFile = new File(requisitionOutputFileLocation + foreignSource + ".csv");
+         exportCsvFile(outputFile, csvData);
+
 
       } catch (Exception e) {
          LOG.error("problem running script ", e);
@@ -353,6 +357,38 @@ public class NamedObjectTest {
       }
 
       LOG.info("**** test1 finished");
+
+   }
+   
+   public void exportCsvFile(File outputFile, List<List<String>> csvData) {
+
+      PrintWriter printWriter = null;
+      try {
+         outputFile.delete();
+
+         File parent = outputFile.getParentFile();
+         if (!parent.exists())
+            parent.mkdirs();
+
+         printWriter = new PrintWriter(new FileWriter(outputFile));
+         for (List<String> line : csvData) {
+            Iterator<String> lineItr = line.iterator();
+            StringBuilder linesb = new StringBuilder();
+            while (lineItr.hasNext()) {
+               linesb.append(lineItr.next());
+               if (lineItr.hasNext()) {
+                  linesb.append(",");
+               }
+            }
+            printWriter.println(linesb.toString());
+         }
+
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      } finally {
+         if (printWriter != null)
+            printWriter.close();
+      }
 
    }
 
@@ -601,7 +637,7 @@ public class NamedObjectTest {
 
       }
 
-      public void finaliseRequisition() {
+      public List<List<String>> finaliseRequisition() {
 
          // add header
          csvData.add(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS);
@@ -611,43 +647,12 @@ public class NamedObjectTest {
          csvData.addAll(primarySplitterLines.values());
          csvData.addAll(secondarySplitterLines.values());
          csvData.addAll(ontLines.values());
-
-         File outputFile = new File(requisitionOutputFileLocation + foreignSource + ".csv");
-         exportCsvFile(outputFile, csvData);
-
-      }
-
-      public void exportCsvFile(File outputFile, List<List<String>> csvData) {
-
-         PrintWriter printWriter = null;
-         try {
-            outputFile.delete();
-
-            File parent = outputFile.getParentFile();
-            if (!parent.exists())
-               parent.mkdirs();
-
-            printWriter = new PrintWriter(new FileWriter(outputFile));
-            for (List<String> line : csvData) {
-               Iterator<String> lineItr = line.iterator();
-               StringBuilder linesb = new StringBuilder();
-               while (lineItr.hasNext()) {
-                  linesb.append(lineItr.next());
-                  if (lineItr.hasNext()) {
-                     linesb.append(",");
-                  }
-               }
-               printWriter.println(linesb.toString());
-            }
-
-         } catch (Exception ex) {
-            ex.printStackTrace();
-         } finally {
-            if (printWriter != null)
-               printWriter.close();
-         }
+         
+         return csvData;
 
       }
+
+ 
 
    }
 
