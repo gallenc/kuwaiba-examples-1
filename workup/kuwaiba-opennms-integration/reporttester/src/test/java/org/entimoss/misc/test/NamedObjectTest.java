@@ -173,7 +173,7 @@ public class NamedObjectTest {
                   // CSP (Customer Splice Point)   CSP_<uprn>   CSP_200001919492 note CSP has two splices IN-0 OUT-0 
                   // Optical Network Terminator    ONT_<uprn>   ONT_200001919492   eth0, pon
 
-                  String buildingName = "USPRN_" + uprn;
+                  String buildingName = "UPRN_" + uprn;
                   String ontName = "ONT_" + uprn;
                   String cspName = "CSP_" + uprn;
                   
@@ -194,19 +194,23 @@ public class NamedObjectTest {
                   String cabinetSplitterName = cabinetName + "_SPL8_" + cabinetSplitterNo;
 
                   // create fibre container pole to house 2 fibres
-                  // 1_2BFU_SO18BPK1_POLE_001_UPRN_200001919492
+                  // BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
-                  
+                  String poleToBuildingContainerName = "BFU_1_2_"+buildingName+"_"+poleName;
 
                   // create fibre container pole to cabinet 4x12 fibres
-                  // 4_12BFU_SO18BPK1_CAB_001_SO18BPK1_POLE_001
+                  // BFU_4_12_SO18BPK1_CAB_001_SO18BPK1_POLE_001
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
+                  String cabinetToPoleContainerName = "BFU_4_12_"+cabinetName+"_"+poleName;
 
                   // create olt in fex
                   // parentFexName_OLT_<NUMBER>   SOTN001_OLT_001
                   String oltName = parentFexName + "_OLT_" + oltNo;
-
-                  // create fibre container cabinet to OLT
+                  
+                  // create fibre container fex to cabinet 4x12 fibres  (10 + 2 spare)
+                  // BFU_4_12_SOTN001_SO18BPK1_CAB_001
+                  // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
+                  String cabinetToFexContainerName = "BFU_4_12_"+parentFexName+"_"+cabinetName;
                   
                   // create circuit ont to olt
 
