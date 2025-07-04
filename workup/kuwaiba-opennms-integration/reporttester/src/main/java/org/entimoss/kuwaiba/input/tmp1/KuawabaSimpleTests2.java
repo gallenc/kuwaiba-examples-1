@@ -1,4 +1,4 @@
-package org.entimoss.kuwaiba.input;
+package org.entimoss.kuwaiba.input.tmp1;
 
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;

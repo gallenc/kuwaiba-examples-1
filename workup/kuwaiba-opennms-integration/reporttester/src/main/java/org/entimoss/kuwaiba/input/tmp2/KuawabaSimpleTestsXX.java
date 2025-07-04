@@ -1,4 +1,4 @@
-package org.entimoss.kuwaiba.input;
+package org.entimoss.kuwaiba.input.tmp2;
 
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;
@@ -46,7 +46,7 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
  *             -defaultCountry: The default country where the cities will be created. Optional. Default value:"United States"
  */
 
-public class KuawabaSimpleTests1 {
+public class KuawabaSimpleTestsXX {
    static Logger LOG = LoggerFactory.getLogger("KuawabaSimpleTests1"); // remove static in groovy
 
    BusinessEntityManager bem = null; // injected in groovy
@@ -56,7 +56,7 @@ public class KuawabaSimpleTests1 {
    String countryName = "United States";
    String SEPARATOR = ";";
 
-   public KuawabaSimpleTests1(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters) {
+   public KuawabaSimpleTestsXX(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters) {
       super();
       this.bem = bem;
       this.aem = aem;
