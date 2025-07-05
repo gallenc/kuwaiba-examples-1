@@ -30,24 +30,15 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
 // note use COMMIT ON EXECUTE
 //uncomment in groovy script
-//KuawabaSimpleTests1 kuwaibaImport = new KuawabaSimpleTests1(bem, aem, scriptParameters);
+//KuawabaSimpleTestsXX kuwaibaImport = new KuawabaSimpleTestsXX(bem, aem, scriptParameters);
 //return kuwaibaImport.runTask();
 
 /**
- * A simple script that processes a CSV file in order to bulk import cities and sites inside the cities. 
- * This script does not use templates and creates all the objects from scratch. It assumes the following 
- * containment structure: Country -> State-> City -> Building -> Room.
- * The structure of the CSV is: STATE_NAME;STATE_ACRONYM;CITY_NAME;CENTRAL_OFFICE_NAME:CENTRAL_OFFICE_ADRESS;RACK_ROOM_NAME
- * Cities will be created in a country named "United States", unless the parameter defaultCountry is set. Note that the separator 
- * is a semicolon ";". Class "State" must have a string type attribute named "acronym" and class "Building" must have a string attribute named "address".
- * Note: Use the sample file "sample_co_import.csv" in the "assets" directory within the epository folder this script is hosted.
- * Neotropic SAS - version 1.0
- * Parameters: -fileName: The location of the upload file. Mandatory.
- *             -defaultCountry: The default country where the cities will be created. Optional. Default value:"United States"
+
  */
 
 public class KuawabaSimpleTestsXX {
-   static Logger LOG = LoggerFactory.getLogger("KuawabaSimpleTests1"); // remove static in groovy
+   static Logger LOG = LoggerFactory.getLogger(KuawabaSimpleTestsXX.class); // remove static in groovy
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
@@ -66,44 +57,57 @@ public class KuawabaSimpleTestsXX {
 
    public TaskResult runTask() {
       TaskResult taskResult = new TaskResult();
-
-      /*
-       * rangeParentValue
-       * The rangeParentValue can be the name property of the object or the kuwaiba objectID of the object.
-       * If the rangeParentValue is not set, all devices will be included in the tree.
-       * If the rangeParentValue is not found, an exception will be thrown and the report will not complete
-       * Finds the parent visable object of the devices to include in the device list. 
-       * If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.
-       */
-      String rangeParentValue = parameters.getOrDefault("rangeParentValue", "");
+      
+      taskResult.getMessages().add(TaskResult.createInformationMessage(
+             String.format("running Script "+KuawabaSimpleTestsXX.class.getName()+" with parameters:" +parameters)));
+      
+      LOG.debug("running Script "+KuawabaSimpleTestsXX.class.getName()+" with parameters:" +parameters);
 
       try {
+         
+         BusinessObject parentObject = null;
+         
+         List<BusinessObject> foundObjects = bem.getObjectsWithFilter("House", Constants.PROPERTY_NAME, "6burnett");
+         if (!foundObjects.isEmpty()) {
+            parentObject  = foundObjects.get(0);
+            
+         }
+         
+         LOG.debug(" found parent Object "+businessObjectToString(parentObject));
+         
+         String createObjectClassName ="OpticalNetworkTerminal";
+         String createObjectName ="testOnt2";
+         String parentOid = parentObject.getId();
+         String parentClassName = parentObject.getClassName();
+         HashMap<String, String> initialAttributes =null ;
+         
+         createIfDoesntExist(createObjectClassName, createObjectName, parentOid, parentClassName, initialAttributes);
 
-         // find parent region
-         BusinessObjectLight rangeParent = findObjectByIdOrName(Constants.CLASS_VIEWABLEOBJECT, rangeParentValue);
-         
-         
-         LOG.info("found range parent =" + rangeParent.getId()+" classname="+rangeParent.getClassName());
-         taskResult.getMessages().add(TaskResult.createInformationMessage(
-                  String.format("found range parent =" + rangeParent.getId()+" classname="+rangeParent.getClassName())));
-
-         String createObjectClass = "Pole";
-         String createObjectName = "bpk001";
-         String parentOid = rangeParent.getId();
-         String parentClassName = rangeParent.getClassName();
-         HashMap<String, String> initialAttributes = null;
-         
-         // create primary splice box
-         BusinessObject pole = createIfDoesntExist(createObjectClass, createObjectName, parentOid, parentClassName, initialAttributes);
-         
-         taskResult.getMessages().add(TaskResult.createInformationMessage(
-                  String.format("created new pole poleId= " + pole.getId() +" name:"+pole.getName() )));
-         LOG.warn("created new pole poleId= " + pole.getId() +" name:"+pole.getName() );
-         
-
-         // create secondary splice box
-         // create ont
-         // create lte
+//         // find parent region
+//         BusinessObjectLight rangeParent = findObjectByIdOrName(Constants.CLASS_VIEWABLEOBJECT, rangeParentValue);
+//         
+//         
+//         LOG.info("found range parent =" + rangeParent.getId()+" classname="+rangeParent.getClassName());
+//         taskResult.getMessages().add(TaskResult.createInformationMessage(
+//                  String.format("found range parent =" + rangeParent.getId()+" classname="+rangeParent.getClassName())));
+//
+//         String createObjectClass = "Pole";
+//         String createObjectName = "bpk001";
+//         String parentOid = rangeParent.getId();
+//         String parentClassName = rangeParent.getClassName();
+//         HashMap<String, String> initialAttributes = null;
+//         
+//         // create primary splice box
+//         BusinessObject pole = createIfDoesntExist(createObjectClass, createObjectName, parentOid, parentClassName, initialAttributes);
+//         
+//         taskResult.getMessages().add(TaskResult.createInformationMessage(
+//                  String.format("created new pole poleId= " + pole.getId() +" name:"+pole.getName() )));
+//         LOG.warn("created new pole poleId= " + pole.getId() +" name:"+pole.getName() );
+//         
+//
+//         // create secondary splice box
+//         // create ont
+//         // create lte
 
       } catch (Exception ex) {
          taskResult.getMessages().add(TaskResult.createErrorMessage(
@@ -112,29 +116,40 @@ public class KuawabaSimpleTestsXX {
 
 
 
+      LOG.debug("end of Script "+KuawabaSimpleTestsXX.class.getName());
+      
       return taskResult;
+   }
+   
+ 
+
+   
+   BusinessObject findOrCreateIfDoesntExist(String className  , String classTemplate , String name, String parentClass, String parentClassName , 
+            String latitude, String longitude, String IpAddress  , String Comment , String serialNumber  , String assetNumber  ) {
+      
+      return null;
    }
 
    /**
     * creates new object with parent if object doesn't exist
     * return BusinessObject of existing object or new object if does already exist
-    * @param createObjectClass
+    * @param createObjectClassName
     * @param createObjectName
     * @param parentObjectId
     * @param parentObjectClass
     * @return
     */
-   public BusinessObject createIfDoesntExist(String createObjectClass, String createObjectName, String parentOid, String parentClassName, HashMap<String, String> initialAttributes) {
+   public BusinessObject createIfDoesntExist(String createObjectClassName, String createObjectName, String parentOid, String parentClassName, HashMap<String, String> initialAttributes) {
       
       BusinessObject createdObject = null;
       
       try {
          // see if there is an object with the same name
-         List<BusinessObject> foundObjects = bem.getObjectsWithFilter(createObjectClass, Constants.PROPERTY_NAME, createObjectName);
+         List<BusinessObject> foundObjects = bem.getObjectsWithFilter(createObjectClassName, Constants.PROPERTY_NAME, createObjectName);
          if (!foundObjects.isEmpty()) {
             createdObject = foundObjects.get(0);
             LOG.info("createIfDoesntExist - object already exists id "+createdObject.getId()
-                     + "createObjectClass " + createObjectClass + 
+                     + "createObjectClass " + createObjectClassName + 
                      ", createObjectName:" + createObjectName + ", parentOid:" + parentOid + ", parentClassName " + parentClassName);
          }
       } catch (Exception ex) {
@@ -150,16 +165,14 @@ public class KuawabaSimpleTestsXX {
             // not using templates
             String templateId = null;
             
-            String createdObjectId = bem.createObject(createObjectClass, parentClassName, parentOid, attributes, templateId);
+            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentOid, attributes, templateId);
             
-            createdObject = bem.getObject(createObjectClass, createdObjectId);
+            createdObject = bem.getObject(createObjectClassName, createdObjectId);
 
-            LOG.info("createIfDoesntExist - created new ooject id "+createdObject.getId()
-            + "createObjectClass " + createObjectClass + 
-            ", createObjectName:" + createObjectName + ", parentOid:" + parentOid + ", parentClassName " + parentClassName);
+            LOG.info("createIfDoesntExist - created new object "+ businessObjectToString(createdObject));
             
          } catch (Exception e) {
-            LOG.error("problem creating object createObjectClass " + createObjectClass + 
+            LOG.error("problem creating object createObjectClass " + createObjectClassName + 
                      ", createObjectName:" + createObjectName + ", parentOid:" + parentOid + ", parentClassName " + parentClassName, e);
          }
       }
@@ -167,92 +180,15 @@ public class KuawabaSimpleTestsXX {
       return createdObject;
 
    }
-
-   /**
-    * tries to find an object based on className or object id
-    * the first found object will be used
-    *  note className should be one of Constants.CLASS_VIEWABLEOBJECT or POSSIBLY Constants.CLASS_GENERICCONNECTION
-    * @param findObjectValue value can be an absolute object id or an object name. Search for object name first.
-    * @return the object id of the first object found 
-    */
-   public BusinessObjectLight findObjectByIdOrName(String findObjectClassName, String findObjectValue) {
-
-      BusinessObjectLight rangeParent = null;
-      String rangeParentClassName = null;
-      String rangeParentId = null;
-
-      String searchErrorMsg = null;
-      if (findObjectValue != null && !findObjectValue.isEmpty()) {
-         try {
-            // see if there is an object with the same name
-            List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(findObjectClassName, Constants.PROPERTY_NAME, findObjectValue);
-            if (!rangeParents.isEmpty())
-               rangeParent = rangeParents.get(0);
-         } catch (Exception ex) {
-            searchErrorMsg = ex.getMessage();
-         }
-         if (rangeParent == null)
-            // else see if there is an object with the object id = viewable object
-            try {
-               // see if there is an object with the same id
-               List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(findObjectClassName, Constants.PROPERTY_UUID, findObjectValue);
-               if (!rangeParents.isEmpty())
-                  rangeParent = rangeParents.get(0);
-            } catch (Exception ex) {
-               searchErrorMsg = ex.getMessage();
-            }
-         if (rangeParent == null) {
-            throw new IllegalArgumentException("cannot find findObjectClassName:"+findObjectClassName+ " with findObjectValue=" + findObjectValue + " search error:" + searchErrorMsg);
-         }
-         rangeParentClassName = rangeParent.getClassName();
-         rangeParentId = rangeParent.getId();
-         LOG.warn("found object with parent object rangeParentClassName=" + rangeParentClassName + " rangeParentId=" + rangeParentId + " " + rangeParent);
-      }
-
-      return rangeParent;
-   }
-
-   /**
-    * tests if business objectId is a parent of child object
-    * @param parentObjectId
-    * @param childBusinessObject
-    * @return 
-    * @throws BusinessObjectNotFoundException
-    * @throws MetadataObjectNotFoundException
-    * @throws InvalidArgumentException
-    */
-   public boolean objectIsParent(String parentObjectId, BusinessObjectLight childBusinessObject) throws BusinessObjectNotFoundException, MetadataObjectNotFoundException, InvalidArgumentException {
-
-      boolean isParent = false;
-
-      // if rangeParent is set do not proceed if device is not a child of rangeParent
-      // TODO this is correct method but doesn't work because transaction is not closed in BusinessEntityManagerImpl.isParent (no txSuccess())
-      // bem.isParent(rangeParentClassName, rangeParentId, device.getClassName(), device.getId())) {
-
-      // TODO work around
-      if (parentObjectId != null) {
-         List<BusinessObjectLight> parents = bem.getParents(childBusinessObject.getClassName(), childBusinessObject.getId());
-
-         LOG.warn("parents of child name: " + childBusinessObject.getClassName() + " Id: " + childBusinessObject.getId() + " : " + parents);
-
-         for (BusinessObjectLight parent : parents) {
-            if (parent.getId().equals(parentObjectId)) {
-               isParent = true;
-               break;
-            }
-         }
-      }
-      return isParent;
-   }
    
-   // overloaded to string methods for BusinessObjects
+   // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {
-      return "BusinessObject[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()="+ 
+      return (bo==null) ? "BusinessObject[ null ]" : "BusinessObject[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()="+ 
                bo.getClassDisplayName() + " getAttributes()=" + bo.getAttributes() + "]";
    }
 
    String businessObjectToString(BusinessObjectLight bo) {
-      return "BusinessObjectLight[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" + 
+      return (bo==null) ? "BusinessObject[ null ]" : "BusinessObjectLight[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" + 
               bo.getClassDisplayName() + "]";
    }
 

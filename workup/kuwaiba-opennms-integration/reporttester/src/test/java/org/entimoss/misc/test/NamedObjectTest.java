@@ -304,11 +304,11 @@ public class NamedObjectTest {
                   String primarySplitterSerialNumber = "";
                   String primarySplitterAssetNumber = "";
 
-                  String lteLabelName = oltName; // (ltes in cabinets)
-                  String lteFexName = parentFexName;
-                  Double lteFexLatitude = fexLatitude;
-                  Double lteFexLongitude = fexLongitude;
-                  String lteIpAddress = OpenNMSRequisitionPopulator.DUMMY_IP_ADDRESS;
+                  String oltLabelName = oltName; // (ltes in cabinets)
+                  String oltFexName = parentFexName;
+                  Double oltFexLatitude = fexLatitude;
+                  Double oltFexLongitude = fexLongitude;
+                  String oltIpAddress = OpenNMSRequisitionPopulator.DUMMY_IP_ADDRESS;
                   String oltComment = "";
                   String oltSerialNumber = "";
                   String oltAssetNumber = "";
@@ -322,7 +322,7 @@ public class NamedObjectTest {
                            primarySplitterName, primarySplitterContainerName, primarySplitterContainerLatitude, primarySplitterContainerLongitude,
                            primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber,
 
-                           lteLabelName, lteFexName, lteFexLatitude, lteFexLongitude, lteIpAddress, oltComment, oltSerialNumber, oltAssetNumber);
+                           oltLabelName, oltFexName, oltFexLatitude, oltFexLongitude, oltIpAddress, oltComment, oltSerialNumber, oltAssetNumber);
 
                   uprnCount++;
 
