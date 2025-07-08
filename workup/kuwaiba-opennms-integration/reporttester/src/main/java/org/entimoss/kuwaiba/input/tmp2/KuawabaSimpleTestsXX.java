@@ -1,5 +1,7 @@
 package org.entimoss.kuwaiba.input.tmp2;
 
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TemplateObjectLight;
@@ -30,7 +32,7 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
 // note use COMMIT ON EXECUTE
 //uncomment in groovy script
-//KuawabaSimpleTestsXX kuwaibaImport = new KuawabaSimpleTestsXX(bem, aem, scriptParameters);
+//KuawabaSimpleTestsXX kuwaibaImport = new KuawabaSimpleTestsXX(bem, aem, scriptParameters, connectionHandler);
 //return kuwaibaImport.runTask();
 
 /**
@@ -43,15 +45,16 @@ public class KuawabaSimpleTestsXX {
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
    Map<String, String> parameters = null; // injected in groovy
+   
+   GraphDatabaseService connectionHandler = null; //injected in groovy
 
-   String countryName = "United States";
-   String SEPARATOR = ";";
 
-   public KuawabaSimpleTestsXX(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters) {
+   public KuawabaSimpleTestsXX(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters, GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
       this.aem = aem;
       this.parameters = (scriptParameters == null) ? new HashMap<String, String>() : scriptParameters;
+      this.connectionHandler =  connectionHandler;
 
    }
 
@@ -63,51 +66,36 @@ public class KuawabaSimpleTestsXX {
       
       LOG.debug("running Script "+KuawabaSimpleTestsXX.class.getName()+" with parameters:" +parameters);
 
+      String templateClassName="FiberSplitter";
+      String templateName = null;
+   //   String templateId=null;
+    //  String templateElementClass;
+    //  String templateElementId;
+
+      
       try {
          
-         BusinessObject parentObject = null;
-         
-         List<BusinessObject> foundObjects = bem.getObjectsWithFilter("House", Constants.PROPERTY_NAME, "6burnett");
-         if (!foundObjects.isEmpty()) {
-            parentObject  = foundObjects.get(0);
+         // this is needed because tx.success not invoked in aem
+         try (Transaction tx = connectionHandler.beginTx()){
+            // see if there is a template with the template name
+            List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(templateClassName);
+            for (TemplateObjectLight tmplate : foundTemplates) {
+               String tclassname = tmplate.getClassName();
+               String templateElementId = tmplate.getId();
+               String tname = tmplate.getName();
+               LOG.debug("template: className="+tclassname+" id="+templateElementId+" name="+tname);
+               
+               List<TemplateObjectLight> children = aem.getTemplateElementChildren(tclassname , templateElementId);
+               LOG.info("children:"+children);
+            }
             
-         }
-         
-         LOG.debug(" found parent Object "+businessObjectToString(parentObject));
-         
-         String createObjectClassName ="OpticalNetworkTerminal";
-         String createObjectName ="testOnt2";
-         String parentOid = parentObject.getId();
-         String parentClassName = parentObject.getClassName();
-         HashMap<String, String> initialAttributes =null ;
-         
-         createIfDoesntExist(createObjectClassName, createObjectName, parentOid, parentClassName, initialAttributes);
+            tx.success();
 
-//         // find parent region
-//         BusinessObjectLight rangeParent = findObjectByIdOrName(Constants.CLASS_VIEWABLEOBJECT, rangeParentValue);
-//         
-//         
-//         LOG.info("found range parent =" + rangeParent.getId()+" classname="+rangeParent.getClassName());
-//         taskResult.getMessages().add(TaskResult.createInformationMessage(
-//                  String.format("found range parent =" + rangeParent.getId()+" classname="+rangeParent.getClassName())));
-//
-//         String createObjectClass = "Pole";
-//         String createObjectName = "bpk001";
-//         String parentOid = rangeParent.getId();
-//         String parentClassName = rangeParent.getClassName();
-//         HashMap<String, String> initialAttributes = null;
-//         
-//         // create primary splice box
-//         BusinessObject pole = createIfDoesntExist(createObjectClass, createObjectName, parentOid, parentClassName, initialAttributes);
-//         
-//         taskResult.getMessages().add(TaskResult.createInformationMessage(
-//                  String.format("created new pole poleId= " + pole.getId() +" name:"+pole.getName() )));
-//         LOG.warn("created new pole poleId= " + pole.getId() +" name:"+pole.getName() );
-//         
-//
-//         // create secondary splice box
-//         // create ont
-//         // create lte
+         } catch (Exception ex) {
+            LOG.error("problem finding template:", ex);
+         }
+
+
 
       } catch (Exception ex) {
          taskResult.getMessages().add(TaskResult.createErrorMessage(
@@ -130,56 +118,7 @@ public class KuawabaSimpleTestsXX {
       return null;
    }
 
-   /**
-    * creates new object with parent if object doesn't exist
-    * return BusinessObject of existing object or new object if does already exist
-    * @param createObjectClassName
-    * @param createObjectName
-    * @param parentObjectId
-    * @param parentObjectClass
-    * @return
-    */
-   public BusinessObject createIfDoesntExist(String createObjectClassName, String createObjectName, String parentOid, String parentClassName, HashMap<String, String> initialAttributes) {
-      
-      BusinessObject createdObject = null;
-      
-      try {
-         // see if there is an object with the same name
-         List<BusinessObject> foundObjects = bem.getObjectsWithFilter(createObjectClassName, Constants.PROPERTY_NAME, createObjectName);
-         if (!foundObjects.isEmpty()) {
-            createdObject = foundObjects.get(0);
-            LOG.info("createIfDoesntExist - object already exists id "+createdObject.getId()
-                     + "createObjectClass " + createObjectClassName + 
-                     ", createObjectName:" + createObjectName + ", parentOid:" + parentOid + ", parentClassName " + parentClassName);
-         }
-      } catch (Exception ex) {
-         LOG.error("problem finding object:",ex);
-      }
 
-      if (createdObject== null ) {
-         // create new object with parent
-         try {
-            HashMap<String, String> attributes = (initialAttributes == null) ? new HashMap<String, String>() : new HashMap<String, String>(initialAttributes);
-            attributes.put(Constants.PROPERTY_NAME, createObjectName);
-
-            // not using templates
-            String templateId = null;
-            
-            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentOid, attributes, templateId);
-            
-            createdObject = bem.getObject(createObjectClassName, createdObjectId);
-
-            LOG.info("createIfDoesntExist - created new object "+ businessObjectToString(createdObject));
-            
-         } catch (Exception e) {
-            LOG.error("problem creating object createObjectClass " + createObjectClassName + 
-                     ", createObjectName:" + createObjectName + ", parentOid:" + parentOid + ", parentClassName " + parentClassName, e);
-         }
-      }
-
-      return createdObject;
-
-   }
    
    // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {

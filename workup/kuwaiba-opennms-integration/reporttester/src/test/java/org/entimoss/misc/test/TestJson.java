@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.entimoss.misc.test.TestJson.KuwaibaClass;
+import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
+import org.entimoss.kuwaiba.provisioning.KuwaibaProvisioningRequisition;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.exc.StreamWriteException;
@@ -19,30 +20,30 @@ public class TestJson {
 
    @Test
    public void test() throws StreamWriteException, DatabindException, IOException {
-      ObjectMapper om = new ObjectMapper();
 
+      
+      String ontLabelName = "ONT_200001919492";
+      String ontContainerName = "UPRN_200001919492";  // BUILDING
 
-      String ontLabelName = "";
-      String ontContainerName = "";
-      Double ontContainerLatitude = 0.0;
-      Double ontContainerLongitude = 0.0;
+      Double ontContainerLatitude = 50.924450;
+      Double ontContainerLongitude = -1.372045;
       String ontIpAddress = "";
       String ontComment = "";
       String ontSerialNumber = "";
       String ontAssetNumber = "";
 
-      String oncLabelName = "xxx";
+      String oncLabelName = "ONC_200001919492";
 
-      String secondarySplitterName = "";
-      String secondarySplitterContainerName = "";
+      String secondarySplitterName = "SO18BPK1_POLE_001_SPL16_001"; // SPLITTER
+      String secondarySplitterContainerName = "SO18BPK1_POLE_001"; //NAME
       Double secondarySplitterContainerLatitude = 0.0;
       Double secondarySplitterContainerLongitude = 0.0;
       String secondarySplitterComment = "";
       String secondarySplitterSerialNumber = "";
       String secondarySplitterAssetNumber = "";
 
-      String primarySplitterName = "";
-      String primarySplitterContainerName = "";
+      String primarySplitterName = "SO18BPK1_CAB_001_SPL8_001";
+      String primarySplitterContainerName = "SO18BPK1_CAB_001";
       Double primarySplitterContainerLatitude = 0.0;
       Double primarySplitterContainerLongitude = 0.0;
       String primarySplitterComment = "";
@@ -87,6 +88,7 @@ public class TestJson {
       //      kuwaibaClass.setParentName(null);
       //      kuwaibaClass.setTemplateName(null);
       
+      ObjectMapper om = new ObjectMapper();
 
       File file = new File("./target/data-overlay/kuwaibaProvisioningRequisition.json");
       file.delete();
@@ -103,10 +105,12 @@ public class TestJson {
       System.out.println("read file: " + pr2);
 
    }
+   
+   
 
    public class KuwaibaGponProvisoner {
 
-      GponConstants cponConstants = new GponConstants();
+      GponConstants gponConstants = new GponConstants();
 
       KuwaibaProvisioningRequisition pr = new KuwaibaProvisioningRequisition();
       
@@ -129,14 +133,16 @@ public class TestJson {
 
                String oltLabelName, String oltFexName, Double oltFexLatitude, Double oltFexLongitude, String oltIpAddress, String oltComment, String oltSerialNumber, String oltAssetNumber) {
 
+         
+         
          // House ont container
          KuwaibaClass ontContainer = new KuwaibaClass();
          pr.getKuwaibaClassList().add(ontContainer);
 
-         ontContainer.setClassName(cponConstants.getOntContainerClassName());
-         ontContainer.setTemplateName(cponConstants.getOntContainerTemplateName()); // house
-         ontContainer.setParentName(cponConstants.getParentLocationValue()); // bitterne park
-         ontContainer.setParentClassName(cponConstants.getParentLocationClassName());
+         ontContainer.setClassName(gponConstants.getOntContainerClassName());
+         ontContainer.setTemplateName(gponConstants.getOntContainerTemplateName()); // house
+         ontContainer.setParentName(gponConstants.getParentLocationValue()); // bitterne park
+         ontContainer.setParentClassName(gponConstants.getParentLocationClassName());
          ontContainer.setName(ontContainerName);
 
          HashMap<String, String> ontContainerAttributes = new HashMap<String, String>();
@@ -148,11 +154,11 @@ public class TestJson {
          KuwaibaClass ont = new KuwaibaClass();
          pr.getKuwaibaClassList().add(ont);
 
-         ont.setClassName(cponConstants.getOntClassName());
-         ont.setTemplateName(cponConstants.getOntTemplateName()); // house
+         ont.setClassName(gponConstants.getOntClassName());
+         ont.setTemplateName(gponConstants.getOntTemplateName()); // house
          ont.setParentName(ontContainerName);
-         ont.setParentClassName(cponConstants.getOntContainerClassName());
-         ont.setName(oltLabelName);
+         ont.setParentClassName(gponConstants.getOntContainerClassName());
+         ont.setName(ontLabelName);
          HashMap<String, String> ontAttributes = new HashMap<String, String>();
 
          ontAttributes.put("serialNumber", ontSerialNumber);
@@ -162,20 +168,20 @@ public class TestJson {
          KuwaibaClass onc = new KuwaibaClass();
          pr.getKuwaibaClassList().add(onc);
 
-         onc.setClassName(cponConstants.getOncClassName());
-         onc.setTemplateName(cponConstants.getOncTemplateName()); // house
+         onc.setClassName(gponConstants.getOncClassName());
+         onc.setTemplateName(gponConstants.getOncTemplateName()); // house
          onc.setParentName(ontContainerName);
-         onc.setParentClassName(cponConstants.getOntContainerClassName());
+         onc.setParentClassName(gponConstants.getOntContainerClassName());
          onc.setName(oncLabelName); // TODO
 
          // pole secondary splitter container
          KuwaibaClass secondarySplitterContainer = new KuwaibaClass();
          pr.getKuwaibaClassList().add(secondarySplitterContainer);
 
-         secondarySplitterContainer.setClassName(cponConstants.getSecondarySplitterContainerClassName());
-         secondarySplitterContainer.setTemplateName(cponConstants.getSecondarySplitterContainerTemplateName()); // house
-         secondarySplitterContainer.setParentName(cponConstants.getParentLocationValue()); // bitterne park
-         secondarySplitterContainer.setParentClassName(cponConstants.getParentLocationClassName());
+         secondarySplitterContainer.setClassName(gponConstants.getSecondarySplitterContainerClassName());
+         secondarySplitterContainer.setTemplateName(gponConstants.getSecondarySplitterContainerTemplateName()); // house
+         secondarySplitterContainer.setParentName(gponConstants.getParentLocationValue()); // bitterne park
+         secondarySplitterContainer.setParentClassName(gponConstants.getParentLocationClassName());
          secondarySplitterContainer.setName(secondarySplitterContainerName);
 
          HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
@@ -187,20 +193,20 @@ public class TestJson {
          KuwaibaClass secondarySplitter = new KuwaibaClass();
          pr.getKuwaibaClassList().add(secondarySplitter);
 
-         secondarySplitter.setClassName(cponConstants.getSecondarySplitterClassName());
-         secondarySplitter.setTemplateName(cponConstants.getSecondarySplitterTemplateName()); // house
+         secondarySplitter.setClassName(gponConstants.getSecondarySplitterClassName());
+         secondarySplitter.setTemplateName(gponConstants.getSecondarySplitterTemplateName()); // house
          secondarySplitter.setParentName(secondarySplitterContainerName);
-         secondarySplitter.setParentClassName(cponConstants.getSecondarySplitterContainerClassName());
+         secondarySplitter.setParentClassName(gponConstants.getSecondarySplitterContainerClassName());
          secondarySplitter.setName(secondarySplitterName);
 
          // cab primarySplitter container
          KuwaibaClass primarySplitterContainer = new KuwaibaClass();
          pr.getKuwaibaClassList().add(primarySplitterContainer);
 
-         primarySplitterContainer.setClassName(cponConstants.getPrimarySplitterContainerClassName());
-         primarySplitterContainer.setTemplateName(cponConstants.getPrimarySplitterContainerTemplateName()); // house
-         primarySplitterContainer.setParentName(cponConstants.getParentLocationValue()); // bitterne park
-         primarySplitterContainer.setParentClassName(cponConstants.getParentLocationClassName());
+         primarySplitterContainer.setClassName(gponConstants.getPrimarySplitterContainerClassName());
+         primarySplitterContainer.setTemplateName(gponConstants.getPrimarySplitterContainerTemplateName()); // house
+         primarySplitterContainer.setParentName(gponConstants.getParentLocationValue()); // bitterne park
+         primarySplitterContainer.setParentClassName(gponConstants.getParentLocationClassName());
          primarySplitterContainer.setName(primarySplitterContainerName);
 
          HashMap<String, String> primarySplitterContainerAttributes = new HashMap<String, String>();
@@ -212,21 +218,21 @@ public class TestJson {
          KuwaibaClass primarySplitter = new KuwaibaClass();
          pr.getKuwaibaClassList().add(primarySplitter);
 
-         primarySplitter.setClassName(cponConstants.getPrimarySplitterClassName());
-         primarySplitter.setTemplateName(cponConstants.getPrimarySplitterTemplateName()); // house
+         primarySplitter.setClassName(gponConstants.getPrimarySplitterClassName());
+         primarySplitter.setTemplateName(gponConstants.getPrimarySplitterTemplateName()); // house
          primarySplitter.setParentName(primarySplitterContainerName);
-         primarySplitter.setParentClassName(cponConstants.getPrimarySplitterContainerClassName());
+         primarySplitter.setParentClassName(gponConstants.getPrimarySplitterContainerClassName());
          primarySplitter.setName(primarySplitterName);
 
          // olt 
          KuwaibaClass olt = new KuwaibaClass();
          pr.getKuwaibaClassList().add(olt);
 
-         olt.setClassName(cponConstants.getOltClassName());
-         olt.setTemplateName(cponConstants.getOltTemplateName()); // fex
+         olt.setClassName(gponConstants.getOltClassName());
+         olt.setTemplateName(gponConstants.getOltTemplateName()); // fex
 
-         olt.setParentName(cponConstants.getOltContainerName());
-         olt.setParentClassName(cponConstants.getOltContainerClassName());
+         olt.setParentName(gponConstants.getOltContainerName());
+         olt.setParentClassName(gponConstants.getOltContainerClassName());
          olt.setName(oltLabelName);
          HashMap<String, String> oltAttributes = new HashMap<String, String>();
 
@@ -236,113 +242,6 @@ public class TestJson {
       }
 
    }
-
-   public static class KuwaibaProvisioningRequisition {
-      
-      private List<KuwaibaClass> kuwaibaTemplateList = new ArrayList<KuwaibaClass>();
-
-      private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
-      
-      public KuwaibaProvisioningRequisition() {
-         super();
-      }
-      
-      public List<KuwaibaClass> getKuwaibaTemplateList() {
-         return kuwaibaTemplateList;
-      }
-
-      public void setKuwaibaTemplateList(List<KuwaibaClass> kuwaibaTemplateList) {
-         this.kuwaibaTemplateList = kuwaibaTemplateList;
-      }
-      
-      public List<KuwaibaClass> getKuwaibaClassList() {
-         return kuwaibaClassList;
-      }
-
-      public void setKuwaibaClassList(List<KuwaibaClass> kuwaibaClassList) {
-         this.kuwaibaClassList = kuwaibaClassList;
-      }
-
-      @Override
-      public String toString() {
-         return "ProvisioningRecord [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + kuwaibaClassList + "]";
-      }
-
-      
-   }
-   
-
-   public static class KuwaibaClass {
-
-      private String className = null;
-      private String templateName = null;
-      private String name = null;
-
-      private String parentClassName = null;
-      private String parentName = null;
-
-      private HashMap<String, String> attributes = new HashMap();
-
-      public KuwaibaClass() {
-         super();
-      }
-
-      public String getClassName() {
-         return className;
-      }
-
-      public void setClassName(String className) {
-         this.className = className;
-      }
-
-      public String getTemplateName() {
-         return templateName;
-      }
-
-      public void setTemplateName(String templateName) {
-         this.templateName = templateName;
-      }
-
-      public String getName() {
-         return name;
-      }
-
-      public void setName(String name) {
-         this.name = name;
-      }
-
-      public String getParentClassName() {
-         return parentClassName;
-      }
-
-      public void setParentClassName(String parentClassName) {
-         this.parentClassName = parentClassName;
-      }
-
-      public String getParentName() {
-         return parentName;
-      }
-
-      public void setParentName(String parentName) {
-         this.parentName = parentName;
-      }
-
-      public HashMap<String, String> getAttributes() {
-         return attributes;
-      }
-
-      public void setAttributes(HashMap<String, String> attributes) {
-         this.attributes = attributes;
-      }
-
-      @Override
-      public String toString() {
-         return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes="
-                  + attributes + "]";
-      }
-
-   }
-
 
 
    public static class GponConstants {
@@ -362,17 +261,17 @@ public class TestJson {
       private String secondarySplitterContainerClassName = "Pole";
       private String secondarySplitterContainerTemplateName = "POLE_2_16drop";
 
-      private String secondarySplitterClassName = "Splitter";
+      private String secondarySplitterClassName = "FiberSplitter";
       private String secondarySplitterTemplateName = "SPL16";
 
       private String primarySplitterContainerTemplateName = "CAB_10SPL8";
       private String primarySplitterContainerClassName = "OutdoorsCabinet";
 
-      private String primarySplitterClassName = "Splitter";
+      private String primarySplitterClassName = "FiberSplitter";
       private String primarySplitterTemplateName = "SPL8";
 
       private String oltContainerTemplateName = "FEX_10";
-      private String oltContainerClassName = "Facility";
+      private String oltContainerClassName = "Rack"; // facility
       private String oltContainerName = "SOTN001"; //    private String parentFexName = "SOTN001";
 
       private String oltTemplateName = "OLT_NOKIA_01";

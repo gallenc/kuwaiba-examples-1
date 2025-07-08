@@ -1,0 +1,72 @@
+{
+    "kuwaibaTemplateList": [],
+    "kuwaibaClassList": [
+        {
+            "className": "House",
+            "templateName": "House_01",
+            "name": "UPRN_200001919492",
+            "parentClassName": "Neighborhood",
+            "parentName": "BitternePk",
+            "attributes": {
+                "latitude": "50.92445000",
+                "longitude": "-1.37204500",
+                "serialNumber": ""
+            }
+        },
+        {
+            "className": "OpticalNetworkTerminal",
+            "templateName": "ONT_NOKIA_01",
+            "name": "",
+            "parentClassName": "House",
+            "parentName": "UPRN_200001919492",
+            "attributes": {}
+        },
+        {
+            "className": "SpliceBox",
+            "templateName": "CSP_BFU_1_2_01",
+            "name": "ONC_200001919492",
+            "parentClassName": "House",
+            "parentName": "UPRN_200001919492",
+            "attributes": {}
+        },
+        {
+            "className": "Pole",
+            "templateName": "POLE_2_16drop",
+            "name": "SO18BPK1_POLE_001",
+            "parentClassName": "Neighborhood",
+            "parentName": "BitternePk",
+            "attributes": {
+                "latitude": "0.00000000",
+                "longitude": "0.00000000"
+            }
+        },
+        {
+            "className": "FiberSplitter",
+            "templateName": "SPL16",
+            "name": "SO18BPK1_POLE_001_SPL16_001",
+            "parentClassName": "Pole",
+            "parentName": "SO18BPK1_POLE_001",
+            "attributes": {}
+        },
+        {
+            "className": "OutdoorsCabinet",
+            "templateName": "CAB_10SPL8",
+            "name": "SO18BPK1_CAB_001",
+            "parentClassName": "Neighborhood",
+            "parentName": "BitternePk",
+            "attributes": {
+                "latitude": "0.00000000",
+                "longitude": "0.00000000"
+            }
+        },
+        {
+            "className": "FiberSplitter",
+            "templateName": "SPL8",
+            "name": "SO18BPK1_CAB_001_SPL8_001",
+            "parentClassName": "OutdoorsCabinet",
+            "parentName": "SO18BPK1_CAB_001",
+            "attributes": {}
+        }
+ 
+    ]
+}
