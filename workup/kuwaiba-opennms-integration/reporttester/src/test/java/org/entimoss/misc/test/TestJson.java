@@ -21,9 +21,6 @@ public class TestJson {
    public void test() throws StreamWriteException, DatabindException, IOException {
       ObjectMapper om = new ObjectMapper();
 
-      File dir = new File("./target/json");
-      System.out.println("output directory: " + dir.getAbsolutePath());
-      dir.mkdirs();
 
       String ontLabelName = "";
       String ontContainerName = "";
@@ -61,7 +58,7 @@ public class TestJson {
       String oltSerialNumber = "";
       String oltAssetNumber = "";
 
-      ProvisioningRecord pr;
+      KuwaibaProvisioningRequisition pr;
 
       KuwaibaGponProvisoner kuwaibaGponProvisoner = new KuwaibaGponProvisoner();
 
@@ -89,26 +86,32 @@ public class TestJson {
       //      kuwaibaClass.setName(null);
       //      kuwaibaClass.setParentName(null);
       //      kuwaibaClass.setTemplateName(null);
+      
 
-      File file = new File("./target/json/testJson.json");
+      File file = new File("./target/data-overlay/kuwaibaProvisioningRequisition.json");
       file.delete();
+      
+      File dir = file.getParentFile();
+      System.out.println("output directory: " + dir.getAbsolutePath());
+      dir.mkdirs();
+
       om.writeValue(file, pr);
       System.out.println("Filed saved to: " + dir.getAbsolutePath());
 
-      ProvisioningRecord pr2 = om.readValue(file, ProvisioningRecord.class);
+      // check you can read the file
+      KuwaibaProvisioningRequisition pr2 = om.readValue(file, KuwaibaProvisioningRequisition.class);
       System.out.println("read file: " + pr2);
 
    }
 
    public class KuwaibaGponProvisoner {
 
-      
       GponConstants cponConstants = new GponConstants();
 
-      ProvisioningRecord pr = new ProvisioningRecord();
+      KuwaibaProvisioningRequisition pr = new KuwaibaProvisioningRequisition();
       
 
-      public ProvisioningRecord finalise() {
+      public KuwaibaProvisioningRequisition finalise() {
          return pr;
       }
 
@@ -234,14 +237,24 @@ public class TestJson {
 
    }
 
-   public static class ProvisioningRecord {
+   public static class KuwaibaProvisioningRequisition {
+      
+      private List<KuwaibaClass> kuwaibaTemplateList = new ArrayList<KuwaibaClass>();
 
       private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
       
-      public ProvisioningRecord() {
+      public KuwaibaProvisioningRequisition() {
          super();
       }
+      
+      public List<KuwaibaClass> getKuwaibaTemplateList() {
+         return kuwaibaTemplateList;
+      }
 
+      public void setKuwaibaTemplateList(List<KuwaibaClass> kuwaibaTemplateList) {
+         this.kuwaibaTemplateList = kuwaibaTemplateList;
+      }
+      
       public List<KuwaibaClass> getKuwaibaClassList() {
          return kuwaibaClassList;
       }
@@ -252,18 +265,85 @@ public class TestJson {
 
       @Override
       public String toString() {
-         return "ProvisioningRecord [kuwaibaClassList=" + kuwaibaClassList + "]";
+         return "ProvisioningRecord [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + kuwaibaClassList + "]";
       }
 
+      
    }
+   
 
-   public static class KuwaibaTemplate extends KuwaibaClass {
+   public static class KuwaibaClass {
 
-      public KuwaibaTemplate() {
+      private String className = null;
+      private String templateName = null;
+      private String name = null;
+
+      private String parentClassName = null;
+      private String parentName = null;
+
+      private HashMap<String, String> attributes = new HashMap();
+
+      public KuwaibaClass() {
          super();
       }
 
+      public String getClassName() {
+         return className;
+      }
+
+      public void setClassName(String className) {
+         this.className = className;
+      }
+
+      public String getTemplateName() {
+         return templateName;
+      }
+
+      public void setTemplateName(String templateName) {
+         this.templateName = templateName;
+      }
+
+      public String getName() {
+         return name;
+      }
+
+      public void setName(String name) {
+         this.name = name;
+      }
+
+      public String getParentClassName() {
+         return parentClassName;
+      }
+
+      public void setParentClassName(String parentClassName) {
+         this.parentClassName = parentClassName;
+      }
+
+      public String getParentName() {
+         return parentName;
+      }
+
+      public void setParentName(String parentName) {
+         this.parentName = parentName;
+      }
+
+      public HashMap<String, String> getAttributes() {
+         return attributes;
+      }
+
+      public void setAttributes(HashMap<String, String> attributes) {
+         this.attributes = attributes;
+      }
+
+      @Override
+      public String toString() {
+         return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes="
+                  + attributes + "]";
+      }
+
    }
+
+
 
    public static class GponConstants {
 
@@ -468,75 +548,5 @@ public class TestJson {
 
    }
 
-   public static class KuwaibaClass {
-
-      private String className = null;
-      private String templateName = null;
-      private String name = null;
-
-      private String parentClassName = null;
-      private String parentName = null;
-
-      private HashMap<String, String> attributes = new HashMap();
-
-      public KuwaibaClass() {
-         super();
-      }
-
-      public String getClassName() {
-         return className;
-      }
-
-      public void setClassName(String className) {
-         this.className = className;
-      }
-
-      public String getTemplateName() {
-         return templateName;
-      }
-
-      public void setTemplateName(String templateName) {
-         this.templateName = templateName;
-      }
-
-      public String getName() {
-         return name;
-      }
-
-      public void setName(String name) {
-         this.name = name;
-      }
-
-      public String getParentClassName() {
-         return parentClassName;
-      }
-
-      public void setParentClassName(String parentClassName) {
-         this.parentClassName = parentClassName;
-      }
-
-      public String getParentName() {
-         return parentName;
-      }
-
-      public void setParentName(String parentName) {
-         this.parentName = parentName;
-      }
-
-      public HashMap<String, String> getAttributes() {
-         return attributes;
-      }
-
-      public void setAttributes(HashMap<String, String> attributes) {
-         this.attributes = attributes;
-      }
-
-      @Override
-      public String toString() {
-         return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes="
-                  + attributes + "]";
-      }
-
-   }
 
 }
