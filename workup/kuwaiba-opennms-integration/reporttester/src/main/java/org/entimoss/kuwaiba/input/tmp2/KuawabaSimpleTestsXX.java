@@ -1,5 +1,6 @@
 package org.entimoss.kuwaiba.input.tmp2;
 
+import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
@@ -21,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -82,11 +84,11 @@ public class KuawabaSimpleTestsXX {
             String templateName = "WCTest1";
             int numberOfCables = 4;
             int numberOfFibers = 12;
-           // createColouredOpticalFibreContainerTemplate(templateName, numberOfCables, numberOfFibers);
-            
-           //createOpticalFibreSplitterTemplate("fibre-split16", 16);
-            
-           createOpticalSpliceBoxTemplate("splice-test1", 16);
+            // createColouredOpticalFibreContainerTemplate(templateName, numberOfCables, numberOfFibers);
+
+            //createOpticalFibreSplitterTemplate("fibre-split16", 16);
+
+            //createOpticalSpliceBoxTemplate("splice-test1", 16);
 
             //            // create wirecontainer
             //            String templateId = aem.createTemplate("WireContainer", "WCTest1");
@@ -142,7 +144,7 @@ public class KuawabaSimpleTestsXX {
 
    // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {
-      return (bo == null) ? "BusinessObject[ null ]" 
+      return (bo == null) ? "BusinessObject[ null ]"
                : "BusinessObject[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
                         bo.getClassDisplayName() + " getAttributes()=" + bo.getAttributes() + "]";
    }
@@ -153,12 +155,88 @@ public class KuawabaSimpleTestsXX {
                         bo.getClassDisplayName() + "]";
    }
 
-   public String createOpticalFibreSplitterTemplate(String templateName, int numberOfPorts) {
-      LOG.info("creating optical splitter template templateName=" + templateName + " number of ports=" + numberOfPorts);
+   // List<KuwaibaTemplateElement> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateElement>();
+
+   public void createTemplates(List<KuwaibaTemplateDefinition> kuwaibaTemplateDefinitionList, String parentTemplateElementId) {
+
+      for (KuwaibaTemplateDefinition kuwaibaTemplateDefinition : kuwaibaTemplateDefinitionList) {
+
+         String className = kuwaibaTemplateDefinition.getClassName();
+         String templateName = kuwaibaTemplateDefinition.getTemplateName();
+         String templateElementName = kuwaibaTemplateDefinition.getTemplateElementName();
+         HashMap<String, String> functionAttributes = kuwaibaTemplateDefinition.getTemplateFunctionAttributes();
+
+         List<KuwaibaTemplateDefinition> childKuwaibaTemplateElements = kuwaibaTemplateDefinition.getChildKuwaibaTemplateDefinitions();
+
+         String templateId = null;
+
+         try {
+            // check if template already exists 
+            List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(className);
+            for (TemplateObjectLight tmplate : foundTemplates) {
+               if (templateName.equals(tmplate.getName())) {
+                  templateId = tmplate.getId();
+                  break;
+               }
+            }
+
+            if (templateId != null) {
+               LOG.info("template " + templateName + "already exists, will not create new templateId=" + templateId);
+               
+            // if template doesn't exist
+            } else {
+            
+               LOG.info("trying to create new template " + templateName);
+
+               String function = kuwaibaTemplateDefinition.getTemplateFunction();
+
+               if (function == null || function.isEmpty()) {
+                  // no function so create a simple template for this class
+                  templateId = aem.createTemplate(className, templateName);
+
+               } else {
+
+                  switch (function) {
+
+                  case "fiberSplitter":
+                     templateId = createOpticalFiberSplitterTemplate(className, templateName, functionAttributes);
+                     break;
+
+                  case "opticalSpliceBox":
+                     templateId = createOpticalSpliceBoxTemplate(className, templateName, functionAttributes);
+                     break;
+
+                  case "coloredFiberContainer":
+                     templateId = createColoredOpticalFiberContainerTemplate(className, templateName, functionAttributes);
+                     break;
+
+                  default:
+                     throw new IllegalArgumentException("tempalate function does not exist: " + function);
+
+                  }
+               }
+
+            }
+
+         } catch (Exception e) {
+            throw new IllegalArgumentException("problem creating template name " + templateName, e);
+         }
+      }
+
+   }
+
+   public String createOpticalFiberSplitterTemplate(String className, String templateName, HashMap<String, String> functionAttributes) {
+
+      if (!"FiberSplitter".equals(className)) {
+         throw new IllegalArgumentException("cannot run FiberSplitter function for class=" + className);
+      }
 
       try {
-         // check if template name exists
+         Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
 
+         LOG.info("creating optical splitter template templateName=" + templateName + " number of ports=" + numberOfPorts);
+
+         // check if template name exists
          List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass("FiberSplitter");
          for (TemplateObjectLight tmplate : foundTemplates) {
             if (templateName.equals(tmplate.getName())) {
@@ -169,25 +247,19 @@ public class KuawabaSimpleTestsXX {
 
          // create FibreSplitter template
          String templateId = aem.createTemplate("FiberSplitter", templateName);
-         
-         // String templateElementClass, String templateElementParentClassName, String templateElementParentId, String templateElementName
-     //    String inElement = aem.createTemplateElement("OpticalPort", "FiberSplitter", templateId, "IN");
-     //    LOG.info("created splitter optical port IN template element  id=" +inElement);
-         
-    //     String templateElementNamePattern = "OUT-[sequence(1,"+numberOfPorts+ ")]";
-         
-         String templateElementNamePattern = "[multiple-mirror(1,"+numberOfPorts+ ")]";
-         
+
+         String templateElementNamePattern = "[multiple-mirror(1," + numberOfPorts + ")]";
+
          // String templateElementClassName, String templateElementParentClassName, String templateElementParentId, String templateElementNamePattern
          List<String> childTemplateElementIds = Arrays
                   .asList(aem.createBulkTemplateElement("OpticalPort", "FiberSplitter", templateId, templateElementNamePattern));
 
-         for (String childId :childTemplateElementIds) {
-            LOG.info("created splitter optical port OUT template element  id=" +childId);
-            
-              // fails because getTemplateElement does not close transaction
-//            TemplateObject templateObject = aem.getTemplateElement("OpticalPort", childId);
-//            LOG.info("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
+         for (String childId : childTemplateElementIds) {
+            LOG.info("created splitter optical port OUT template element  id=" + childId);
+
+            // fails because getTemplateElement does not close transaction
+            //TemplateObject templateObject = aem.getTemplateElement("OpticalPort", childId);
+            // LOG.info("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
          }
 
          return templateId;
@@ -198,10 +270,16 @@ public class KuawabaSimpleTestsXX {
 
    }
 
-   public String createOpticalSpliceBoxTemplate(String templateName, int numberOfPorts) {
-      LOG.info("creating optical splice box template templateName=" + templateName + " number of ports=" + numberOfPorts);
+   public String createOpticalSpliceBoxTemplate(String className, String templateName, HashMap<String, String> functionAttributes) {
+
+      if (!"SpliceBox".equals(className)) {
+         throw new IllegalArgumentException("cannot run SpliceBox function for class=" + className);
+      }
 
       try {
+         Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
+
+         LOG.info("creating optical splice box template templateName=" + templateName + " number of ports=" + numberOfPorts);
          // check if template name exists
 
          List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass("SpliceBox");
@@ -216,18 +294,18 @@ public class KuawabaSimpleTestsXX {
          String templateId = aem.createTemplate("SpliceBox", templateName);
 
          //String templateElementNamePattern = "OUT-[sequence(1,"+numberOfPorts+ ")]";  
-         String templateElementNamePattern = "[mirror(1,"+numberOfPorts+ ")]";
-         
+         String templateElementNamePattern = "[mirror(1," + numberOfPorts + ")]";
+
          // String templateElementClassName, String templateElementParentClassName, String templateElementParentId, String templateElementNamePattern
          List<String> childTemplateElementIds = Arrays
                   .asList(aem.createBulkTemplateElement("OpticalPort", "SpliceBox", templateId, templateElementNamePattern));
 
-         for (String childId :childTemplateElementIds) {
-            LOG.info("created SpliceBox optical port template element  id=" +childId);
-            
-              // fails because getTemplateElement does not close transaction
-//            TemplateObject templateObject = aem.getTemplateElement("OpticalPort", childId);
-//            LOG.info("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
+         for (String childId : childTemplateElementIds) {
+            LOG.info("created SpliceBox optical port template element  id=" + childId);
+
+            // fails because getTemplateElement does not close transaction
+            //            TemplateObject templateObject = aem.getTemplateElement("OpticalPort", childId);
+            //            LOG.info("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
          }
 
          return templateId;
@@ -238,7 +316,14 @@ public class KuawabaSimpleTestsXX {
 
    }
 
-   public String createColouredOpticalFibreContainerTemplate(String templateName, int numberOfCables, int numberOfFibers) {
+   public String createColoredOpticalFiberContainerTemplate(String className, String templateName, HashMap<String, String> functionAttributes) {
+
+      if (!"WireContainer".equals(className)) {
+         throw new IllegalArgumentException("cannot run FiberSplitter function for class=" + className);
+      }
+
+      Integer numberOfCables = Integer.parseInt(functionAttributes.get("numberOfCables"));
+      Integer numberOfFibers = Integer.parseInt(functionAttributes.get("numberOfFibers"));
 
       LOG.info("creating wire container template templateName " + templateName + " number of cables " + numberOfCables + " number of fibers " + numberOfFibers);
 

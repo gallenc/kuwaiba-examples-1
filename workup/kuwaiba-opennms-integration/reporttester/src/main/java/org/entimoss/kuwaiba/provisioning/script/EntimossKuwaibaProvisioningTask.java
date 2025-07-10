@@ -1,5 +1,7 @@
 package org.entimoss.kuwaiba.provisioning.script;
 
+import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
+import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TemplateObjectLight;
@@ -87,9 +89,10 @@ public class EntimossKuwaibaProvisioningTask {
          LOG.info("Starting to load requistionFile " + kuwaibaProvisioningFile.getAbsolutePath() + " containing " + kuwaibaProvisioningRequisition.getKuwaibaTemplateList().size() +
                   " templates and" + kuwaibaProvisioningRequisition.getKuwaibaClassList().size() + " classes");
 
-         // create new tempates
-         for (KuwaibaClass kuwaibaTemplate : kuwaibaProvisioningRequisition.getKuwaibaTemplateList()) {
-            LOG.info("creating kuwaibaTemplate: " + kuwaibaTemplate);
+
+         // todo
+         for (KuwaibaTemplateElement kuwaibaTemplateElement : kuwaibaProvisioningRequisition.getKuwaibaTemplateList()) {
+            LOG.info("creating kuwaibaTemplate: " + kuwaibaTemplateElement);
 
          }
 
@@ -283,23 +286,23 @@ public class EntimossKuwaibaProvisioningTask {
    }
 
    public static class KuwaibaProvisioningRequisition {
-
-      private List<KuwaibaClass> kuwaibaTemplateList = new ArrayList<KuwaibaClass>();
+      
+      private List<KuwaibaTemplateElement> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateElement>();
 
       private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
-
+      
       public KuwaibaProvisioningRequisition() {
          super();
       }
-
-      public List<KuwaibaClass> getKuwaibaTemplateList() {
+      
+      public List<KuwaibaTemplateElement> getKuwaibaTemplateList() {
          return kuwaibaTemplateList;
       }
 
-      public void setKuwaibaTemplateList(List<KuwaibaClass> kuwaibaTemplateList) {
+      public void setKuwaibaTemplateList(List<KuwaibaTemplateElement> kuwaibaTemplateList) {
          this.kuwaibaTemplateList = kuwaibaTemplateList;
       }
-
+      
       public List<KuwaibaClass> getKuwaibaClassList() {
          return kuwaibaClassList;
       }
@@ -385,5 +388,64 @@ public class EntimossKuwaibaProvisioningTask {
       }
 
    }
+   
+   public static class KuwaibaTemplateElement {
+      
+      private String name = null;
+      
+      private String className = null;
+
+      private String templateFunction = null;
+      
+      private List<KuwaibaTemplateElement> childKuwaibaTemplateElements = new ArrayList<KuwaibaTemplateElement>();
+      
+      private HashMap<String,String> templateFunctionAttributes = new HashMap<String,String>();
+
+      public KuwaibaTemplateElement() {
+         super();
+      }
+
+      public String getName() {
+         return name;
+      }
+
+      public void setName(String name) {
+         this.name = name;
+      }
+
+      public List<KuwaibaTemplateElement> getChildKuwaibaTemplateElements() {
+         return childKuwaibaTemplateElements;
+      }
+
+      public void setChildKuwaibaTemplateElements(List<KuwaibaTemplateElement> childKuwaibaTemplateElements) {
+         this.childKuwaibaTemplateElements = childKuwaibaTemplateElements;
+      }
+
+      public String getClassName() {
+         return className;
+      }
+
+      public void setClassName(String className) {
+         this.className = className;
+      }
+
+      public String getTemplateFunction() {
+         return templateFunction;
+      }
+
+      public void setTemplateFunction(String templateFunction) {
+         this.templateFunction = templateFunction;
+      }
+
+      public HashMap<String, String> getTemplateFunctionAttributes() {
+         return templateFunctionAttributes;
+      }
+
+      public void setTemplateFunctionAttributes(HashMap<String, String> templateFunctionAttributes) {
+         this.templateFunctionAttributes = templateFunctionAttributes;
+      }
+
+   }
+   
 
 }

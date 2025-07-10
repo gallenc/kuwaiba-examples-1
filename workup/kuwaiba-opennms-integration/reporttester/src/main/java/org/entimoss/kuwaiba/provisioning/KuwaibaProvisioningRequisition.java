@@ -6,7 +6,7 @@ import java.util.List;
 
 public class KuwaibaProvisioningRequisition {
    
-   private List<KuwaibaClass> kuwaibaTemplateList = new ArrayList<KuwaibaClass>();
+   private List<KuwaibaTemplateDefinition> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateDefinition>();
 
    private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
    
@@ -14,11 +14,11 @@ public class KuwaibaProvisioningRequisition {
       super();
    }
    
-   public List<KuwaibaClass> getKuwaibaTemplateList() {
+   public List<KuwaibaTemplateDefinition> getKuwaibaTemplateList() {
       return kuwaibaTemplateList;
    }
 
-   public void setKuwaibaTemplateList(List<KuwaibaClass> kuwaibaTemplateList) {
+   public void setKuwaibaTemplateList(List<KuwaibaTemplateDefinition> kuwaibaTemplateList) {
       this.kuwaibaTemplateList = kuwaibaTemplateList;
    }
    
