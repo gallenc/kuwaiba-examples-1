@@ -29,7 +29,9 @@ public class NamedObjectTest {
     * latitude longitude UPRN 
     * note UPRN may have leading ' to avoid interpretation as number
     */
-   String csvFileName = "./src/test/resources/modelimportCsv/uprnBitternePk1.csv";
+   //String csvFileName = "./src/test/resources/modelimportCsv/uprnBitternePk1.csv";
+
+   String csvFileName = "./src/test/resources/modelimportCsv/uprnBitternePk1nominatum-modified.csv";
 
    /*
     * parentLocationValue
@@ -73,7 +75,7 @@ public class NamedObjectTest {
     * UPRN_limitLines defines range in file to read
     * set to number of lines to read or null if read to end.
     */
-   Integer UPRN_limitLines = null;
+   Integer UPRN_limitLines = null; 
 
    /* lteRangeStartNumber
     * number to start range of lte in FEX (e.g one lte per region)
@@ -131,8 +133,8 @@ public class NamedObjectTest {
             }
 
             List<String> csvColumns = Arrays.asList(line.split(SEPARATOR));
-            if (csvColumns.size() != 3) { // All columns are mandatory, even if they're just empty
-               String errormsg = String.format("Line %s does not have 3 columns as expected but %s", line, csvColumns.size());
+            if (csvColumns.size() < 3) { // All columns are mandatory, even if they're just empty
+               String errormsg = String.format("Line %s does not have at least 3 columns as expected but %s", line, csvColumns.size());
                LOG.warn(errormsg);
             } else {
 

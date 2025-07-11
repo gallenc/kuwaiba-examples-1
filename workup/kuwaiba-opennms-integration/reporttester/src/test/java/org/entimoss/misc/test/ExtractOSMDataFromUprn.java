@@ -143,10 +143,14 @@ public class ExtractOSMDataFromUprn {
          File csvOutputFile = new File(csvOutputFileStr);
          jsonOutputFile.delete();
          
-         csvOutputFile.getParentFile().mkdirs();
          
+         csvOutputFile.getParentFile().mkdirs();
+
          jsonWriter = new PrintWriter(jsonOutputFile);
+         
          csvWriter = new PrintWriter(csvOutputFile);
+         // write header line
+         csvWriter.println("Asset_latitude,Asset_longitude,UPRN,road,houseNumber,fullAddress");
 
          String line;
 
@@ -183,7 +187,7 @@ public class ExtractOSMDataFromUprn {
                   Double longitude = Double.valueOf(csvColumns.get(LONGITUDE_COLUMN));
 
                   // create line to put in csv file
-                  StringBuffer newLine = new StringBuffer().append(uprnNo).append(",").append(latitude).append(",").append(longitude);
+                  StringBuffer newLine = new StringBuffer().append(latitude).append(",").append(longitude).append(",").append(uprnNo);
 
                   String house_number = "";
                   String road = "";
