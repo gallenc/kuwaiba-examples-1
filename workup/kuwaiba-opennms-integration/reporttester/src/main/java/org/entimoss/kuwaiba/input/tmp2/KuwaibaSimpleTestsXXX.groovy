@@ -1,7 +1,5 @@
 package org.entimoss.kuwaiba.input.tmp2;
 
-import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
-import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
@@ -36,8 +34,8 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
 // note use COMMIT ON EXECUTE
 //uncomment in groovy script
-//KuawabaSimpleTestsXX kuwaibaImport = new KuawabaSimpleTestsXX(bem, aem, scriptParameters);
-//return kuwaibaImport.runTask();
+KuawabaSimpleTestsXX kuwaibaImport = new KuawabaSimpleTestsXX(bem, aem, scriptParameters);
+return kuwaibaImport.runTask();
 
 /**
 
@@ -76,7 +74,7 @@ public class KuawabaSimpleTestsXX {
       //  String templateElementId;
 
       /* TODO
-       * create template with name for splitter etc 
+       * create template with name for splitter etc
        */
       try {
 
@@ -84,6 +82,7 @@ public class KuawabaSimpleTestsXX {
             
             List<KuwaibaTemplateDefinition> kuwaibaTemplateDefinitionList = new ArrayList<KuwaibaTemplateDefinition>();
             
+
             KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
             definition1.setTemplateName("TestFiberSplitterTemplate_1");
             definition1.setClassName("FiberSplitter");
@@ -95,20 +94,21 @@ public class KuawabaSimpleTestsXX {
             definition1.setTemplateFunctionAttributes(attributes );
 
             kuwaibaTemplateDefinitionList.add(definition1);
+
             
+
             KuwaibaTemplateDefinition definition2 = new KuwaibaTemplateDefinition();
-            definition2.setTemplateName("TestFiberSplitterTemplate_1");
-            definition2.setClassName("FiberSplitter");
+            definition2.setTemplateName("TestSpliceBoxTemplate_2");
+            definition2.setClassName("SpliceBox");
             definition2.setSpecial(false);
-            definition2.setTemplateFunction("FiberSplitterFunction");
+            definition2.setTemplateFunction("OpticalSpliceBoxFunction");
             
             HashMap<String, String> attributes2 = new HashMap<String, String>();
             attributes2.put("numberOfPorts", "4");
-            definition1.setTemplateFunctionAttributes(attributes2 );
+            definition2.setTemplateFunctionAttributes(attributes2 );
 
             kuwaibaTemplateDefinitionList.add(definition2);
-  
-            
+
 
             
             createTemplates(kuwaibaTemplateDefinitionList);
@@ -249,7 +249,7 @@ public class KuawabaSimpleTestsXX {
          String templateId = null;
 
          try {
-            // check if template already exists 
+            // check if template already exists
             List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(className);
             for (TemplateObjectLight tmplate : foundTemplates) {
                if (templateName.equals(tmplate.getName())) {
@@ -303,7 +303,7 @@ public class KuawabaSimpleTestsXX {
                      throw new IllegalArgumentException("template function does not exist: " + function);
                   }
 
-                  LOG.info("template " + templateName + "was created using function " + function + " new templateId=" + templateId);
+                  LOG.info("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
 
                }
 
@@ -387,7 +387,7 @@ public class KuawabaSimpleTestsXX {
          // create splice box template
          String templateId = aem.createTemplate("SpliceBox", templateName);
 
-         //String templateElementNamePattern = "OUT-[sequence(1,"+numberOfPorts+ ")]";  
+         //String templateElementNamePattern = "OUT-[sequence(1,"+numberOfPorts+ ")]";
          String templateElementNamePattern = "[mirror(1," + numberOfPorts + ")]";
 
          // String templateElementClassName, String templateElementParentClassName, String templateElementParentId, String templateElementNamePattern
@@ -479,5 +479,210 @@ public class KuawabaSimpleTestsXX {
          throw new IllegalArgumentException("unknown fibre colour: " + colour);
       return no + 1;
    }
+   
+   
+   public static class KuwaibaClass {
+   
+      private String className = null;
+      private String templateName = null;
+      private String name = null;
+      private Boolean special = false;
+   
+      private String parentClassName = null;
+      private String parentName = null;
+   
+      private HashMap<String, String> attributes = new HashMap();
+   
+      public KuwaibaClass() {
+         super();
+      }
+   
+      public String getClassName() {
+         return className;
+      }
+   
+      public void setClassName(String className) {
+         this.className = className;
+      }
+   
+      public String getTemplateName() {
+         return templateName;
+      }
+   
+      public void setTemplateName(String templateName) {
+         this.templateName = templateName;
+      }
+   
+      public String getName() {
+         return name;
+      }
+   
+      public void setName(String name) {
+         this.name = name;
+      }
+   
+      public String getParentClassName() {
+         return parentClassName;
+      }
+   
+      public void setParentClassName(String parentClassName) {
+         this.parentClassName = parentClassName;
+      }
+   
+      public String getParentName() {
+         return parentName;
+      }
+   
+      public void setParentName(String parentName) {
+         this.parentName = parentName;
+      }
+   
+      public HashMap<String, String> getAttributes() {
+         return attributes;
+      }
+   
+      public void setAttributes(HashMap<String, String> attributes) {
+         this.attributes = attributes;
+      }
+   
+      public Boolean getSpecial() {
+         return special;
+      }
+   
+      public void setSpecial(Boolean special) {
+         this.special = special;
+      }
+   
+      @Override
+      public String toString() {
+         return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", special=" + special +
+                  ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes=" + attributes + "]";
+      }
+   
+   }
+   
+   
+   
+   public static class KuwaibaProvisioningRequisition {
+      
+      private List<KuwaibaTemplateDefinition> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateDefinition>();
+   
+      private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
+      
+      public KuwaibaProvisioningRequisition() {
+         super();
+      }
+      
+      public List<KuwaibaTemplateDefinition> getKuwaibaTemplateList() {
+         return kuwaibaTemplateList;
+      }
+   
+      public void setKuwaibaTemplateList(List<KuwaibaTemplateDefinition> kuwaibaTemplateList) {
+         this.kuwaibaTemplateList = kuwaibaTemplateList;
+      }
+      
+      public List<KuwaibaClass> getKuwaibaClassList() {
+         return kuwaibaClassList;
+      }
+   
+      public void setKuwaibaClassList(List<KuwaibaClass> kuwaibaClassList) {
+         this.kuwaibaClassList = kuwaibaClassList;
+      }
+   
+      @Override
+      public String toString() {
+         return "ProvisioningRecord [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + kuwaibaClassList + "]";
+      }
+   
+      
+   }
+
+
+   
+   public static class KuwaibaTemplateDefinition {
+      
+      private String templateName = null;
+      
+      private String templateElementName = null;
+      
+      private String className = null;
+   
+      private String templateFunction = null;
+      
+      private Boolean special = false;
+      
+      private List<KuwaibaTemplateDefinition> childKuwaibaTemplateDefinitions = new ArrayList<KuwaibaTemplateDefinition>();
+      
+      private HashMap<String,String> templateFunctionAttributes = new HashMap<String,String>();
+   
+      public KuwaibaTemplateDefinition() {
+         super();
+      }
+   
+      public String getTemplateName() {
+         return templateName;
+      }
+   
+      public void setTemplateName(String templateName) {
+         this.templateName = templateName;
+      }
+   
+      public String getTemplateElementName() {
+         return templateElementName;
+      }
+   
+      public void setTemplateElementName(String templateElementName) {
+         this.templateElementName = templateElementName;
+      }
+   
+      public List<KuwaibaTemplateDefinition> getChildKuwaibaTemplateDefinitions() {
+         return childKuwaibaTemplateDefinitions;
+      }
+   
+      public void setChildKuwaibaTemplateDefinitions(List<KuwaibaTemplateDefinition> childKuwaibaTemplateDefinitions) {
+         this.childKuwaibaTemplateDefinitions = childKuwaibaTemplateDefinitions;
+      }
+   
+      public String getClassName() {
+         return className;
+      }
+   
+      public void setClassName(String className) {
+         this.className = className;
+      }
+   
+      public String getTemplateFunction() {
+         return templateFunction;
+      }
+   
+      public void setTemplateFunction(String templateFunction) {
+         this.templateFunction = templateFunction;
+      }
+   
+      public HashMap<String, String> getTemplateFunctionAttributes() {
+         return templateFunctionAttributes;
+      }
+   
+      public void setTemplateFunctionAttributes(HashMap<String, String> templateFunctionAttributes) {
+         this.templateFunctionAttributes = templateFunctionAttributes;
+      }
+      
+      public Boolean getSpecial() {
+         return special;
+      }
+   
+      public void setSpecial(Boolean special) {
+         this.special = special;
+      }
+   
+      @Override
+      public String toString() {
+         return "KuwaibaTemplateDefinition [templateName=" + templateName + ", templateElementName=" + templateElementName +
+                  ", className=" + className + ", templateFunction=" + templateFunction + ", special=" + special +
+                  ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" + templateFunctionAttributes + "]";
+      }
+   
+   }
+   
 
 }

@@ -7,6 +7,7 @@ public class KuwaibaClass {
    private String className = null;
    private String templateName = null;
    private String name = null;
+   private Boolean special = false;
 
    private String parentClassName = null;
    private String parentName = null;
@@ -65,10 +66,18 @@ public class KuwaibaClass {
       this.attributes = attributes;
    }
 
+   public Boolean getSpecial() {
+      return special;
+   }
+
+   public void setSpecial(Boolean special) {
+      this.special = special;
+   }
+
    @Override
    public String toString() {
-      return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes="
-               + attributes + "]";
+      return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", special=" + special + 
+               ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes=" + attributes + "]";
    }
 
 }
