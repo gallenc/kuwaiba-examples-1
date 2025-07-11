@@ -98,6 +98,9 @@ public class NamedObjectTest {
    public int LATITUDE_COLUMN = 0;
    public int LONGITUDE_COLUMN = 1;
    public int UPRN_COLUMN = 2;
+   public int ROAD_COLUMN = 3;
+   public int NUMBER = 4;
+   public int FULL_ADDRESS = 5;
 
    @Test
    public void test1() {
@@ -146,6 +149,9 @@ public class NamedObjectTest {
                   String uprn = csvColumns.get(UPRN_COLUMN).replaceFirst("'", "");
 
                   long uprnNo = Long.parseUnsignedLong(uprn);
+                  
+                  // may not have 5 columns
+                  String ontAddress = (csvColumns.size() > FULL_ADDRESS) ? csvColumns.get(FULL_ADDRESS) : "";
 
                   int poleNo = uprnCount / (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); // pole number
                   int localPolePortNo = uprnCount % (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); 
@@ -286,7 +292,7 @@ public class NamedObjectTest {
                   Double ontContainerLatitude = latitude;
                   Double ontContainerLongitude = longitude;
                   String ontIpAddress = OpenNMSRequisitionPopulator.DUMMY_IP_ADDRESS;
-                  String ontComment = "";
+                  String ontComment = ontAddress ;
                   String ontSerialNumber = ontSerialNo;
                   String ontAssetNumber = ontAssetNo;
 
