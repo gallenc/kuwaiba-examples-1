@@ -82,35 +82,60 @@ public class KuawabaSimpleTestsXX {
             
             List<KuwaibaTemplateDefinition> kuwaibaTemplateDefinitionList = new ArrayList<KuwaibaTemplateDefinition>();
             
+            // test creating templates
+            // block to isolate local variables
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("TestFiberSplitterTemplate_1");
+               definition1.setClassName("FiberSplitter");
+               definition1.setSpecial(false);
+               definition1.setTemplateFunction("FiberSplitterFunction");
 
-            KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-            definition1.setTemplateName("TestFiberSplitterTemplate_1");
-            definition1.setClassName("FiberSplitter");
-            definition1.setSpecial(false);
-            definition1.setTemplateFunction("FiberSplitterFunction");
+               HashMap<String, String> attributes = new HashMap<String, String>();
+               attributes.put("numberOfPorts", "4");
+               definition1.setTemplateFunctionAttributes(attributes);
+
+               kuwaibaTemplateDefinitionList.add(definition1);
+            } catch (Exception e){
+               throw new IllegalArgumentException("problem creating definition");
+            }
+
+            // block to isolate local variables            
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("TestFiberSplitterTemplate_1");
+               definition1.setClassName("FiberSplitter");
+               definition1.setSpecial(false);
+               definition1.setTemplateFunction("FiberSplitterFunction");
+
+               HashMap<String, String> attributes1 = new HashMap<String, String>();
+               attributes1.put("numberOfPorts", "4");
+               definition1.setTemplateFunctionAttributes(attributes1);
+
+               kuwaibaTemplateDefinitionList.add(definition1);
+            } catch (Exception e){
+               throw new IllegalArgumentException("problem creating definition");
+            }
             
-            HashMap<String, String> attributes = new HashMap<String, String>();
-            attributes.put("numberOfPorts", "4");
-            definition1.setTemplateFunctionAttributes(attributes );
+            // block to isolate local variables            
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("ColoredFiberWireContainerTemplate_1");
+               definition1.setClassName("WireContainer");
+               definition1.setSpecial(false);
+               definition1.setTemplateFunction("ColoredFiberWireContainerFunction");
 
-            kuwaibaTemplateDefinitionList.add(definition1);
+               HashMap<String, String> attributes1 = new HashMap<String, String>();
+               attributes1.put("numberOfCables", "4");
+               attributes1.put("numberOfFibers", "4");
+               definition1.setTemplateFunctionAttributes(attributes1);
 
-            
+               kuwaibaTemplateDefinitionList.add(definition1);
 
-            KuwaibaTemplateDefinition definition2 = new KuwaibaTemplateDefinition();
-            definition2.setTemplateName("TestSpliceBoxTemplate_2");
-            definition2.setClassName("SpliceBox");
-            definition2.setSpecial(false);
-            definition2.setTemplateFunction("OpticalSpliceBoxFunction");
-            
-            HashMap<String, String> attributes2 = new HashMap<String, String>();
-            attributes2.put("numberOfPorts", "4");
-            definition2.setTemplateFunctionAttributes(attributes2 );
-
-            kuwaibaTemplateDefinitionList.add(definition2);
-
-
-            
+            } catch (Exception e){
+               throw new IllegalArgumentException("problem creating definition");
+            }
+   
             createTemplates(kuwaibaTemplateDefinitionList);
 
 //            String templateName = "WCTest1";
@@ -324,6 +349,7 @@ public class KuawabaSimpleTestsXX {
       if (!"FiberSplitter".equals(className)) {
          throw new IllegalArgumentException("cannot run FiberSplitter function for class=" + className);
       }
+      if(functionAttributes.get("numberOfPorts")==null) throw new IllegalArgumentException("OpticalSplitterFunction number of ports not set ");
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
@@ -369,6 +395,8 @@ public class KuawabaSimpleTestsXX {
       if (!"SpliceBox".equals(className)) {
          throw new IllegalArgumentException("cannot run SpliceBox function for class=" + className);
       }
+      if(functionAttributes.get("numberOfPorts")==null) throw new IllegalArgumentException("SpliceBoxFunction number of ports not set ");
+
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
@@ -413,8 +441,11 @@ public class KuawabaSimpleTestsXX {
    public String createColoredOpticalFiberContainerTemplate(String className, String templateName, HashMap<String, String> functionAttributes) {
 
       if (!"WireContainer".equals(className)) {
-         throw new IllegalArgumentException("cannot run FiberSplitter function for class=" + className);
+         throw new IllegalArgumentException("cannot run ColouredOpticalFibreFunction function for class=" + className);
       }
+
+      if(functionAttributes.get("numberOfCables")==null) throw new IllegalArgumentException("OpticalFiberContainerTemplateFunction numberOfCables not set ");
+      if(functionAttributes.get("numberOfFibers")==null) throw new IllegalArgumentException("OpticalFiberContainerTemplateFunction numberOfFibers not set ");
 
       Integer numberOfCables = Integer.parseInt(functionAttributes.get("numberOfCables"));
       Integer numberOfFibers = Integer.parseInt(functionAttributes.get("numberOfFibers"));

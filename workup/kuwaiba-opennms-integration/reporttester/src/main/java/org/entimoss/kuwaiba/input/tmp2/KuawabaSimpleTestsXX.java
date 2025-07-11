@@ -81,41 +81,68 @@ public class KuawabaSimpleTestsXX {
       try {
 
          try {
-            
+
             List<KuwaibaTemplateDefinition> kuwaibaTemplateDefinitionList = new ArrayList<KuwaibaTemplateDefinition>();
-            
-            KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-            definition1.setTemplateName("TestFiberSplitterTemplate_1");
-            definition1.setClassName("FiberSplitter");
-            definition1.setSpecial(false);
-            definition1.setTemplateFunction("FiberSplitterFunction");
-            
-            HashMap<String, String> attributes = new HashMap<String, String>();
-            attributes.put("numberOfPorts", "4");
-            definition1.setTemplateFunctionAttributes(attributes );
 
-            kuwaibaTemplateDefinitionList.add(definition1);
-            
-            KuwaibaTemplateDefinition definition2 = new KuwaibaTemplateDefinition();
-            definition2.setTemplateName("TestFiberSplitterTemplate_1");
-            definition2.setClassName("FiberSplitter");
-            definition2.setSpecial(false);
-            definition2.setTemplateFunction("FiberSplitterFunction");
-            
-            HashMap<String, String> attributes2 = new HashMap<String, String>();
-            attributes2.put("numberOfPorts", "4");
-            definition1.setTemplateFunctionAttributes(attributes2 );
+            // test creating templates
+            // block to isolate local variables
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("TestFiberSplitterTemplate_1");
+               definition1.setClassName("FiberSplitter");
+               definition1.setSpecial(false);
+               definition1.setTemplateFunction("FiberSplitterFunction");
 
-            kuwaibaTemplateDefinitionList.add(definition2);
-  
-            
+               HashMap<String, String> attributes = new HashMap<String, String>();
+               attributes.put("numberOfPorts", "4");
+               definition1.setTemplateFunctionAttributes(attributes);
 
+               kuwaibaTemplateDefinitionList.add(definition1);
+            } catch (Exception e){
+               throw new IllegalArgumentException("problem creating definition");
+            }
+
+            // block to isolate local variables            
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("TestFiberSplitterTemplate_1");
+               definition1.setClassName("FiberSplitter");
+               definition1.setSpecial(false);
+               definition1.setTemplateFunction("FiberSplitterFunction");
+
+               HashMap<String, String> attributes1 = new HashMap<String, String>();
+               attributes1.put("numberOfPorts", "4");
+               definition1.setTemplateFunctionAttributes(attributes1);
+
+               kuwaibaTemplateDefinitionList.add(definition1);
+            } catch (Exception e){
+               throw new IllegalArgumentException("problem creating definition");
+            }
+            
+            // block to isolate local variables            
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("ColoredFiberWireContainerTemplate_1");
+               definition1.setClassName("WireContainer");
+               definition1.setSpecial(false);
+               definition1.setTemplateFunction("ColoredFiberWireContainerFunction");
+
+               HashMap<String, String> attributes1 = new HashMap<String, String>();
+               attributes1.put("numberOfCables", "4");
+               attributes1.put("numberOfFibers", "4");
+               definition1.setTemplateFunctionAttributes(attributes1);
+
+               kuwaibaTemplateDefinitionList.add(definition1);
+
+            } catch (Exception e){
+               throw new IllegalArgumentException("problem creating definition");
+            }
             
             createTemplates(kuwaibaTemplateDefinitionList);
 
-//            String templateName = "WCTest1";
-//            int numberOfCables = 4;
-//            int numberOfFibers = 12;
+            //            String templateName = "WCTest1";
+            //            int numberOfCables = 4;
+            //            int numberOfFibers = 12;
             // createColouredOpticalFibreContainerTemplate(templateName, numberOfCables, numberOfFibers);
 
             //createOpticalFibreSplitterTemplate("fibre-split16", 16);
@@ -160,7 +187,7 @@ public class KuawabaSimpleTestsXX {
 
       } catch (Exception ex) {
          LOG.error("error running task:", ex);
-         taskResult.getMessages().add(TaskResult.createErrorMessage("error running task " + ex));
+         taskResult.getMessages().add(TaskResult.createErrorMessage("error running task "+ex));
       }
 
       LOG.info("end of Script " + KuawabaSimpleTestsXX.class.getName());
@@ -168,11 +195,11 @@ public class KuawabaSimpleTestsXX {
       return taskResult;
    }
 
-//   BusinessObject findOrCreateIfDoesntExist(String className, String classTemplate, String name, String parentClass, String parentClassName,
-//            String latitude, String longitude, String IpAddress, String Comment, String serialNumber, String assetNumber) {
-//
-//      return null;
-//   }
+   //   BusinessObject findOrCreateIfDoesntExist(String className, String classTemplate, String name, String parentClass, String parentClassName,
+   //            String latitude, String longitude, String IpAddress, String Comment, String serialNumber, String assetNumber) {
+   //
+   //      return null;
+   //   }
 
    // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {
@@ -264,17 +291,15 @@ public class KuawabaSimpleTestsXX {
             } else {
                // if template doesn't exist
 
-               
-
                String function = kuwaibaTemplateDefinition.getTemplateFunction();
 
                if (function == null || function.isEmpty()) {
                   LOG.info("trying to create new template " + templateName);
-                  
+
                   // no function so create a simple template for this class
                   templateId = aem.createTemplate(className, templateName);
                   templateElementsCreated++;
-                  
+
                   if (childKuwaibaTemplateElements != null && !childKuwaibaTemplateElements.isEmpty()) {
                      // recursively create child templates
                      templateElementsCreated = templateElementsCreated + createChildTemplateElements(childKuwaibaTemplateElements, className, templateId);
@@ -283,8 +308,8 @@ public class KuawabaSimpleTestsXX {
                   LOG.info("template " + templateName + "Was created. New templateId=" + templateId);
 
                } else {
-                  LOG.info("trying to create new template " + templateName+" from function"+ function+" with functionAttributes="+functionAttributes);
-                  
+                  LOG.info("trying to create new template " + templateName + " from function" + function + " with functionAttributes=" + functionAttributes);
+
                   switch (function) {
 
                   case "FiberSplitterFunction":
@@ -303,7 +328,7 @@ public class KuawabaSimpleTestsXX {
                      throw new IllegalArgumentException("template function does not exist: " + function);
                   }
 
-                  LOG.info("template " + templateName + "was created using function " + function + " new templateId=" + templateId);
+                  LOG.info("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
 
                }
 
@@ -324,6 +349,7 @@ public class KuawabaSimpleTestsXX {
       if (!"FiberSplitter".equals(className)) {
          throw new IllegalArgumentException("cannot run FiberSplitter function for class=" + className);
       }
+      if(functionAttributes.get("numberOfPorts")==null) throw new IllegalArgumentException("OpticalSplitterFunction number of ports not set ");
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
@@ -369,6 +395,8 @@ public class KuawabaSimpleTestsXX {
       if (!"SpliceBox".equals(className)) {
          throw new IllegalArgumentException("cannot run SpliceBox function for class=" + className);
       }
+      if(functionAttributes.get("numberOfPorts")==null) throw new IllegalArgumentException("SpliceBoxFunction number of ports not set ");
+
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
@@ -413,8 +441,11 @@ public class KuawabaSimpleTestsXX {
    public String createColoredOpticalFiberContainerTemplate(String className, String templateName, HashMap<String, String> functionAttributes) {
 
       if (!"WireContainer".equals(className)) {
-         throw new IllegalArgumentException("cannot run FiberSplitter function for class=" + className);
+         throw new IllegalArgumentException("cannot run ColouredOpticalFibreFunction function for class=" + className);
       }
+      
+      if(functionAttributes.get("numberOfCables")==null) throw new IllegalArgumentException("OpticalFiberContainerTemplateFunction numberOfCables not set ");
+      if(functionAttributes.get("numberOfFibers")==null) throw new IllegalArgumentException("OpticalFiberContainerTemplateFunction numberOfFibers not set ");
 
       Integer numberOfCables = Integer.parseInt(functionAttributes.get("numberOfCables"));
       Integer numberOfFibers = Integer.parseInt(functionAttributes.get("numberOfFibers"));
