@@ -82,7 +82,7 @@ public class KuawabaSimpleTestsXX {
             
             List<KuwaibaTemplateDefinition> kuwaibaTemplateDefinitionList = new ArrayList<KuwaibaTemplateDefinition>();
             
-            // test creating templates
+            // test creating templates from functions
             // block to isolate local variables
             try {
                KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
@@ -136,6 +136,71 @@ public class KuawabaSimpleTestsXX {
                throw new IllegalArgumentException("problem creating definition");
             }
    
+            // block to isolate local variables  
+            // creating template from definition
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("manualHouseTemplateDefinition1");
+               definition1.setClassName("House");
+               definition1.setSpecial(false);
+
+               // ONT
+               KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
+               childDefinition1.setTemplateElementName("test-nokia-ont");
+               childDefinition1.setClassName("OpticalNetworkTerminal");
+               childDefinition1.setSpecial(false);
+               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
+               
+               KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
+               childDefinition1_1.setTemplateElementName("IN-01");
+               childDefinition1_1.setClassName("OpticalPort");
+               childDefinition1_1.setSpecial(false);
+               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
+               
+               KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
+               childDefinition1_2.setTemplateElementName("eth0");
+               childDefinition1_2.setClassName("ElectricalPort");
+               childDefinition1_2.setSpecial(false);
+               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);
+               
+               
+               // CSP
+               KuwaibaTemplateDefinition childDefinition2 = new KuwaibaTemplateDefinition();
+               childDefinition2.setTemplateElementName("test-csp");
+               childDefinition2.setClassName("SpliceBox");
+               childDefinition2.setSpecial(false);
+               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition2);
+               
+               KuwaibaTemplateDefinition childDefinition2_1 = new KuwaibaTemplateDefinition();
+               childDefinition2_1.setTemplateElementName("IN-01");
+               childDefinition2_1.setClassName("OpticalPort");
+               childDefinition2_1.setSpecial(false);
+               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_1);
+                              
+               KuwaibaTemplateDefinition childDefinition2_2 = new KuwaibaTemplateDefinition();
+               childDefinition2_2.setTemplateElementName("OUT-01");
+               childDefinition2_2.setClassName("OpticalPort");
+               childDefinition2_2.setSpecial(false);
+               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_2);
+               
+               KuwaibaTemplateDefinition childDefinition2_3 = new KuwaibaTemplateDefinition();
+               childDefinition2_3.setTemplateElementName("IN-02");
+               childDefinition2_3.setClassName("OpticalPort");
+               childDefinition2_3.setSpecial(false);
+               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_3);
+                              
+               KuwaibaTemplateDefinition childDefinition2_4 = new KuwaibaTemplateDefinition();
+               childDefinition2_4.setTemplateElementName("OUT-02");
+               childDefinition2_4.setClassName("OpticalPort");
+               childDefinition2_4.setSpecial(false);
+               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_4);
+
+               kuwaibaTemplateDefinitionList.add(definition1);
+
+            } catch (Exception e){
+               throw new IllegalArgumentException("problem creating definition");
+            }
+            
             createTemplates(kuwaibaTemplateDefinitionList);
 
 //            String templateName = "WCTest1";
@@ -212,26 +277,26 @@ public class KuawabaSimpleTestsXX {
                         bo.getClassDisplayName() + "]";
    }
 
-   public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaTemplateElementList, String elementParentClassName, String elementParentId) {
+   public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaChildTemplateElementList, String elementParentClassName, String elementParentId) {
       int templateElementsCreated = 0;
 
-      for (KuwaibaTemplateDefinition templateElement : kuwaibaTemplateElementList) {
+      LOG.warn("creating "+kuwaibaChildTemplateElementList.size()+" child template elements");
+      for (KuwaibaTemplateDefinition templateElement : kuwaibaChildTemplateElementList) {
          try {
             String clildId = null;
             if (templateElement.getSpecial()) {
+               //.createTemplateSpecialElement(String tsElementClass, String tsElementParentClassName, String tsElementParentId, String tsElementName)
                clildId = aem.createTemplateSpecialElement(templateElement.getClassName(), elementParentClassName, elementParentId,
                         templateElement.getTemplateElementName());
             } else {
                clildId = aem.createTemplateElement(templateElement.getClassName(), elementParentClassName, elementParentId, templateElement.getTemplateElementName());
             }
-            LOG.warn("created child:" + templateElement + ", clildId=" + clildId + " template element for elementParentClassName" +
-                     elementParentClassName + ", elementParentId" + elementParentId);
+            LOG.warn("created child:" + templateElement + ", clildId=" + clildId + " template element for elementParentClassName=" +
+                     elementParentClassName + ", elementParentId=" + elementParentId);
             templateElementsCreated++;
 
-            if (templateElement.getChildKuwaibaTemplateDefinitions() != null) {
-               for (KuwaibaTemplateDefinition child : templateElement.getChildKuwaibaTemplateDefinitions()) {
-                  templateElementsCreated = templateElementsCreated + createChildTemplateElements(child.getChildKuwaibaTemplateDefinitions(), templateElement.getClassName(), clildId);
-               }
+            if (templateElement.getChildKuwaibaTemplateDefinitions() != null && ! templateElement.getChildKuwaibaTemplateDefinitions().isEmpty()) {
+               templateElementsCreated = templateElementsCreated + createChildTemplateElements(templateElement.getChildKuwaibaTemplateDefinitions(), templateElement.getClassName(), clildId);
             }
 
          } catch (Exception ex) {
@@ -299,13 +364,13 @@ public class KuawabaSimpleTestsXX {
                   // no function so create a simple template for this class
                   templateId = aem.createTemplate(className, templateName);
                   templateElementsCreated++;
+                  LOG.info("template " + templateName + " Was created. New templateId=" + templateId);
                   
                   if (childKuwaibaTemplateElements != null && !childKuwaibaTemplateElements.isEmpty()) {
                      // recursively create child templates
                      templateElementsCreated = templateElementsCreated + createChildTemplateElements(childKuwaibaTemplateElements, className, templateId);
 
                   }
-                  LOG.info("template " + templateName + "Was created. New templateId=" + templateId);
 
                } else {
                   LOG.info("trying to create new template " + templateName+" from function"+ function+" with functionAttributes="+functionAttributes);
