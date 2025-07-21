@@ -105,13 +105,13 @@ public class KuawabaSimpleTestsXX {
             // block to isolate local variables            
             try {
                KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-               definition1.setTemplateName("TestFiberSplitterTemplate_1");
-               definition1.setClassName("FiberSplitter");
+               definition1.setTemplateName("TestOpticalSpliceBoxTemplate_1");
+               definition1.setClassName("SpliceBox");
                definition1.setSpecial(false);
-               definition1.setTemplateFunction("FiberSplitterFunction");
+               definition1.setTemplateFunction("OpticalSpliceBoxFunction");
 
                HashMap<String, String> attributes1 = new HashMap<String, String>();
-               attributes1.put("numberOfPorts", "4");
+               attributes1.put("numberOfPorts", "6");
                definition1.setTemplateFunctionAttributes(attributes1);
 
                kuwaibaTemplateDefinitionList.add(definition1);
@@ -266,10 +266,10 @@ public class KuawabaSimpleTestsXX {
 
          // templateName  must be set
          if ((templateName == null || !templateName.isEmpty())) {
-            new IllegalArgumentException("templateName  must be set");
+            new IllegalArgumentException("templateName must be set");
          }
          if ((className == null || !className.isEmpty())) {
-            new IllegalArgumentException("className  must be set");
+            new IllegalArgumentException("className must be set");
          }
 
          // create new template
@@ -286,7 +286,7 @@ public class KuawabaSimpleTestsXX {
             }
 
             if (templateId != null) {
-               LOG.info("template " + templateName + "already exists, will not create a new template with templateId=" + templateId);
+               LOG.info("template " + templateName + " already exists, will not create a new template with templateId=" + templateId);
 
             } else {
                // if template doesn't exist
@@ -294,7 +294,7 @@ public class KuawabaSimpleTestsXX {
                String function = kuwaibaTemplateDefinition.getTemplateFunction();
 
                if (function == null || function.isEmpty()) {
-                  LOG.info("trying to create new template " + templateName);
+                  LOG.info("trying to create without function new template name = " + templateName);
 
                   // no function so create a simple template for this class
                   templateId = aem.createTemplate(className, templateName);
