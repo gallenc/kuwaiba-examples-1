@@ -90,6 +90,7 @@ public class KuawabaSimpleTestsXX2 {
             try {
                KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
                definition1.setTemplateName("TestFiberSplitterTemplate_1");
+               definition1.setTemplateElementName("splitter");
                definition1.setClassName("FiberSplitter");
                definition1.setSpecial(false);
                definition1.setTemplateFunction("FiberSplitterFunction");
@@ -107,6 +108,7 @@ public class KuawabaSimpleTestsXX2 {
             try {
                KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
                definition1.setTemplateName("TestOpticalSpliceBoxTemplate_1");
+               definition1.setTemplateElementName("splice");
                definition1.setClassName("SpliceBox");
                definition1.setSpecial(false);
                definition1.setTemplateFunction("OpticalSpliceBoxFunction");
@@ -124,6 +126,7 @@ public class KuawabaSimpleTestsXX2 {
             try {
                KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
                definition1.setTemplateName("ColoredFiberWireContainerTemplate_1");
+               definition1.setTemplateElementName("wireContainer");
                definition1.setClassName("WireContainer");
                definition1.setSpecial(false);
                definition1.setTemplateFunction("ColoredFiberWireContainerFunction");
@@ -144,6 +147,7 @@ public class KuawabaSimpleTestsXX2 {
             try {
                KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
                definition1.setTemplateName("manualHouseTemplateDefinition1");
+               definition1.setTemplateElementName("house1");
                definition1.setClassName("House");
                definition1.setSpecial(false);
 
@@ -196,6 +200,53 @@ public class KuawabaSimpleTestsXX2 {
                childDefinition2_4.setClassName("OpticalPort");
                childDefinition2_4.setSpecial(false);
                childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_4);
+
+               kuwaibaTemplateDefinitionList.add(definition1);
+
+            } catch (Exception e) {
+               throw new IllegalArgumentException("problem creating definition");
+            }
+
+            // block to isolate local variables  
+            // creating template from function definitions
+            try {
+               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+               definition1.setTemplateName("manualHouseTemplateDefinition2");
+               definition1.setTemplateElementName("house1");
+               definition1.setClassName("House");
+               definition1.setSpecial(false);
+
+               // ONT
+               KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
+               childDefinition1.setTemplateElementName("test-nokia-ont");
+               childDefinition1.setClassName("OpticalNetworkTerminal");
+               childDefinition1.setSpecial(false);
+               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
+
+               KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
+               childDefinition1_1.setTemplateElementName("IN-01");
+               childDefinition1_1.setClassName("OpticalPort");
+               childDefinition1_1.setSpecial(false);
+               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
+
+               KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
+               childDefinition1_2.setTemplateElementName("eth0");
+               childDefinition1_2.setClassName("ElectricalPort");
+               childDefinition1_2.setSpecial(false);
+               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);
+
+               // CSP
+               KuwaibaTemplateDefinition childDefinition2 = new KuwaibaTemplateDefinition();
+               childDefinition2.setTemplateElementName("test-csp");
+               childDefinition2.setClassName("SpliceBox");
+               childDefinition2.setSpecial(false);
+               // build ports using function
+               childDefinition2.setTemplateFunction("OpticalSpliceBoxFunction");
+               HashMap<String, String> attributes1 = new HashMap<String, String>();
+               attributes1.put("numberOfPorts", "2");
+               childDefinition2.setTemplateFunctionAttributes(attributes1);
+
+               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition2);
 
                kuwaibaTemplateDefinitionList.add(definition1);
 
@@ -313,53 +364,58 @@ public class KuawabaSimpleTestsXX2 {
 
          } else {
             try {
-               
+
                HashMap<String, String> functionAttributes = templateElement.getTemplateFunctionAttributes();
-               
-               LOG.info("trying to create template elements from function" + function + " with functionAttributes=" + functionAttributes);
-               // createTemplateElementsFromFunction(String className, String templateElementParentClassName, String templateElementParentId, String function, String functionAttributes)
-               templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateElement.getClassName(), elementParentClassName, elementParentId, function, functionAttributes);
+
+               LOG.info("trying to create template elements from function=" + function + " with functionAttributes=" + functionAttributes + " className=" +
+                        templateElement.getClassName() + "  templateElementParentClassName=" + elementParentClassName + "  templateElementParentId=" + elementParentId);
+
+               templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(null, elementParentClassName, elementParentId, function, functionAttributes);
 
             } catch (Exception ex) {
-               throw new IllegalArgumentException("problem creating child template element from function for elementParentClassName" +
-                        elementParentClassName + ", elementParentId" + elementParentId + " child:" + templateElement, ex);
+               throw new IllegalArgumentException("problem creating child template element from function for elementParentClassName=" +
+                        elementParentClassName + ", elementParentId=" + elementParentId + " child:" + templateElement, ex);
             }
-            
+
          }
       }
-      
+
       return templateElementsCreated;
 
    }
 
-   public int createTemplateElementsFromFunction(String className, String templateElementParentClassName, String templateElementParentId, String function,
+   public int createTemplateElementsFromFunction(String templateName, String templateElementParentClassName, String templateElementParentId, String function,
             HashMap<String, String> functionAttributes) {
       int elementsCreated = 0;
 
-      LOG.info("trying to create new template element for parent class=" + templateElementParentClassName + " id=" + templateElementParentId +
-               " from function" + function + " with functionAttributes=" + functionAttributes);
+      LOG.info("trying to create new template element (templateName="+templateName+ ") for parent class=" + templateElementParentClassName +
+               " id=" + templateElementParentId +
+               " from function=" + function + " with functionAttributes=" + functionAttributes);
 
-      switch (function) {
+      try {
+         switch (function) {
 
-      case "FiberSplitterFunction":
-         elementsCreated = elementsCreated + createOpticalFiberSplitterTemplateElements(className, templateElementParentClassName, templateElementParentId, functionAttributes);
-         break;
+         case "FiberSplitterFunction":
+            elementsCreated = elementsCreated + createOpticalFiberSplitterTemplateElements(templateName, templateElementParentClassName, templateElementParentId, functionAttributes);
+            break;
 
-      case "OpticalSpliceBoxFunction":
-         elementsCreated = elementsCreated + createOpticalSpliceBoxTemplateElements(className, templateElementParentClassName, templateElementParentId, functionAttributes);
-         break;
+         case "OpticalSpliceBoxFunction":
+            elementsCreated = elementsCreated + createOpticalSpliceBoxTemplateElements(templateName, templateElementParentClassName, templateElementParentId, functionAttributes);
+            break;
 
-      case "ColoredFiberWireContainerFunction":
-         elementsCreated = elementsCreated + createColoredOpticalFiberContainerTemplateElements(className, templateElementParentClassName, templateElementParentId, functionAttributes);
-         break;
+         case "ColoredFiberWireContainerFunction":
+            elementsCreated = elementsCreated + createColoredOpticalFiberContainerTemplateElements(templateName, templateElementParentClassName, templateElementParentId, functionAttributes);
+            break;
 
-      default:
-         throw new IllegalArgumentException("template function does not exist: " + function);
+         default:
+            throw new IllegalArgumentException("template function does not exist: " + function);
+         }
+      } catch (Exception ex) {
+         throw new IllegalArgumentException("problem creating child template element from function", ex);
       }
 
       return elementsCreated;
    }
-   
 
    public int createTemplates(List<KuwaibaTemplateDefinition> kuwaibaTemplateDefinitionList) {
 
@@ -375,9 +431,8 @@ public class KuawabaSimpleTestsXX2 {
 
          // if templateName is set, this is a top level template and templateElementName must not be set
          // template functions can only be called for top level templates
-         // recursive template definitions cannot use functions
          String templateName = kuwaibaTemplateDefinition.getTemplateName();
-         // String templateElementName = kuwaibaTemplateDefinition.getTemplateElementName();
+         //String templateElementName = kuwaibaTemplateDefinition.getTemplateElementName();
 
          // templateName  must be set
          if ((templateName == null || !templateName.isEmpty())) {
@@ -424,11 +479,9 @@ public class KuawabaSimpleTestsXX2 {
 
                } else {
 
-                  templateId = aem.createTemplate(className, templateName);
+                  LOG.info("trying to create new template " + templateName + " with class name=" + className + " from function=" + function + " with functionAttributes=" + functionAttributes);
 
-                  LOG.info("trying to create new template " + templateName + " from function" + function + " with functionAttributes=" + functionAttributes);
-                  // createTemplateElementsFromFunction(String className, String templateElementParentClassName, String templateElementParentId, String function, String functionAttributes)
-                  templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(className, templateName, templateId, function, functionAttributes);
+                  templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateName, null, null,  function, functionAttributes);
 
                   LOG.info("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
 
@@ -446,28 +499,35 @@ public class KuawabaSimpleTestsXX2 {
 
    }
 
-   public int createOpticalFiberSplitterTemplateElements(String className, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalFiberSplitterTemplateElements(String templateName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
-      if (!"FiberSplitter".equals(className)) {
-         throw new IllegalArgumentException("cannot run FiberSplitter function for class=" + className);
-      }
       if (functionAttributes.get("numberOfPorts") == null)
          throw new IllegalArgumentException("OpticalSplitterFunction number of ports not set ");
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
+         
+         // if templateName!= null then this is the top of the tree so create a template 
+         String elementId = templateElementParentId;
+         
+         if (templateName!=null) {
+            elementId = aem.createTemplate("FiberSplitter", templateName);
+         } else {
+            elementId = aem.createTemplateElement("FiberSplitter", templateElementParentClassName, templateElementParentId, "Splitter");
+         }
 
+         
          String templateElementNamePattern = "[multiple-mirror(1," + numberOfPorts + ")]";
 
          List<String> childTemplateElementIds = Arrays
-                  .asList(aem.createBulkTemplateElement("OpticalPort", "FiberSplitter", templateElementParentId, templateElementNamePattern));
+                  .asList(aem.createBulkTemplateElement("OpticalPort", "FiberSplitter", elementId, templateElementNamePattern));
 
          elementsCreated = childTemplateElementIds.size();
 
          for (String childId : childTemplateElementIds) {
-            LOG.info("created splitter optical port OUT template element  id=" + childId);
+            LOG.info("created splitter optical port template element  id=" + childId);
 
             // fails because getTemplateElement does not close transaction
             //TemplateObject templateObject = aem.getTemplateElement("OpticalPort", childId);
@@ -478,29 +538,35 @@ public class KuawabaSimpleTestsXX2 {
 
       } catch (Exception e) {
          throw new IllegalArgumentException("problem creating splitter ports for parentClassName=" +
-                  templateElementParentClassName + "name parentId=" + templateElementParentId, e);
+                  templateElementParentClassName + " parentId=" + templateElementParentId, e);
       }
 
    }
 
-   public int createOpticalSpliceBoxTemplateElements(String className, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalSpliceBoxTemplateElements(String templateName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
-      if (!"SpliceBox".equals(className)) {
-         throw new IllegalArgumentException("cannot run SpliceBox function for class=" + className);
-      }
       if (functionAttributes.get("numberOfPorts") == null)
          throw new IllegalArgumentException("SpliceBoxFunction number of ports not set ");
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
+         
+         // if templateName!= null then this is the top of the tree so create a template 
+         String elementId = templateElementParentId;
+         
+         if (templateName!=null) {
+            elementId = aem.createTemplate("SpliceBox", templateName);
+         } else {
+            elementId = aem.createTemplateElement("SpliceBox", templateElementParentClassName, templateElementParentId, "SpliceBox");
+         }
 
          String templateElementNamePattern = "[mirror(1," + numberOfPorts + ")]";
 
          // String templateElementClassName, String templateElementParentClassName, String templateElementParentId, String templateElementNamePattern
          List<String> childTemplateElementIds = Arrays
-                  .asList(aem.createBulkTemplateElement("OpticalPort", "SpliceBox", templateElementParentId, templateElementNamePattern));
+                  .asList(aem.createBulkTemplateElement("OpticalPort", "SpliceBox", elementId , templateElementNamePattern));
 
          elementsCreated = childTemplateElementIds.size();
 
@@ -516,19 +582,15 @@ public class KuawabaSimpleTestsXX2 {
 
       } catch (Exception e) {
          throw new IllegalArgumentException("problem creating splice ports for parentClassName=" +
-                  templateElementParentClassName + "name parentId=" + templateElementParentId, e);
+                  templateElementParentClassName + " parentId=" + templateElementParentId, e);
       }
 
    }
 
-   public int createColoredOpticalFiberContainerTemplateElements(String className, String templateElementParentClassName, String templateElementParentId,
+   public int createColoredOpticalFiberContainerTemplateElements(String templateName, String templateElementParentClassName, String templateElementParentId,
             HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
-
-      if (!"WireContainer".equals(className)) {
-         throw new IllegalArgumentException("cannot run ColouredOpticalFibreFunction function for class=" + className);
-      }
 
       if (functionAttributes.get("numberOfCables") == null)
          throw new IllegalArgumentException("OpticalFiberContainerTemplateFunction numberOfCables not set ");
@@ -539,12 +601,21 @@ public class KuawabaSimpleTestsXX2 {
       Integer numberOfFibers = Integer.parseInt(functionAttributes.get("numberOfFibers"));
 
       try {
+         
+         // if templateName!= null then this is the top of the tree so create a template 
+         String elementId = templateElementParentId;
+         
+         if (templateName!=null) {
+            elementId = aem.createTemplate("WireContainer", templateName);
+         } else {
+            elementId = aem.createTemplateElement("WireContainer", templateElementParentClassName, templateElementParentId, "WireContainer");
+         }
 
          for (int cableNo = 1; cableNo <= numberOfCables; cableNo++) {
             String cableName = String.format("%02d", cableNo) + "-" + getColourForStrand(cableNo);
 
             // .createTemplateSpecialElement(String tsElementClass, String tsElementParentClassName, String tsElementParentId, String tsElementName)
-            String cableObjectId = aem.createTemplateSpecialElement("WireContainer", "WireContainer", templateElementParentId, cableName);
+            String cableObjectId = aem.createTemplateSpecialElement("WireContainer", "WireContainer", elementId, cableName);
             LOG.info("created cable id=" + cableObjectId + " cable name=" + cableName);
 
             // create fibers inside cable
@@ -561,7 +632,7 @@ public class KuawabaSimpleTestsXX2 {
 
       } catch (Exception e) {
          throw new IllegalArgumentException("problem creating wire container for parentClassName=" +
-                  templateElementParentClassName + "name parentId=" + templateElementParentId, e);
+                  templateElementParentClassName + " parentId=" + templateElementParentId, e);
       }
 
    }
@@ -586,6 +657,7 @@ public class KuawabaSimpleTestsXX2 {
          throw new IllegalArgumentException("unknown fibre colour: " + colour);
       return no + 1;
    }
+
 
  
    
