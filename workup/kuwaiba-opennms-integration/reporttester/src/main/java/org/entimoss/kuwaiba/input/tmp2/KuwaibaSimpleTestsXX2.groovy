@@ -1,7 +1,5 @@
 package org.entimoss.kuwaiba.input.tmp2;
 
-import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
-import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
@@ -39,8 +37,8 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
  */
 // note use COMMIT ON EXECUTE
 //uncomment in groovy script
-//KuawabaSimpleTestsXX kuwaibaImport = new KuawabaSimpleTestsXX(bem, aem, scriptParameters);
-//return kuwaibaImport.runTask();
+KuawabaSimpleTestsXX2 kuwaibaImport = new KuawabaSimpleTestsXX2(bem, aem, scriptParameters);
+return kuwaibaImport.runTask();
 
 /**
 
@@ -588,5 +586,211 @@ public class KuawabaSimpleTestsXX2 {
          throw new IllegalArgumentException("unknown fibre colour: " + colour);
       return no + 1;
    }
+
+ 
+   
+   public static class KuwaibaClass {
+   
+      private String className = null;
+      private String templateName = null;
+      private String name = null;
+      private Boolean special = false;
+   
+      private String parentClassName = null;
+      private String parentName = null;
+   
+      private HashMap<String, String> attributes = new HashMap();
+   
+      public KuwaibaClass() {
+         super();
+      }
+   
+      public String getClassName() {
+         return className;
+      }
+   
+      public void setClassName(String className) {
+         this.className = className;
+      }
+   
+      public String getTemplateName() {
+         return templateName;
+      }
+   
+      public void setTemplateName(String templateName) {
+         this.templateName = templateName;
+      }
+   
+      public String getName() {
+         return name;
+      }
+   
+      public void setName(String name) {
+         this.name = name;
+      }
+   
+      public String getParentClassName() {
+         return parentClassName;
+      }
+   
+      public void setParentClassName(String parentClassName) {
+         this.parentClassName = parentClassName;
+      }
+   
+      public String getParentName() {
+         return parentName;
+      }
+   
+      public void setParentName(String parentName) {
+         this.parentName = parentName;
+      }
+   
+      public HashMap<String, String> getAttributes() {
+         return attributes;
+      }
+   
+      public void setAttributes(HashMap<String, String> attributes) {
+         this.attributes = attributes;
+      }
+   
+      public Boolean getSpecial() {
+         return special;
+      }
+   
+      public void setSpecial(Boolean special) {
+         this.special = special;
+      }
+   
+      @Override
+      public String toString() {
+         return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", special=" + special +
+                  ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes=" + attributes + "]";
+      }
+   
+   }
+   
+   
+   
+   public static class KuwaibaProvisioningRequisition {
+      
+      private List<KuwaibaTemplateDefinition> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateDefinition>();
+   
+      private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
+      
+      public KuwaibaProvisioningRequisition() {
+         super();
+      }
+      
+      public List<KuwaibaTemplateDefinition> getKuwaibaTemplateList() {
+         return kuwaibaTemplateList;
+      }
+   
+      public void setKuwaibaTemplateList(List<KuwaibaTemplateDefinition> kuwaibaTemplateList) {
+         this.kuwaibaTemplateList = kuwaibaTemplateList;
+      }
+      
+      public List<KuwaibaClass> getKuwaibaClassList() {
+         return kuwaibaClassList;
+      }
+   
+      public void setKuwaibaClassList(List<KuwaibaClass> kuwaibaClassList) {
+         this.kuwaibaClassList = kuwaibaClassList;
+      }
+   
+      @Override
+      public String toString() {
+         return "ProvisioningRecord [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + kuwaibaClassList + "]";
+      }
+   
+      
+   }
+
+
+   
+   public static class KuwaibaTemplateDefinition {
+      
+      private String templateName = null;
+      
+      private String templateElementName = null;
+      
+      private String className = null;
+   
+      private String templateFunction = null;
+      
+      private Boolean special = false;
+      
+      private List<KuwaibaTemplateDefinition> childKuwaibaTemplateDefinitions = new ArrayList<KuwaibaTemplateDefinition>();
+      
+      private HashMap<String,String> templateFunctionAttributes = new HashMap<String,String>();
+   
+      public KuwaibaTemplateDefinition() {
+         super();
+      }
+   
+      public String getTemplateName() {
+         return templateName;
+      }
+   
+      public void setTemplateName(String templateName) {
+         this.templateName = templateName;
+      }
+   
+      public String getTemplateElementName() {
+         return templateElementName;
+      }
+   
+      public void setTemplateElementName(String templateElementName) {
+         this.templateElementName = templateElementName;
+      }
+   
+      public List<KuwaibaTemplateDefinition> getChildKuwaibaTemplateDefinitions() {
+         return childKuwaibaTemplateDefinitions;
+      }
+   
+      public void setChildKuwaibaTemplateDefinitions(List<KuwaibaTemplateDefinition> childKuwaibaTemplateDefinitions) {
+         this.childKuwaibaTemplateDefinitions = childKuwaibaTemplateDefinitions;
+      }
+   
+      public String getClassName() {
+         return className;
+      }
+   
+      public void setClassName(String className) {
+         this.className = className;
+      }
+   
+      public String getTemplateFunction() {
+         return templateFunction;
+      }
+   
+      public void setTemplateFunction(String templateFunction) {
+         this.templateFunction = templateFunction;
+      }
+   
+      public HashMap<String, String> getTemplateFunctionAttributes() {
+         return templateFunctionAttributes;
+      }
+   
+      public void setTemplateFunctionAttributes(HashMap<String, String> templateFunctionAttributes) {
+         this.templateFunctionAttributes = templateFunctionAttributes;
+      }
+      
+      public Boolean getSpecial() {
+         return special;
+      }
+   
+      public void setSpecial(Boolean special) {
+         this.special = special;
+      }
+   
+      @Override
+      public String toString() {
+         return "KuwaibaTemplateDefinition [templateName=" + templateName + ", templateElementName=" + templateElementName +
+                  ", className=" + className + ", templateFunction=" + templateFunction + ", special=" + special +
+                  ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" + templateFunctionAttributes + "]";
+      }
+   
+   }
+   
 
 }
