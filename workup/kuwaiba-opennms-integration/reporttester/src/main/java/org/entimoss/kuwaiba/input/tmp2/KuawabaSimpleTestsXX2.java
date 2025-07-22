@@ -46,8 +46,8 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
  */
 
-public class KuawabaSimpleTestsXX {
-   static Logger LOG = LoggerFactory.getLogger(KuawabaSimpleTestsXX.class); // remove static in groovy
+public class KuawabaSimpleTestsXX2 {
+   static Logger LOG = LoggerFactory.getLogger(KuawabaSimpleTestsXX2.class); // remove static in groovy
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
@@ -55,7 +55,7 @@ public class KuawabaSimpleTestsXX {
 
    GraphDatabaseService connectionHandler = null; //injected in groovy
 
-   public KuawabaSimpleTestsXX(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters) {
+   public KuawabaSimpleTestsXX2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters) {
       super();
       this.bem = bem;
       this.aem = aem;
@@ -68,9 +68,9 @@ public class KuawabaSimpleTestsXX {
       TaskResult taskResult = new TaskResult();
 
       taskResult.getMessages().add(TaskResult.createInformationMessage(
-               String.format("running Script " + KuawabaSimpleTestsXX.class.getName() + " with parameters:" + parameters)));
+               String.format("running Script " + KuawabaSimpleTestsXX2.class.getName() + " with parameters:" + parameters)));
 
-      LOG.info("running Script " + KuawabaSimpleTestsXX.class.getName() + " with parameters:" + parameters);
+      LOG.info("running Script " + KuawabaSimpleTestsXX2.class.getName() + " with parameters:" + parameters);
 
       // String templateClassName = "FiberSplitter";
 
@@ -258,7 +258,7 @@ public class KuawabaSimpleTestsXX {
          taskResult.getMessages().add(TaskResult.createErrorMessage("error running task "+ex));
       }
 
-      LOG.info("end of Script " + KuawabaSimpleTestsXX.class.getName());
+      LOG.info("end of Script " + KuawabaSimpleTestsXX2.class.getName());
 
       return taskResult;
    }
