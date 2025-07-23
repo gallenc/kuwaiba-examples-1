@@ -73,7 +73,7 @@ public class EntimossKuwaibaProvisioningTask2 {
       taskResult.getMessages().add(TaskResult.createInformationMessage(
                String.format("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters)));
 
-      LOG.debug("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters);
+      LOG.info("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters);
 
       /*
        * file name and location of kuwaibaProvisioningRequisition
@@ -114,15 +114,16 @@ public class EntimossKuwaibaProvisioningTask2 {
             BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
                       parentClassName, parentObjectName, templateName, initialAttributes);
 
-            LOG.debug("created business object: " + businessObjectToString(businessObject));
+            LOG.info("created business object: " + businessObjectToString(businessObject));
 
          }
 
 
-         LOG.debug("Templates new: " + kuwaibaTemplatesExisting + " existing: " + kuwaibaTemplatesNew
-                  + " Classes: new: " + kuwaibaClassesExisting + " existing: " + kuwaibaClassesNew);
+         LOG.info("Templates new: " + kuwaibaTemplatesExisting + " existing: " + kuwaibaTemplatesNew +
+                  " Classes: new: " + kuwaibaClassesExisting + " existing: " + kuwaibaClassesNew);
 
       } catch (Exception ex) {
+         LOG.error("problem running task",ex);
          taskResult.getMessages().add(TaskResult.createErrorMessage(
                   String.format("error running task " + ex)));
       }
@@ -133,7 +134,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
       taskResult.getMessages().add(TaskResult.createInformationMessage(msg));
 
-      LOG.debug(msg);
+      LOG.info(msg);
 
       return taskResult;
    }
@@ -270,7 +271,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                LOG.info("trying to create template elements from function=" + function + " with functionAttributes=" + functionAttributes + " className=" +
                         templateElement.getClassName() + "  templateElementParentClassName=" + elementParentClassName + "  templateElementParentId=" + elementParentId);
 
-               templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(null, elementParentClassName, elementParentId, function, functionAttributes);
+               templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(null, templateElement.getTemplateElementName(), elementParentClassName, elementParentId, function, functionAttributes);
 
             } catch (Exception ex) {
                throw new IllegalArgumentException("problem creating child template element from function for elementParentClassName=" +
@@ -284,7 +285,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createTemplateElementsFromFunction(String templateName, String templateElementParentClassName, String templateElementParentId, String function,
+   public int createTemplateElementsFromFunction(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId, String function,
             HashMap<String, String> functionAttributes) {
       int elementsCreated = 0;
 
@@ -296,15 +297,15 @@ public class EntimossKuwaibaProvisioningTask2 {
          switch (function) {
 
          case "FiberSplitterFunction":
-            elementsCreated = elementsCreated + createOpticalFiberSplitterTemplateElements(templateName, templateElementParentClassName, templateElementParentId, functionAttributes);
+            elementsCreated = elementsCreated + createOpticalFiberSplitterTemplateElements(templateName, templateElementName, templateElementParentClassName, templateElementParentId, functionAttributes);
             break;
 
          case "OpticalSpliceBoxFunction":
-            elementsCreated = elementsCreated + createOpticalSpliceBoxTemplateElements(templateName, templateElementParentClassName, templateElementParentId, functionAttributes);
+            elementsCreated = elementsCreated + createOpticalSpliceBoxTemplateElements(templateName, templateElementName, templateElementParentClassName, templateElementParentId, functionAttributes);
             break;
 
          case "ColoredFiberWireContainerFunction":
-            elementsCreated = elementsCreated + createColoredOpticalFiberContainerTemplateElements(templateName, templateElementParentClassName, templateElementParentId, functionAttributes);
+            elementsCreated = elementsCreated + createColoredOpticalFiberContainerTemplateElements(templateName, templateElementName, templateElementParentClassName, templateElementParentId, functionAttributes);
             break;
 
          default:
@@ -332,7 +333,8 @@ public class EntimossKuwaibaProvisioningTask2 {
          // if templateName is set, this is a top level template and templateElementName must not be set
          // template functions can only be called for top level templates
          String templateName = kuwaibaTemplateDefinition.getTemplateName();
-         //String templateElementName = kuwaibaTemplateDefinition.getTemplateElementName();
+
+         String templateElementName = kuwaibaTemplateDefinition.getTemplateElementName();
 
          // templateName  must be set
          if ((templateName == null || !templateName.isEmpty())) {
@@ -381,7 +383,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
                   LOG.info("trying to create new template " + templateName + " with class name=" + className + " from function=" + function + " with functionAttributes=" + functionAttributes);
 
-                  templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateName, null, null,  function, functionAttributes);
+                  templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateName, templateElementName, null, null,  function, functionAttributes);
 
                   LOG.info("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
 
@@ -399,7 +401,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createOpticalFiberSplitterTemplateElements(String templateName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalFiberSplitterTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
@@ -415,7 +417,8 @@ public class EntimossKuwaibaProvisioningTask2 {
          if (templateName!=null) {
             elementId = aem.createTemplate("FiberSplitter", templateName);
          } else {
-            elementId = aem.createTemplateElement("FiberSplitter", templateElementParentClassName, templateElementParentId, "Splitter");
+            String nameOfTemplateElement = (templateElementName !=null ) ? templateElementName : "Splitter";
+            elementId = aem.createTemplateElement("FiberSplitter", templateElementParentClassName, templateElementParentId, nameOfTemplateElement);
          }
 
          
@@ -443,7 +446,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createOpticalSpliceBoxTemplateElements(String templateName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalSpliceBoxTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
@@ -459,7 +462,8 @@ public class EntimossKuwaibaProvisioningTask2 {
          if (templateName!=null) {
             elementId = aem.createTemplate("SpliceBox", templateName);
          } else {
-            elementId = aem.createTemplateElement("SpliceBox", templateElementParentClassName, templateElementParentId, "SpliceBox");
+            String nameOfTemplateElement = (templateElementName !=null ) ? templateElementName : "SpliceBox";
+            elementId = aem.createTemplateElement("SpliceBox", templateElementParentClassName, templateElementParentId, nameOfTemplateElement);
          }
 
          String templateElementNamePattern = "[mirror(1," + numberOfPorts + ")]";
@@ -487,7 +491,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createColoredOpticalFiberContainerTemplateElements(String templateName, String templateElementParentClassName, String templateElementParentId,
+   public int createColoredOpticalFiberContainerTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId,
             HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
@@ -508,7 +512,8 @@ public class EntimossKuwaibaProvisioningTask2 {
          if (templateName!=null) {
             elementId = aem.createTemplate("WireContainer", templateName);
          } else {
-            elementId = aem.createTemplateElement("WireContainer", templateElementParentClassName, templateElementParentId, "WireContainer");
+            String nameOfTemplateElement = (templateElementName !=null ) ? templateElementName :  "WireContainer";
+            elementId = aem.createTemplateElement("WireContainer", templateElementParentClassName, templateElementParentId, nameOfTemplateElement);
          }
          
          for (int cableNo = 1; cableNo <= numberOfCables; cableNo++) {
