@@ -49,9 +49,9 @@
     "special" : false,
     "childKuwaibaTemplateDefinitions" : [ {
       "templateName" : null,
-      "templateElementName" : "SPL16_1",
-      "className" : "SpliceBox",
-      "templateFunction" : "OpticalSpliceBoxFunction",
+      "templateElementName" : "SP_01",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ ],
       "templateFunctionAttributes" : {
@@ -59,9 +59,9 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_2",
-      "className" : "SpliceBox",
-      "templateFunction" : "OpticalSpliceBoxFunction",
+      "templateElementName" : "SP_02",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ ],
       "templateFunctionAttributes" : {
@@ -77,7 +77,7 @@
     "special" : false,
     "childKuwaibaTemplateDefinitions" : [ {
       "templateName" : null,
-      "templateElementName" : "SPL16_1",
+      "templateElementName" : "SPL_01",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -87,7 +87,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_2",
+      "templateElementName" : "SPL_02",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -97,7 +97,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_3",
+      "templateElementName" : "SPL_03",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -107,7 +107,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_4",
+      "templateElementName" : "SPL_04",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -117,7 +117,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_5",
+      "templateElementName" : "SPL_05",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -127,7 +127,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_6",
+      "templateElementName" : "SPL_06",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -137,7 +137,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_7",
+      "templateElementName" : "SPL_07",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -147,7 +147,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_8",
+      "templateElementName" : "SPL_08",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -157,7 +157,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_9",
+      "templateElementName" : "SPL_09",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -167,7 +167,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL16_10",
+      "templateElementName" : "SPL_10",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -185,19 +185,19 @@
     "special" : false,
     "childKuwaibaTemplateDefinitions" : [ {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_1",
+      "templateElementName" : "OLT_NOKIA_01_01",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -205,7 +205,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -213,7 +213,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -221,7 +221,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -229,7 +229,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -237,7 +237,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -245,7 +245,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -253,7 +253,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -261,7 +261,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -327,13 +327,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -341,7 +341,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -349,7 +349,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -357,7 +357,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -365,7 +365,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -373,7 +373,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -381,7 +381,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -389,7 +389,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -397,7 +397,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -465,19 +465,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_2",
+      "templateElementName" : "OLT_NOKIA_01_02",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -485,7 +485,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -493,7 +493,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -501,7 +501,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -509,7 +509,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -517,7 +517,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -525,7 +525,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -533,7 +533,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -541,7 +541,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -607,13 +607,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -621,7 +621,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -629,7 +629,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -637,7 +637,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -645,7 +645,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -653,7 +653,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -661,7 +661,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -669,7 +669,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -677,7 +677,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -745,19 +745,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_3",
+      "templateElementName" : "OLT_NOKIA_01_03",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -765,7 +765,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -773,7 +773,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -781,7 +781,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -789,7 +789,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -797,7 +797,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -805,7 +805,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -813,7 +813,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -821,7 +821,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -887,13 +887,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -901,7 +901,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -909,7 +909,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -917,7 +917,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -925,7 +925,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -933,7 +933,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -941,7 +941,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -949,7 +949,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -957,7 +957,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1025,19 +1025,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_4",
+      "templateElementName" : "OLT_NOKIA_01_04",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1045,7 +1045,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1053,7 +1053,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1061,7 +1061,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1069,7 +1069,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1077,7 +1077,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1085,7 +1085,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1093,7 +1093,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1101,7 +1101,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1167,13 +1167,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1181,7 +1181,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1189,7 +1189,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1197,7 +1197,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1205,7 +1205,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1213,7 +1213,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1221,7 +1221,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1229,7 +1229,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1237,7 +1237,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1305,19 +1305,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_5",
+      "templateElementName" : "OLT_NOKIA_01_05",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1325,7 +1325,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1333,7 +1333,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1341,7 +1341,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1349,7 +1349,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1357,7 +1357,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1365,7 +1365,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1373,7 +1373,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1381,7 +1381,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1447,13 +1447,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1461,7 +1461,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1469,7 +1469,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1477,7 +1477,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1485,7 +1485,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1493,7 +1493,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1501,7 +1501,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1509,7 +1509,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1517,7 +1517,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1585,19 +1585,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_6",
+      "templateElementName" : "OLT_NOKIA_01_06",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1605,7 +1605,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1613,7 +1613,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1621,7 +1621,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1629,7 +1629,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1637,7 +1637,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1645,7 +1645,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1653,7 +1653,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1661,7 +1661,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1727,13 +1727,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1741,7 +1741,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1749,7 +1749,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1757,7 +1757,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1765,7 +1765,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1773,7 +1773,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1781,7 +1781,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1789,7 +1789,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1797,7 +1797,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1865,19 +1865,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_7",
+      "templateElementName" : "OLT_NOKIA_01_07",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1885,7 +1885,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1893,7 +1893,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1901,7 +1901,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1909,7 +1909,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1917,7 +1917,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1925,7 +1925,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1933,7 +1933,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -1941,7 +1941,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2007,13 +2007,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2021,7 +2021,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2029,7 +2029,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2037,7 +2037,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2045,7 +2045,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2053,7 +2053,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2061,7 +2061,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2069,7 +2069,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2077,7 +2077,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2145,19 +2145,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_8",
+      "templateElementName" : "OLT_NOKIA_01_08",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2165,7 +2165,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2173,7 +2173,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2181,7 +2181,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2189,7 +2189,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2197,7 +2197,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2205,7 +2205,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2213,7 +2213,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2221,7 +2221,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2287,13 +2287,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2301,7 +2301,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2309,7 +2309,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2317,7 +2317,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2325,7 +2325,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2333,7 +2333,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2341,7 +2341,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2349,7 +2349,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2357,7 +2357,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2425,19 +2425,19 @@
       "templateFunctionAttributes" : { }
     }, {
       "templateName" : null,
-      "templateElementName" : "OLT_NOKIA_01_9",
+      "templateElementName" : "OLT_NOKIA_01_09",
       "className" : "OpticalLineTerminal",
       "templateFunction" : null,
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2445,7 +2445,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2453,7 +2453,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2461,7 +2461,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2469,7 +2469,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2477,7 +2477,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2485,7 +2485,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2493,7 +2493,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2501,7 +2501,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2567,13 +2567,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2581,7 +2581,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2589,7 +2589,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2597,7 +2597,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2605,7 +2605,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2613,7 +2613,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2621,7 +2621,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2629,7 +2629,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2637,7 +2637,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2711,13 +2711,13 @@
       "special" : false,
       "childKuwaibaTemplateDefinitions" : [ {
         "templateName" : null,
-        "templateElementName" : "card-1",
+        "templateElementName" : "card-01",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2725,7 +2725,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2733,7 +2733,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2741,7 +2741,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2749,7 +2749,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2757,7 +2757,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2765,7 +2765,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2773,7 +2773,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2781,7 +2781,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2847,13 +2847,13 @@
         "templateFunctionAttributes" : { }
       }, {
         "templateName" : null,
-        "templateElementName" : "card-2",
+        "templateElementName" : "card-02",
         "className" : "OLTBoard",
         "templateFunction" : null,
         "special" : false,
         "childKuwaibaTemplateDefinitions" : [ {
           "templateName" : null,
-          "templateElementName" : "IN-1",
+          "templateElementName" : "IN-01",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2861,7 +2861,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-2",
+          "templateElementName" : "IN-02",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2869,7 +2869,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-3",
+          "templateElementName" : "IN-03",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2877,7 +2877,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-4",
+          "templateElementName" : "IN-04",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2885,7 +2885,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-5",
+          "templateElementName" : "IN-05",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2893,7 +2893,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-6",
+          "templateElementName" : "IN-06",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2901,7 +2901,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-7",
+          "templateElementName" : "IN-07",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2909,7 +2909,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-8",
+          "templateElementName" : "IN-08",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
@@ -2917,7 +2917,7 @@
           "templateFunctionAttributes" : { }
         }, {
           "templateName" : null,
-          "templateElementName" : "IN-9",
+          "templateElementName" : "IN-09",
           "className" : "OpticalPort",
           "templateFunction" : null,
           "special" : false,
