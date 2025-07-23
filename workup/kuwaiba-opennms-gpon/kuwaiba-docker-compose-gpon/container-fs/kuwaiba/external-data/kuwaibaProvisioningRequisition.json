@@ -1,10 +1,179 @@
 {
-    "kuwaibaTemplateList": [],
+    "kuwaibaTemplateList": [
+        {
+            "templateName": "TestFiberSplitterTemplate_1",
+            "templateElementName": "splitter",
+            "className": "FiberSplitter",
+            "templateFunction": "FiberSplitterFunction",
+            "special": false,
+            "childKuwaibaTemplateDefinitions": [],
+            "templateFunctionAttributes": {
+                "numberOfPorts": "4"
+            }
+        },
+        {
+            "templateName": "TestOpticalSpliceBoxTemplate_1",
+            "templateElementName": "splice",
+            "className": "SpliceBox",
+            "templateFunction": "OpticalSpliceBoxFunction",
+            "special": false,
+            "childKuwaibaTemplateDefinitions": [],
+            "templateFunctionAttributes": {
+                "numberOfPorts": "6"
+            }
+        },
+        {
+            "templateName": "ColoredFiberWireContainerTemplate_1",
+            "templateElementName": "wireContainer",
+            "className": "WireContainer",
+            "templateFunction": "ColoredFiberWireContainerFunction",
+            "special": false,
+            "childKuwaibaTemplateDefinitions": [],
+            "templateFunctionAttributes": {
+                "numberOfCables": "4",
+                "numberOfFibers": "4"
+            }
+        },
+        {
+            "templateName": "manualHouseTemplateDefinition1",
+            "templateElementName": "house1",
+            "className": "House",
+            "templateFunction": null,
+            "special": false,
+            "childKuwaibaTemplateDefinitions": [
+                {
+                    "templateName": null,
+                    "templateElementName": "test-nokia-ont",
+                    "className": "OpticalNetworkTerminal",
+                    "templateFunction": null,
+                    "special": false,
+                    "childKuwaibaTemplateDefinitions": [
+                        {
+                            "templateName": null,
+                            "templateElementName": "IN-01",
+                            "className": "OpticalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        },
+                        {
+                            "templateName": null,
+                            "templateElementName": "eth0",
+                            "className": "ElectricalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        }
+                    ],
+                    "templateFunctionAttributes": {}
+                },
+                {
+                    "templateName": null,
+                    "templateElementName": "test-csp",
+                    "className": "SpliceBox",
+                    "templateFunction": null,
+                    "special": false,
+                    "childKuwaibaTemplateDefinitions": [
+                        {
+                            "templateName": null,
+                            "templateElementName": "IN-01",
+                            "className": "OpticalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        },
+                        {
+                            "templateName": null,
+                            "templateElementName": "OUT-01",
+                            "className": "OpticalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        },
+                        {
+                            "templateName": null,
+                            "templateElementName": "IN-02",
+                            "className": "OpticalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        },
+                        {
+                            "templateName": null,
+                            "templateElementName": "OUT-02",
+                            "className": "OpticalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        }
+                    ],
+                    "templateFunctionAttributes": {}
+                }
+            ],
+            "templateFunctionAttributes": {}
+        },
+        {
+            "templateName": "manualHouseTemplateDefinition2",
+            "templateElementName": "house1",
+            "className": "House",
+            "templateFunction": null,
+            "special": false,
+            "childKuwaibaTemplateDefinitions": [
+                {
+                    "templateName": null,
+                    "templateElementName": "test-nokia-ont",
+                    "className": "OpticalNetworkTerminal",
+                    "templateFunction": null,
+                    "special": false,
+                    "childKuwaibaTemplateDefinitions": [
+                        {
+                            "templateName": null,
+                            "templateElementName": "IN-01",
+                            "className": "OpticalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        },
+                        {
+                            "templateName": null,
+                            "templateElementName": "eth0",
+                            "className": "ElectricalPort",
+                            "templateFunction": null,
+                            "special": false,
+                            "childKuwaibaTemplateDefinitions": [],
+                            "templateFunctionAttributes": {}
+                        }
+                    ],
+                    "templateFunctionAttributes": {}
+                },
+                {
+                    "templateName": null,
+                    "templateElementName": "test-csp",
+                    "className": "SpliceBox",
+                    "templateFunction": "OpticalSpliceBoxFunction",
+                    "special": false,
+                    "childKuwaibaTemplateDefinitions": [],
+                    "templateFunctionAttributes": {
+                        "numberOfPorts": "2"
+                    }
+                }
+            ],
+            "templateFunctionAttributes": {}
+        }
+    ],
     "kuwaibaClassList": [
         {
             "className": "House",
             "templateName": "House_01",
             "name": "UPRN_200001919492",
+            "special": false,
             "parentClassName": "Neighborhood",
             "parentName": "BitternePk",
             "attributes": {
@@ -16,7 +185,8 @@
         {
             "className": "OpticalNetworkTerminal",
             "templateName": "ONT_NOKIA_01",
-            "name": "",
+            "name": "ONT_200001919492",
+            "special": false,
             "parentClassName": "House",
             "parentName": "UPRN_200001919492",
             "attributes": {}
@@ -25,6 +195,7 @@
             "className": "SpliceBox",
             "templateName": "CSP_BFU_1_2_01",
             "name": "ONC_200001919492",
+            "special": false,
             "parentClassName": "House",
             "parentName": "UPRN_200001919492",
             "attributes": {}
@@ -33,6 +204,7 @@
             "className": "Pole",
             "templateName": "POLE_2_16drop",
             "name": "SO18BPK1_POLE_001",
+            "special": false,
             "parentClassName": "Neighborhood",
             "parentName": "BitternePk",
             "attributes": {
@@ -44,6 +216,7 @@
             "className": "FiberSplitter",
             "templateName": "SPL16",
             "name": "SO18BPK1_POLE_001_SPL16_001",
+            "special": false,
             "parentClassName": "Pole",
             "parentName": "SO18BPK1_POLE_001",
             "attributes": {}
@@ -52,6 +225,7 @@
             "className": "OutdoorsCabinet",
             "templateName": "CAB_10SPL8",
             "name": "SO18BPK1_CAB_001",
+            "special": false,
             "parentClassName": "Neighborhood",
             "parentName": "BitternePk",
             "attributes": {
@@ -63,10 +237,21 @@
             "className": "FiberSplitter",
             "templateName": "SPL8",
             "name": "SO18BPK1_CAB_001_SPL8_001",
+            "special": false,
             "parentClassName": "OutdoorsCabinet",
             "parentName": "SO18BPK1_CAB_001",
             "attributes": {}
+        },
+        {
+            "className": "OpticalLineTerminal",
+            "templateName": "OLT_NOKIA_01",
+            "name": "",
+            "special": false,
+            "parentClassName": "Rack",
+            "parentName": "SOTN001",
+            "attributes": {
+                "serialNumber": ""
+            }
         }
- 
     ]
 }

@@ -20,6 +20,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This test class creates an opennms requisition for UPRN data
+ */
 public class NamedObjectTest {
    static Logger LOG = LoggerFactory.getLogger(NamedObjectTest.class); // remove static in groovy
 

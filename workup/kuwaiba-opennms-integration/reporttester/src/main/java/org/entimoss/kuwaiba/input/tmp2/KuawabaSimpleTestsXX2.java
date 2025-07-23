@@ -39,12 +39,8 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
  */
 // note use COMMIT ON EXECUTE
 //uncomment in groovy script
-//KuawabaSimpleTestsXX2 kuwaibaImport = new KuawabaSimpleTestsXX2(bem, aem, scriptParameters);
+//KuawabaSimpleTestsXX2 kuwaibaImport = new KuawabaSimpleTestsXX2(bem, aem, scriptParameters, connectionHandler);
 //return kuwaibaImport.runTask();
-
-/**
-
- */
 
 public class KuawabaSimpleTestsXX2 {
    static Logger LOG = LoggerFactory.getLogger(KuawabaSimpleTestsXX2.class); // remove static in groovy
@@ -52,10 +48,9 @@ public class KuawabaSimpleTestsXX2 {
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
    Map<String, String> parameters = null; // injected in groovy
-
    GraphDatabaseService connectionHandler = null; //injected in groovy
 
-   public KuawabaSimpleTestsXX2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters) {
+   public KuawabaSimpleTestsXX2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters,GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
       this.aem = aem;
@@ -319,18 +314,7 @@ public class KuawabaSimpleTestsXX2 {
    //      return null;
    //   }
 
-   // overloaded toString methods for BusinessObjects
-   String businessObjectToString(BusinessObject bo) {
-      return (bo == null) ? "BusinessObject[ null ]"
-               : "BusinessObject[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
-                        bo.getClassDisplayName() + " getAttributes()=" + bo.getAttributes() + "]";
-   }
 
-   String businessObjectToString(BusinessObjectLight bo) {
-      return (bo == null) ? "BusinessObject[ null ]"
-               : "BusinessObjectLight[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
-                        bo.getClassDisplayName() + "]";
-   }
 
    public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaChildTemplateElementList, String elementParentClassName, String elementParentId) {
       int templateElementsCreated = 0;
@@ -658,6 +642,19 @@ public class KuawabaSimpleTestsXX2 {
       if (no < 0)
          throw new IllegalArgumentException("unknown fibre colour: " + colour);
       return no + 1;
+   }
+   
+   // overloaded toString methods for BusinessObjects
+   String businessObjectToString(BusinessObject bo) {
+      return (bo == null) ? "BusinessObject[ null ]"
+               : "BusinessObject[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + " getAttributes()=" + bo.getAttributes() + "]";
+   }
+
+   String businessObjectToString(BusinessObjectLight bo) {
+      return (bo == null) ? "BusinessObject[ null ]"
+               : "BusinessObjectLight[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + "]";
    }
 
 }

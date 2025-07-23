@@ -28,6 +28,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * This test class enhances the raw UPRN data with steee and address info from the Nominatum api. 
+ * It takes some time to run and only interacts with the api every 5 seconds
+ */
+
 public class ExtractOSMDataFromUprn {
    static Logger LOG = LoggerFactory.getLogger(NamedObjectTest.class); // remove static in groovy
 

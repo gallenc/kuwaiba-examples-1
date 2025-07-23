@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 
 import org.junit.Test;
 
-public class ExtractFromGis {
+public class ExtractFromUPRNGis {
 
    public static final String COMMA_DELIMITER = ",";
 

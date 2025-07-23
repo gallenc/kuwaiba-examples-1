@@ -1,7 +1,6 @@
-package org.entimoss.kuwaiba.input.tmp2;
+package org.entimoss.kuwaiba.provisioning.script;
 
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TemplateObject;
@@ -14,6 +13,8 @@ import org.neotropic.kuwaiba.core.apis.persistence.exceptions.MetadataObjectNotF
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.OperationNotPermittedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.netty.util.Constant;
 
@@ -33,27 +34,31 @@ import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight;
 import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
 /**
- * This test creates templates using the functions in the manual templates
+ * provisioning task to read provisioning file in order.
+ * if multipleNewLineObjects is set true, each non blank line is read as a separate json object.
+ * THis is to allow very large files which are not stored in memory.
+ * (This will not work if the Json is pretty printed)
+ * if multipleNewLineObjects is set false, only one json object is read which can contain multiple objects
  */
 // note use COMMIT ON EXECUTE
-//uncomment in groovy script
-KuawabaSimpleTestsXX2 kuwaibaImport = new KuawabaSimpleTestsXX2(bem, aem, scriptParameters);
+// uncomment in groovy script
+EntimossKuwaibaProvisioningTask2 kuwaibaImport = new EntimossKuwaibaProvisioningTask2(bem, aem, scriptParameters, connectionHandler);
 return kuwaibaImport.runTask();
 
-/**
-
- */
-
-public class KuawabaSimpleTestsXX2 {
-   static Logger LOG = LoggerFactory.getLogger(KuawabaSimpleTestsXX2.class); // remove static in groovy
+public class EntimossKuwaibaProvisioningTask2 {
+   static Logger LOG = LoggerFactory.getLogger(EntimossKuwaibaProvisioningTask2.class); 
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
    Map<String, String> parameters = null; // injected in groovy
-
    GraphDatabaseService connectionHandler = null; //injected in groovy
 
-   public KuawabaSimpleTestsXX2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters) {
+   int kuwaibaTemplatesExisting = 0;
+   int kuwaibaTemplatesNew = 0;
+   int kuwaibaClassesExisting = 0;
+   int kuwaibaClassesNew = 0;
+   
+   public EntimossKuwaibaProvisioningTask2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters,GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
       this.aem = aem;
@@ -66,259 +71,165 @@ public class KuawabaSimpleTestsXX2 {
       TaskResult taskResult = new TaskResult();
 
       taskResult.getMessages().add(TaskResult.createInformationMessage(
-               String.format("running Script " + KuawabaSimpleTestsXX2.class.getName() + " with parameters:" + parameters)));
+               String.format("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters)));
 
-      LOG.info("running Script " + KuawabaSimpleTestsXX2.class.getName() + " with parameters:" + parameters);
+      LOG.debug("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters);
 
-      // String templateClassName = "FiberSplitter";
-
-      //  String templateId=null;
-      //  String templateElementClass;
-      //  String templateElementId;
-
-      /* TODO
-       * create template with name for splitter etc 
+      /*
+       * file name and location of kuwaibaProvisioningRequisition
+       * Defaults to
        */
+      String kuwaibaProvisioningRequisitionFileName = parameters.getOrDefault("kuwaibaProvisioningRequisitionFileName", "/external-data/kuwaibaProvisioningRequisition.json");
+
       try {
 
-         try {
-
-            List<KuwaibaTemplateDefinition> kuwaibaTemplateDefinitionList = new ArrayList<KuwaibaTemplateDefinition>();
-
-            // test creating templates from functions
-            // block to isolate local variables
-            try {
-               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-               definition1.setTemplateName("TestFiberSplitterTemplate_1");
-               definition1.setTemplateElementName("splitter");
-               definition1.setClassName("FiberSplitter");
-               definition1.setSpecial(false);
-               definition1.setTemplateFunction("FiberSplitterFunction");
-
-               HashMap<String, String> attributes = new HashMap<String, String>();
-               attributes.put("numberOfPorts", "4");
-               definition1.setTemplateFunctionAttributes(attributes);
-
-               kuwaibaTemplateDefinitionList.add(definition1);
-            } catch (Exception e) {
-               throw new IllegalArgumentException("problem creating definition");
-            }
-
-            // block to isolate local variables            
-            try {
-               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-               definition1.setTemplateName("TestOpticalSpliceBoxTemplate_1");
-               definition1.setTemplateElementName("splice");
-               definition1.setClassName("SpliceBox");
-               definition1.setSpecial(false);
-               definition1.setTemplateFunction("OpticalSpliceBoxFunction");
-
-               HashMap<String, String> attributes1 = new HashMap<String, String>();
-               attributes1.put("numberOfPorts", "6");
-               definition1.setTemplateFunctionAttributes(attributes1);
-
-               kuwaibaTemplateDefinitionList.add(definition1);
-            } catch (Exception e) {
-               throw new IllegalArgumentException("problem creating definition");
-            }
-
-            // block to isolate local variables            
-            try {
-               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-               definition1.setTemplateName("ColoredFiberWireContainerTemplate_1");
-               definition1.setTemplateElementName("wireContainer");
-               definition1.setClassName("WireContainer");
-               definition1.setSpecial(false);
-               definition1.setTemplateFunction("ColoredFiberWireContainerFunction");
-
-               HashMap<String, String> attributes1 = new HashMap<String, String>();
-               attributes1.put("numberOfCables", "4");
-               attributes1.put("numberOfFibers", "4");
-               definition1.setTemplateFunctionAttributes(attributes1);
-
-               kuwaibaTemplateDefinitionList.add(definition1);
-
-            } catch (Exception e) {
-               throw new IllegalArgumentException("problem creating definition");
-            }
-
-            // block to isolate local variables  
-            // creating template from definition
-            try {
-               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-               definition1.setTemplateName("manualHouseTemplateDefinition1");
-               definition1.setTemplateElementName("house1");
-               definition1.setClassName("House");
-               definition1.setSpecial(false);
-
-               // ONT
-               KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("test-nokia-ont");
-               childDefinition1.setClassName("OpticalNetworkTerminal");
-               childDefinition1.setSpecial(false);
-               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
-
-               KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
-               childDefinition1_1.setTemplateElementName("IN-01");
-               childDefinition1_1.setClassName("OpticalPort");
-               childDefinition1_1.setSpecial(false);
-               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
-
-               KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
-               childDefinition1_2.setTemplateElementName("eth0");
-               childDefinition1_2.setClassName("ElectricalPort");
-               childDefinition1_2.setSpecial(false);
-               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);
-
-               // CSP
-               KuwaibaTemplateDefinition childDefinition2 = new KuwaibaTemplateDefinition();
-               childDefinition2.setTemplateElementName("test-csp");
-               childDefinition2.setClassName("SpliceBox");
-               childDefinition2.setSpecial(false);
-               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition2);
-
-               KuwaibaTemplateDefinition childDefinition2_1 = new KuwaibaTemplateDefinition();
-               childDefinition2_1.setTemplateElementName("IN-01");
-               childDefinition2_1.setClassName("OpticalPort");
-               childDefinition2_1.setSpecial(false);
-               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_1);
-
-               KuwaibaTemplateDefinition childDefinition2_2 = new KuwaibaTemplateDefinition();
-               childDefinition2_2.setTemplateElementName("OUT-01");
-               childDefinition2_2.setClassName("OpticalPort");
-               childDefinition2_2.setSpecial(false);
-               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_2);
-
-               KuwaibaTemplateDefinition childDefinition2_3 = new KuwaibaTemplateDefinition();
-               childDefinition2_3.setTemplateElementName("IN-02");
-               childDefinition2_3.setClassName("OpticalPort");
-               childDefinition2_3.setSpecial(false);
-               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_3);
-
-               KuwaibaTemplateDefinition childDefinition2_4 = new KuwaibaTemplateDefinition();
-               childDefinition2_4.setTemplateElementName("OUT-02");
-               childDefinition2_4.setClassName("OpticalPort");
-               childDefinition2_4.setSpecial(false);
-               childDefinition2.getChildKuwaibaTemplateDefinitions().add(childDefinition2_4);
-
-               kuwaibaTemplateDefinitionList.add(definition1);
-
-            } catch (Exception e) {
-               throw new IllegalArgumentException("problem creating definition");
-            }
-
-            // block to isolate local variables  
-            // creating template from function definitions
-            try {
-               KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
-               definition1.setTemplateName("manualHouseTemplateDefinition2");
-               definition1.setTemplateElementName("house1");
-               definition1.setClassName("House");
-               definition1.setSpecial(false);
-
-               // ONT
-               KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("test-nokia-ont");
-               childDefinition1.setClassName("OpticalNetworkTerminal");
-               childDefinition1.setSpecial(false);
-               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
-
-               KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
-               childDefinition1_1.setTemplateElementName("IN-01");
-               childDefinition1_1.setClassName("OpticalPort");
-               childDefinition1_1.setSpecial(false);
-               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
-
-               KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
-               childDefinition1_2.setTemplateElementName("eth0");
-               childDefinition1_2.setClassName("ElectricalPort");
-               childDefinition1_2.setSpecial(false);
-               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);
-
-               // CSP
-               KuwaibaTemplateDefinition childDefinition2 = new KuwaibaTemplateDefinition();
-               childDefinition2.setTemplateElementName("test-csp");
-               childDefinition2.setClassName("SpliceBox");
-               childDefinition2.setSpecial(false);
-               // build ports using function
-               childDefinition2.setTemplateFunction("OpticalSpliceBoxFunction");
-               HashMap<String, String> attributes1 = new HashMap<String, String>();
-               attributes1.put("numberOfPorts", "2");
-               childDefinition2.setTemplateFunctionAttributes(attributes1);
-
-               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition2);
-
-               kuwaibaTemplateDefinitionList.add(definition1);
-
-            } catch (Exception e) {
-               throw new IllegalArgumentException("problem creating definition");
-            }
-
-            createTemplates(kuwaibaTemplateDefinitionList);
-
-            //            String templateName = "WCTest1";
-            //            int numberOfCables = 4;
-            //            int numberOfFibers = 12;
-            // createColouredOpticalFibreContainerTemplate(templateName, numberOfCables, numberOfFibers);
-
-            //createOpticalFibreSplitterTemplate("fibre-split16", 16);
-
-            //createOpticalSpliceBoxTemplate("splice-test1", 16);
-
-            //            // create wirecontainer
-            //            String templateId = aem.createTemplate("WireContainer", "WCTest1");
-            //            String templateElementClassName = "WireContainer";
-            //            String templateElementParentClassName = "WireContainer";
-            //            String templateElementParentId = templateId;
-            //            String templateElementNamePattern = "[sequence(1,4)]";
-            //            // String templateElementClassName, String templateElementParentClassName, String templateElementParentId, String templateElementNamePattern
-            //            List<String> childTemplateElementIds = Arrays
-            //                     .asList(aem.createBulkSpecialTemplateElement(templateElementClassName, templateElementParentClassName, templateElementParentId, templateElementNamePattern));
-            //
-            //            for (String childId : childTemplateElementIds) {
-            //               LOG.info("template child " + childId);
-            //
-            //               List<String> child2TemplateElementIds = Arrays.asList(aem.createBulkSpecialTemplateElement("OpticalLink",
-            //                        "WireContainer", childId, "[sequence(1,12)]"));
-            //               LOG.info("template child 2 " + childId);
-            //
-            //            }
-            //
-            //            // see if there is a template with the template name
-            //            List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(templateClassName);
-            //            for (TemplateObjectLight tmplate : foundTemplates) {
-            //               String tclassname = tmplate.getClassName();
-            //               String templateElementId = tmplate.getId();
-            //               String tname = tmplate.getName();
-            //               LOG.debug("template: className=" + tclassname + " id=" + templateElementId + " name=" + tname);
-            //
-            //               //causes transaction fail
-            //               // List<TemplateObjectLight> children = aem.getTemplateElementChildren(tclassname , templateElementId);
-            //               // LOG.info("children:"+children);
-            //            }
-
-         } catch (Exception ex) {
-            throw new IllegalArgumentException("problem creating template:", ex);
+         // TODO file with multiple separate objects
+         File kuwaibaProvisioningFile = new File(kuwaibaProvisioningRequisitionFileName);
+         if (!kuwaibaProvisioningFile.exists()) {
+            throw new IllegalArgumentException("sctipt cannot find file:" + kuwaibaProvisioningFile);
          }
 
+         ObjectMapper om = new ObjectMapper();
+
+         KuwaibaProvisioningRequisition kuwaibaProvisioningRequisition = om.readValue(kuwaibaProvisioningFile, KuwaibaProvisioningRequisition.class);
+         LOG.info("Starting to load requistionFile " + kuwaibaProvisioningFile.getAbsolutePath() + " containing " + kuwaibaProvisioningRequisition.getKuwaibaTemplateList().size() +
+                  " templates and" + kuwaibaProvisioningRequisition.getKuwaibaClassList().size() + " classes");
+
+
+
+         //create new templates
+         createTemplates(kuwaibaProvisioningRequisition.getKuwaibaTemplateList());
+
+         // create new objects
+         for (KuwaibaClass kuwaibaClass : kuwaibaProvisioningRequisition.getKuwaibaClassList()) {
+            LOG.info("creating kuwaibaClass: " + kuwaibaClass);
+
+            String createObjectClassName = kuwaibaClass.getClassName();
+            String createObjectName = kuwaibaClass.getName();
+            String parentObjectName = kuwaibaClass.getParentName();
+            String parentClassName = kuwaibaClass.getParentClassName();
+            String templateName = null; //TODO
+            HashMap<String, String> initialAttributes = kuwaibaClass.getAttributes();
+
+            BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
+                      parentClassName, parentObjectName, templateName, initialAttributes);
+
+            LOG.debug("created business object: " + businessObjectToString(businessObject));
+
+         }
+
+
+         LOG.debug("Templates new: " + kuwaibaTemplatesExisting + " existing: " + kuwaibaTemplatesNew
+                  + " Classes: new: " + kuwaibaClassesExisting + " existing: " + kuwaibaClassesNew);
+
       } catch (Exception ex) {
-         LOG.error("error running task:", ex);
-         taskResult.getMessages().add(TaskResult.createErrorMessage("error running task " + ex));
+         taskResult.getMessages().add(TaskResult.createErrorMessage(
+                  String.format("error running task " + ex)));
       }
 
-      LOG.info("end of Script " + KuawabaSimpleTestsXX2.class.getName());
+      
+      String msg = "End of task Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " used existing templates: " + kuwaibaTemplatesExisting +
+               " newTemplates: "+ kuwaibaTemplatesNew +" existingClasses: "+ kuwaibaClassesExisting +" new Classes:"+ kuwaibaClassesNew;
+
+      taskResult.getMessages().add(TaskResult.createInformationMessage(msg));
+
+      LOG.debug(msg);
 
       return taskResult;
    }
 
-   //   BusinessObject findOrCreateIfDoesntExist(String className, String classTemplate, String name, String parentClass, String parentClassName,
-   //            String latitude, String longitude, String IpAddress, String Comment, String serialNumber, String assetNumber) {
-   //
-   //      return null;
-   //   }
+   /**
+    * creates new object with parent if object doesn't exist
+    * return BusinessObject of existing object or new object if does already exist
+    * @param createObjectClassName
+    * @param createObjectName
+    * @param parentObjectId
+    * @param parentObjectClass
+    * @return
+    */
+   public BusinessObject createClassIfDoesntExist(String createObjectClassName, String createObjectName, String parentClassName, 
+            String parentObjectName, String templateName, HashMap<String, String> initialAttributes) {
 
+      BusinessObject createdObject = null;
+      BusinessObject parentObject = null;
 
+      // check if object already exists
+      try {
+         // see if there is an object with the same name
+         List<BusinessObject> foundObjects = bem.getObjectsWithFilter(createObjectClassName, Constants.PROPERTY_NAME, createObjectName);
+         if (!foundObjects.isEmpty()) {
+            createdObject = foundObjects.get(0);
+            LOG.info("createIfDoesntExist - object already exists " + businessObjectToString(createdObject));
+            kuwaibaClassesExisting++;
+            return createdObject;
+         }
+      } catch (Exception ex) {
+         LOG.error("problem finding object:", ex);
+      }
 
+      // check if parent object exists
+      try {
+         // see if there is an object with the same name
+         List<BusinessObject> foundObjects = bem.getObjectsWithFilter(parentClassName, Constants.PROPERTY_NAME, parentObjectName);
+         if (!foundObjects.isEmpty()) {
+            parentObject = foundObjects.get(0);
+            LOG.info("createIfDoesntExist - parentObject exists " + businessObjectToString(parentObject));
+         }
+      } catch (Exception ex) {
+         LOG.error("problem finding parent object:", ex);
+      }
+
+      if (parentObject == null)
+         throw new IllegalArgumentException("parent object does not exist for createObjectClassName=" + createObjectClassName + "  createObjectName =" +
+                  createObjectName + " parentObjectName=" + parentObjectName + " parentClassName=" + parentClassName);
+
+      TemplateObjectLight template = null;
+      String templateId = null;
+
+      // check if template exists if not null
+      if (templateName != null && !templateName.isEmpty()) {
+         try {
+            // see if there is a template with the template name
+            List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(createObjectClassName);
+            for (TemplateObjectLight tmplate : foundTemplates) {
+               if (templateName.equals(tmplate.getName())) {
+                  template = tmplate;
+                  templateId = template.getId();
+                  LOG.info("creating object " + template.getClassName() + " with template: " + template.getName() + " templateId: " + template.getId());
+                  break;
+               }
+            }
+            if (template == null) {
+               throw new IllegalArgumentException("cannot find template for createObjectClassName " + createObjectClassName + " template name: " + templateName);
+            }
+         } catch (Exception ex) {
+            LOG.error("problem finding template:", ex);
+         }
+      }
+
+      if (createdObject == null) {
+         // create new object with parent
+         try {
+            HashMap<String, String> attributes = (initialAttributes == null) ? new HashMap<String, String>() : new HashMap<String, String>(initialAttributes);
+            attributes.put(Constants.PROPERTY_NAME, createObjectName);
+
+            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), attributes, templateId);
+
+            createdObject = bem.getObject(createObjectClassName, createdObjectId);
+
+            LOG.info("createIfDoesntExist - created new object " + businessObjectToString(createdObject));
+
+            kuwaibaClassesNew++;
+         } catch (Exception e) {
+            LOG.error("problem creating object createObjectClass " + createObjectClassName +
+                     ", createObjectName:" + createObjectName + ", parentOid:" + parentObject.getId() + ", parentClassName " + parentClassName, e);
+         }
+      }
+
+      return createdObject;
+
+   }
+   
    public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaChildTemplateElementList, String elementParentClassName, String elementParentId) {
       int templateElementsCreated = 0;
 
@@ -599,7 +510,7 @@ public class KuawabaSimpleTestsXX2 {
          } else {
             elementId = aem.createTemplateElement("WireContainer", templateElementParentClassName, templateElementParentId, "WireContainer");
          }
-
+         
          for (int cableNo = 1; cableNo <= numberOfCables; cableNo++) {
             String cableName = String.format("%02d", cableNo) + "-" + getColourForStrand(cableNo);
 
@@ -646,6 +557,7 @@ public class KuawabaSimpleTestsXX2 {
          throw new IllegalArgumentException("unknown fibre colour: " + colour);
       return no + 1;
    }
+   
 
    // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {
@@ -659,10 +571,13 @@ public class KuawabaSimpleTestsXX2 {
                : "BusinessObjectLight[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
                         bo.getClassDisplayName() + "]";
    }
- 
+
    
+   /*
+    * These classes could be in separate java classes if not in a groovy script
+    */
    public static class KuwaibaClass {
-   
+      
       private String className = null;
       private String templateName = null;
       private String name = null;
@@ -859,10 +774,13 @@ public class KuawabaSimpleTestsXX2 {
       public String toString() {
          return "KuwaibaTemplateDefinition [templateName=" + templateName + ", templateElementName=" + templateElementName +
                   ", className=" + className + ", templateFunction=" + templateFunction + ", special=" + special +
-                  ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" + templateFunctionAttributes + "]";
+                  ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" +
+                  templateFunctionAttributes + "]";
       }
    
    }
+   
+
    
 
 }
