@@ -69,19 +69,18 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
       kuwaibaGponProvisoner.addStaticObjectsToProvisioningRequisition();
 
-      //TODO restore
-      //      kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
-      //               ontComment, ontSerialNumber, ontAssetNumber,
-      //
-      //               oncLabelName,
-      //
-      //               secondarySplitterName, secondarySplitterContainerName, secondarySplitterContainerLatitude, secondarySplitterContainerLongitude,
-      //               secondarySplitterComment, secondarySplitterSerialNumber, secondarySplitterAssetNumber,
-      //
-      //               primarySplitterName, primarySplitterContainerName, primarySplitterContainerLatitude, primarySplitterContainerLongitude,
-      //               primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber,
-      //
-      //               oltLabelName, oltRackName, oltFexLatitude, oltFexLongitude, oltIpAddress, oltComment, oltSerialNumber, oltAssetNumber);
+      kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
+               ontComment, ontSerialNumber, ontAssetNumber,
+
+               oncLabelName,
+
+               secondarySplitterName, secondarySplitterContainerName, secondarySplitterContainerLatitude, secondarySplitterContainerLongitude,
+               secondarySplitterComment, secondarySplitterSerialNumber, secondarySplitterAssetNumber,
+
+               primarySplitterName, primarySplitterContainerName, primarySplitterContainerLatitude, primarySplitterContainerLongitude,
+               primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber,
+
+               oltLabelName, oltRackName, oltFexLatitude, oltFexLongitude, oltIpAddress, oltComment, oltSerialNumber, oltAssetNumber);
 
       pr = kuwaibaGponProvisoner.finalise();
 
@@ -420,34 +419,23 @@ public class TestKuwaibaProvisioningRequisitionJson {
             definition1.setTemplateElementName("POLE_2_16drop");
             definition1.setClassName("Pole");
             definition1.setSpecial(false);
+            
+            // 2 x 8 way splitters in template
+            for (int splitterNo = 1; splitterNo <= 2; splitterNo++) {
+               KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
+               childDefinition1.setTemplateElementName("SPL16_" + String.format("%02d", splitterNo));
+               childDefinition1.setClassName("FiberSplitter");
+               childDefinition1.setSpecial(false);
+               // build ports using function
+               childDefinition1.setTemplateFunction("FiberSplitterFunction");
+               HashMap<String, String> attributes1 = new HashMap<String, String>();
+               attributes1.put("numberOfPorts", "16");
+               childDefinition1.setTemplateFunctionAttributes(attributes1);
 
-            // splitter 1
-            KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-            childDefinition1.setTemplateElementName("SP_01");
-            childDefinition1.setClassName("FiberSplitter");
-            childDefinition1.setSpecial(false);
-            // build ports using function
-            childDefinition1.setTemplateFunction("FiberSplitterFunction");
-            HashMap<String, String> attributes1 = new HashMap<String, String>();
-            attributes1.put("numberOfPorts", "16");
-            childDefinition1.setTemplateFunctionAttributes(attributes1);
+               definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
+            }
 
-            definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
-
-            // splitter 2
-            KuwaibaTemplateDefinition childDefinition2 = new KuwaibaTemplateDefinition();
-            childDefinition2.setTemplateElementName("SP_02");
-            childDefinition2.setClassName("FiberSplitter");
-            childDefinition2.setSpecial(false);
-            // build ports using function
-            childDefinition2.setTemplateFunction("FiberSplitterFunction");
-            HashMap<String, String> attributes2 = new HashMap<String, String>();
-            attributes2.put("numberOfPorts", "16");
-            childDefinition2.setTemplateFunctionAttributes(attributes2);
-
-            definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition2);
-
-            kuwaibaTemplateDefinitionList.add(definition1);
+             kuwaibaTemplateDefinitionList.add(definition1);
 
          } catch (Exception e) {
             throw new IllegalArgumentException("problem creating definition");
@@ -471,7 +459,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
             // 10 splitters in template
             for (int splitterNo = 1; splitterNo <= 10; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("SPL_" + String.format("%02d", splitterNo));
+               childDefinition1.setTemplateElementName("SPL8_" + String.format("%02d", splitterNo));
                childDefinition1.setClassName("FiberSplitter");
                childDefinition1.setSpecial(false);
                // build ports using function

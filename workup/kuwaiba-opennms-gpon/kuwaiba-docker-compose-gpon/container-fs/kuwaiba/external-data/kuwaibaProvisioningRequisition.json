@@ -49,7 +49,7 @@
     "special" : false,
     "childKuwaibaTemplateDefinitions" : [ {
       "templateName" : null,
-      "templateElementName" : "SP_01",
+      "templateElementName" : "SPL16_01",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -59,7 +59,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SP_02",
+      "templateElementName" : "SPL16_02",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -77,7 +77,7 @@
     "special" : false,
     "childKuwaibaTemplateDefinitions" : [ {
       "templateName" : null,
-      "templateElementName" : "SPL_01",
+      "templateElementName" : "SPL8_01",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -87,7 +87,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_02",
+      "templateElementName" : "SPL8_02",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -97,7 +97,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_03",
+      "templateElementName" : "SPL8_03",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -107,7 +107,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_04",
+      "templateElementName" : "SPL8_04",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -117,7 +117,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_05",
+      "templateElementName" : "SPL8_05",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -127,7 +127,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_06",
+      "templateElementName" : "SPL8_06",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -137,7 +137,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_07",
+      "templateElementName" : "SPL8_07",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -147,7 +147,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_08",
+      "templateElementName" : "SPL8_08",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -157,7 +157,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_09",
+      "templateElementName" : "SPL8_09",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -167,7 +167,7 @@
       }
     }, {
       "templateName" : null,
-      "templateElementName" : "SPL_10",
+      "templateElementName" : "SPL8_10",
       "className" : "FiberSplitter",
       "templateFunction" : "FiberSplitterFunction",
       "special" : false,
@@ -3064,6 +3064,82 @@
     "attributes" : {
       "latitude" : "-1.37165175",
       "longitude" : "50.92451031"
+    }
+  }, {
+    "className" : "House",
+    "templateName" : "House_01",
+    "name" : "UPRN_200001919492",
+    "special" : false,
+    "parentClassName" : "Neighborhood",
+    "parentName" : "BitternePk",
+    "attributes" : {
+      "latitude" : "50.92445000",
+      "longitude" : "-1.37204500",
+      "serialNumber" : "ALCLF2E910B1A04"
+    }
+  }, {
+    "className" : "OpticalNetworkTerminal",
+    "templateName" : "ONT_NOKIA_01",
+    "name" : "ONT_200001919492",
+    "special" : false,
+    "parentClassName" : "House",
+    "parentName" : "UPRN_200001919492",
+    "attributes" : { }
+  }, {
+    "className" : "SpliceBox",
+    "templateName" : "CSP_BFU_1_2_01",
+    "name" : "ONC_200001919492",
+    "special" : false,
+    "parentClassName" : "House",
+    "parentName" : "UPRN_200001919492",
+    "attributes" : { }
+  }, {
+    "className" : "Pole",
+    "templateName" : "POLE_2_16drop",
+    "name" : "SO18BPK1_POLE_001",
+    "special" : false,
+    "parentClassName" : "Neighborhood",
+    "parentName" : "BitternePk",
+    "attributes" : {
+      "latitude" : "0.00000000",
+      "longitude" : "0.00000000"
+    }
+  }, {
+    "className" : "FiberSplitter",
+    "templateName" : "SPL16",
+    "name" : "SO18BPK1_POLE_001_SPL16_001",
+    "special" : false,
+    "parentClassName" : "Pole",
+    "parentName" : "SO18BPK1_POLE_001",
+    "attributes" : { }
+  }, {
+    "className" : "OutdoorsCabinet",
+    "templateName" : "CAB_10SPL8",
+    "name" : "SO18BPK1_CAB_001",
+    "special" : false,
+    "parentClassName" : "Neighborhood",
+    "parentName" : "BitternePk",
+    "attributes" : {
+      "latitude" : "0.00000000",
+      "longitude" : "0.00000000"
+    }
+  }, {
+    "className" : "FiberSplitter",
+    "templateName" : "SPL8",
+    "name" : "SO18BPK1_CAB_001_SPL8_001",
+    "special" : false,
+    "parentClassName" : "OutdoorsCabinet",
+    "parentName" : "SO18BPK1_CAB_001",
+    "attributes" : { }
+  }, {
+    "className" : "OpticalLineTerminal",
+    "templateName" : "OLT_NOKIA_01",
+    "name" : "SOTN001_OLT_103",
+    "special" : false,
+    "parentClassName" : "Rack",
+    "parentName" : "SOTNOO1_RACK001",
+    "attributes" : {
+      "serialNumber" : ""
     }
   } ]
 }

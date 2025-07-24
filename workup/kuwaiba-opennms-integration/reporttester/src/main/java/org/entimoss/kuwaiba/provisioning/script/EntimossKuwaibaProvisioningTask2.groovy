@@ -187,9 +187,35 @@ public class EntimossKuwaibaProvisioningTask2 {
       TemplateObjectLight template = null;
       String templateId = null;
 
+      String existingChildId = null;
+      
+      HashMap<String, String> newAttributes = (initialAttributes == null) ? new HashMap<String, String>() : new HashMap<String, String>(initialAttributes);
+      newAttributes.put(Constants.PROPERTY_NAME, createObjectName);
+
       // check if template exists if not null
       if (templateName != null && !templateName.isEmpty()) {
          try {
+
+            // check if child of parent has been made with the same template (i.e. its name starts with the template name). 
+            // If it does, then we want to use this object and update it's properties rather than create a new object
+            List<BusinessObject> childObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), createObjectClassName, 0, 0);
+            for (BusinessObject child : childObjects) {
+               if (child.getName().startsWith(templateName)) {
+                  existingChildId = child.getId();
+                  createdObject = child;
+                  
+                  LOG.info("matched templateName=" + templateName + " child object="+businessObjectToString(child) + " will be updated in parent "+
+                               businessObjectToString(parentObject));
+                  
+                  bem.updateObject(child.getClassName(), existingChildId, newAttributes);
+                  
+                  break;
+               }
+            }
+
+            // if there is no existing candidate object, find the template to create a new object 
+            if (existingChildId == null) {
+               
             // see if there is a template with the template name
             List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(createObjectClassName);
             for (TemplateObjectLight tmplate : foundTemplates) {
@@ -203,6 +229,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             if (template == null) {
                throw new IllegalArgumentException("cannot find template for createObjectClassName " + createObjectClassName + " template name: " + templateName);
             }
+            }
          } catch (Exception ex) {
             LOG.error("problem finding template:", ex);
          }
@@ -211,13 +238,11 @@ public class EntimossKuwaibaProvisioningTask2 {
       if (createdObject == null) {
          // create new object with parent
          try {
-            HashMap<String, String> attributes = (initialAttributes == null) ? new HashMap<String, String>() : new HashMap<String, String>(initialAttributes);
-            attributes.put(Constants.PROPERTY_NAME, createObjectName);
 
-            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), attributes, templateId);
+            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), newAttributes, templateId);
 
             // this is added because the created object takes the name of the template and not the name we want to give it.
-            bem.updateObject(createObjectClassName, createdObjectId, attributes);
+            bem.updateObject(createObjectClassName, createdObjectId, newAttributes);
 
             createdObject = bem.getObject(createObjectClassName, createdObjectId);
 
@@ -404,7 +429,8 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createOpticalFiberSplitterTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalFiberSplitterTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId,
+            HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
@@ -449,7 +475,8 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createOpticalSpliceBoxTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalSpliceBoxTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId,
+            HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
@@ -785,10 +812,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                   ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" +
                   templateFunctionAttributes + "]";
       }
-   
-   }
-   
 
-   
+   }
 
 }

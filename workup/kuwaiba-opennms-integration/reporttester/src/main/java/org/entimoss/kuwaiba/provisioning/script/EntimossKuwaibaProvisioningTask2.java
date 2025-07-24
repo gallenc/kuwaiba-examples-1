@@ -47,7 +47,7 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 //return kuwaibaImport.runTask();
 
 public class EntimossKuwaibaProvisioningTask2 {
-   static Logger LOG = LoggerFactory.getLogger(EntimossKuwaibaProvisioningTask2.class); 
+   static Logger LOG = LoggerFactory.getLogger(EntimossKuwaibaProvisioningTask2.class);
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
@@ -58,8 +58,8 @@ public class EntimossKuwaibaProvisioningTask2 {
    int kuwaibaTemplatesNew = 0;
    int kuwaibaClassesExisting = 0;
    int kuwaibaClassesNew = 0;
-   
-   public EntimossKuwaibaProvisioningTask2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters,GraphDatabaseService connectionHandler) {
+
+   public EntimossKuwaibaProvisioningTask2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters, GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
       this.aem = aem;
@@ -96,8 +96,6 @@ public class EntimossKuwaibaProvisioningTask2 {
          LOG.info("Starting to load requistionFile " + kuwaibaProvisioningFile.getAbsolutePath() + " containing " + kuwaibaProvisioningRequisition.getKuwaibaTemplateList().size() +
                   " templates and" + kuwaibaProvisioningRequisition.getKuwaibaClassList().size() + " classes");
 
-
-
          //create new templates
          createTemplates(kuwaibaProvisioningRequisition.getKuwaibaTemplateList());
 
@@ -113,25 +111,23 @@ public class EntimossKuwaibaProvisioningTask2 {
             HashMap<String, String> initialAttributes = kuwaibaClass.getAttributes();
 
             BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
-                      parentClassName, parentObjectName, templateName, initialAttributes);
+                     parentClassName, parentObjectName, templateName, initialAttributes);
 
             LOG.info("created business object: " + businessObjectToString(businessObject));
 
          }
 
-
          LOG.info("Templates new: " + kuwaibaTemplatesExisting + " existing: " + kuwaibaTemplatesNew +
                   " Classes: new: " + kuwaibaClassesExisting + " existing: " + kuwaibaClassesNew);
 
       } catch (Exception ex) {
-         LOG.error("problem running task",ex);
+         LOG.error("problem running task", ex);
          taskResult.getMessages().add(TaskResult.createErrorMessage(
                   String.format("error running task " + ex)));
       }
 
-      
       String msg = "End of task Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " used existing templates: " + kuwaibaTemplatesExisting +
-               " newTemplates: "+ kuwaibaTemplatesNew +" existingClasses: "+ kuwaibaClassesExisting +" new Classes:"+ kuwaibaClassesNew;
+               " newTemplates: " + kuwaibaTemplatesNew + " existingClasses: " + kuwaibaClassesExisting + " new Classes:" + kuwaibaClassesNew;
 
       taskResult.getMessages().add(TaskResult.createInformationMessage(msg));
 
@@ -149,7 +145,7 @@ public class EntimossKuwaibaProvisioningTask2 {
     * @param parentObjectClass
     * @return
     */
-   public BusinessObject createClassIfDoesntExist(String createObjectClassName, String createObjectName, String parentClassName, 
+   public BusinessObject createClassIfDoesntExist(String createObjectClassName, String createObjectName, String parentClassName,
             String parentObjectName, String templateName, HashMap<String, String> initialAttributes) {
 
       BusinessObject createdObject = null;
@@ -188,21 +184,48 @@ public class EntimossKuwaibaProvisioningTask2 {
       TemplateObjectLight template = null;
       String templateId = null;
 
+      String existingChildId = null;
+      
+      HashMap<String, String> newAttributes = (initialAttributes == null) ? new HashMap<String, String>() : new HashMap<String, String>(initialAttributes);
+      newAttributes.put(Constants.PROPERTY_NAME, createObjectName);
+
       // check if template exists if not null
       if (templateName != null && !templateName.isEmpty()) {
          try {
-            // see if there is a template with the template name
-            List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(createObjectClassName);
-            for (TemplateObjectLight tmplate : foundTemplates) {
-               if (templateName.equals(tmplate.getName())) {
-                  template = tmplate;
-                  templateId = template.getId();
-                  LOG.info("creating object " + template.getClassName() + " with template: " + template.getName() + " templateId: " + template.getId());
+
+            // check if child of parent has been made with the same template (i.e. its name starts with the template name). 
+            // If it does, then we want to use this object and update it's properties rather than create a new object
+            List<BusinessObject> childObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), createObjectClassName, 0, 0);
+            for (BusinessObject child : childObjects) {
+               if (child.getName().startsWith(templateName)) {
+                  existingChildId = child.getId();
+                  createdObject = child;
+                  
+                  LOG.info("matched templateName=" + templateName + " child object="+businessObjectToString(child) + " will be updated in parent "+
+                               businessObjectToString(parentObject));
+                  
+                  bem.updateObject(child.getClassName(), existingChildId, newAttributes);
+                  
                   break;
                }
             }
-            if (template == null) {
-               throw new IllegalArgumentException("cannot find template for createObjectClassName " + createObjectClassName + " template name: " + templateName);
+
+            // if there is no existing candidate object, find the template to create a new object 
+            if (existingChildId == null) {
+               
+               // see if there is a template with the template name
+               List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(createObjectClassName);
+               for (TemplateObjectLight tmplate : foundTemplates) {
+                  if (templateName.equals(tmplate.getName())) {
+                     template = tmplate;
+                     templateId = template.getId();
+                     LOG.info("creating object " + template.getClassName() + " with template: " + template.getName() + " templateId: " + template.getId());
+                     break;
+                  }
+               }
+               if (template == null) {
+                  throw new IllegalArgumentException("cannot find template for createObjectClassName " + createObjectClassName + " template name: " + templateName);
+               }
             }
          } catch (Exception ex) {
             LOG.error("problem finding template:", ex);
@@ -212,13 +235,11 @@ public class EntimossKuwaibaProvisioningTask2 {
       if (createdObject == null) {
          // create new object with parent
          try {
-            HashMap<String, String> attributes = (initialAttributes == null) ? new HashMap<String, String>() : new HashMap<String, String>(initialAttributes);
-            attributes.put(Constants.PROPERTY_NAME, createObjectName);
 
-            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), attributes, templateId);
-           
+            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), newAttributes, templateId);
+
             // this is added because the created object takes the name of the template and not the name we want to give it.
-            bem.updateObject(createObjectClassName, createdObjectId, attributes);
+            bem.updateObject(createObjectClassName, createdObjectId, newAttributes);
 
             createdObject = bem.getObject(createObjectClassName, createdObjectId);
 
@@ -234,7 +255,7 @@ public class EntimossKuwaibaProvisioningTask2 {
       return createdObject;
 
    }
-   
+
    public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaChildTemplateElementList, String elementParentClassName, String elementParentId) {
       int templateElementsCreated = 0;
 
@@ -293,7 +314,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             HashMap<String, String> functionAttributes) {
       int elementsCreated = 0;
 
-      LOG.info("trying to create new template element (templateName="+templateName+ ") for parent class=" + templateElementParentClassName +
+      LOG.info("trying to create new template element (templateName=" + templateName + ") for parent class=" + templateElementParentClassName +
                " id=" + templateElementParentId +
                " from function=" + function + " with functionAttributes=" + functionAttributes);
 
@@ -337,7 +358,7 @@ public class EntimossKuwaibaProvisioningTask2 {
          // if templateName is set, this is a top level template and templateElementName must not be set
          // template functions can only be called for top level templates
          String templateName = kuwaibaTemplateDefinition.getTemplateName();
-        
+
          String templateElementName = kuwaibaTemplateDefinition.getTemplateElementName();
 
          // templateName  must be set
@@ -387,7 +408,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
                   LOG.info("trying to create new template " + templateName + " with class name=" + className + " from function=" + function + " with functionAttributes=" + functionAttributes);
 
-                  templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateName, templateElementName, null, null,  function, functionAttributes);
+                  templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateName, templateElementName, null, null, function, functionAttributes);
 
                   LOG.info("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
 
@@ -405,7 +426,8 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createOpticalFiberSplitterTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalFiberSplitterTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId,
+            HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
@@ -414,18 +436,17 @@ public class EntimossKuwaibaProvisioningTask2 {
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
-         
+
          // if templateName!= null then this is the top of the tree so create a template 
          String elementId = templateElementParentId;
-         
-         if (templateName!=null) {
+
+         if (templateName != null) {
             elementId = aem.createTemplate("FiberSplitter", templateName);
          } else {
-            String nameOfTemplateElement = (templateElementName !=null ) ? templateElementName : "Splitter";
+            String nameOfTemplateElement = (templateElementName != null) ? templateElementName : "Splitter";
             elementId = aem.createTemplateElement("FiberSplitter", templateElementParentClassName, templateElementParentId, nameOfTemplateElement);
          }
 
-         
          String templateElementNamePattern = "[multiple-mirror(1," + numberOfPorts + ")]";
 
          List<String> childTemplateElementIds = Arrays
@@ -450,7 +471,8 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public int createOpticalSpliceBoxTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId, HashMap<String, String> functionAttributes) {
+   public int createOpticalSpliceBoxTemplateElements(String templateName, String templateElementName, String templateElementParentClassName, String templateElementParentId,
+            HashMap<String, String> functionAttributes) {
 
       int elementsCreated = 0;
 
@@ -459,14 +481,14 @@ public class EntimossKuwaibaProvisioningTask2 {
 
       try {
          Integer numberOfPorts = Integer.parseInt(functionAttributes.get("numberOfPorts"));
-         
+
          // if templateName!= null then this is the top of the tree so create a template 
          String elementId = templateElementParentId;
-         
-         if (templateName!=null) {
+
+         if (templateName != null) {
             elementId = aem.createTemplate("SpliceBox", templateName);
          } else {
-            String nameOfTemplateElement = (templateElementName !=null ) ? templateElementName : "SpliceBox";
+            String nameOfTemplateElement = (templateElementName != null) ? templateElementName : "SpliceBox";
             elementId = aem.createTemplateElement("SpliceBox", templateElementParentClassName, templateElementParentId, nameOfTemplateElement);
          }
 
@@ -474,7 +496,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
          // String templateElementClassName, String templateElementParentClassName, String templateElementParentId, String templateElementNamePattern
          List<String> childTemplateElementIds = Arrays
-                  .asList(aem.createBulkTemplateElement("OpticalPort", "SpliceBox", elementId , templateElementNamePattern));
+                  .asList(aem.createBulkTemplateElement("OpticalPort", "SpliceBox", elementId, templateElementNamePattern));
 
          elementsCreated = childTemplateElementIds.size();
 
@@ -509,17 +531,17 @@ public class EntimossKuwaibaProvisioningTask2 {
       Integer numberOfFibers = Integer.parseInt(functionAttributes.get("numberOfFibers"));
 
       try {
-         
+
          // if templateName!= null then this is the top of the tree so create a template 
          String elementId = templateElementParentId;
-         
-         if (templateName!=null) {
+
+         if (templateName != null) {
             elementId = aem.createTemplate("WireContainer", templateName);
          } else {
-            String nameOfTemplateElement = (templateElementName !=null ) ? templateElementName :  "WireContainer";
+            String nameOfTemplateElement = (templateElementName != null) ? templateElementName : "WireContainer";
             elementId = aem.createTemplateElement("WireContainer", templateElementParentClassName, templateElementParentId, nameOfTemplateElement);
          }
-         
+
          for (int cableNo = 1; cableNo <= numberOfCables; cableNo++) {
             String cableName = String.format("%02d", cableNo) + "-" + getColourForStrand(cableNo);
 
@@ -566,7 +588,6 @@ public class EntimossKuwaibaProvisioningTask2 {
          throw new IllegalArgumentException("unknown fibre colour: " + colour);
       return no + 1;
    }
-   
 
    // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {
@@ -581,204 +602,198 @@ public class EntimossKuwaibaProvisioningTask2 {
                         bo.getClassDisplayName() + "]";
    }
 
-   
    /*
     * These classes could be in separate java classes if not in a groovy script
     */
    public static class KuwaibaClass {
-      
+
       private String className = null;
       private String templateName = null;
       private String name = null;
       private Boolean special = false;
-   
+
       private String parentClassName = null;
       private String parentName = null;
-   
+
       private HashMap<String, String> attributes = new HashMap();
-   
+
       public KuwaibaClass() {
          super();
       }
-   
+
       public String getClassName() {
          return className;
       }
-   
+
       public void setClassName(String className) {
          this.className = className;
       }
-   
+
       public String getTemplateName() {
          return templateName;
       }
-   
+
       public void setTemplateName(String templateName) {
          this.templateName = templateName;
       }
-   
+
       public String getName() {
          return name;
       }
-   
+
       public void setName(String name) {
          this.name = name;
       }
-   
+
       public String getParentClassName() {
          return parentClassName;
       }
-   
+
       public void setParentClassName(String parentClassName) {
          this.parentClassName = parentClassName;
       }
-   
+
       public String getParentName() {
          return parentName;
       }
-   
+
       public void setParentName(String parentName) {
          this.parentName = parentName;
       }
-   
+
       public HashMap<String, String> getAttributes() {
          return attributes;
       }
-   
+
       public void setAttributes(HashMap<String, String> attributes) {
          this.attributes = attributes;
       }
-   
+
       public Boolean getSpecial() {
          return special;
       }
-   
+
       public void setSpecial(Boolean special) {
          this.special = special;
       }
-   
+
       @Override
       public String toString() {
          return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", special=" + special +
                   ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes=" + attributes + "]";
       }
-   
+
    }
-   
-   
-   
+
    public static class KuwaibaProvisioningRequisition {
-      
+
       private List<KuwaibaTemplateDefinition> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateDefinition>();
-   
+
       private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
-      
+
       public KuwaibaProvisioningRequisition() {
          super();
       }
-      
+
       public List<KuwaibaTemplateDefinition> getKuwaibaTemplateList() {
          return kuwaibaTemplateList;
       }
-   
+
       public void setKuwaibaTemplateList(List<KuwaibaTemplateDefinition> kuwaibaTemplateList) {
          this.kuwaibaTemplateList = kuwaibaTemplateList;
       }
-      
+
       public List<KuwaibaClass> getKuwaibaClassList() {
          return kuwaibaClassList;
       }
-   
+
       public void setKuwaibaClassList(List<KuwaibaClass> kuwaibaClassList) {
          this.kuwaibaClassList = kuwaibaClassList;
       }
-   
+
       @Override
       public String toString() {
          return "ProvisioningRecord [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + kuwaibaClassList + "]";
       }
-   
-      
+
    }
 
-
-   
    public static class KuwaibaTemplateDefinition {
-      
+
       private String templateName = null;
-      
+
       private String templateElementName = null;
-      
+
       private String className = null;
-   
+
       private String templateFunction = null;
-      
+
       private Boolean special = false;
-      
+
       private List<KuwaibaTemplateDefinition> childKuwaibaTemplateDefinitions = new ArrayList<KuwaibaTemplateDefinition>();
-      
-      private HashMap<String,String> templateFunctionAttributes = new HashMap<String,String>();
-   
+
+      private HashMap<String, String> templateFunctionAttributes = new HashMap<String, String>();
+
       public KuwaibaTemplateDefinition() {
          super();
       }
-   
+
       public String getTemplateName() {
          return templateName;
       }
-   
+
       public void setTemplateName(String templateName) {
          this.templateName = templateName;
       }
-   
+
       public String getTemplateElementName() {
          return templateElementName;
       }
-   
+
       public void setTemplateElementName(String templateElementName) {
          this.templateElementName = templateElementName;
       }
-   
+
       public List<KuwaibaTemplateDefinition> getChildKuwaibaTemplateDefinitions() {
          return childKuwaibaTemplateDefinitions;
       }
-   
+
       public void setChildKuwaibaTemplateDefinitions(List<KuwaibaTemplateDefinition> childKuwaibaTemplateDefinitions) {
          this.childKuwaibaTemplateDefinitions = childKuwaibaTemplateDefinitions;
       }
-   
+
       public String getClassName() {
          return className;
       }
-   
+
       public void setClassName(String className) {
          this.className = className;
       }
-   
+
       public String getTemplateFunction() {
          return templateFunction;
       }
-   
+
       public void setTemplateFunction(String templateFunction) {
          this.templateFunction = templateFunction;
       }
-   
+
       public HashMap<String, String> getTemplateFunctionAttributes() {
          return templateFunctionAttributes;
       }
-   
+
       public void setTemplateFunctionAttributes(HashMap<String, String> templateFunctionAttributes) {
          this.templateFunctionAttributes = templateFunctionAttributes;
       }
-      
+
       public Boolean getSpecial() {
          return special;
       }
-   
+
       public void setSpecial(Boolean special) {
          this.special = special;
       }
-   
+
       @Override
       public String toString() {
          return "KuwaibaTemplateDefinition [templateName=" + templateName + ", templateElementName=" + templateElementName +
@@ -786,7 +801,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                   ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" +
                   templateFunctionAttributes + "]";
       }
-   
+
    }
 
 }
