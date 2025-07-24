@@ -2985,6 +2985,28 @@
       "templateFunctionAttributes" : { }
     } ],
     "templateFunctionAttributes" : { }
+  }, {
+    "templateName" : "BFU_1_2",
+    "templateElementName" : null,
+    "className" : "WireContainer",
+    "templateFunction" : "ColoredFiberWireContainerFunction",
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ ],
+    "templateFunctionAttributes" : {
+      "numberOfCables" : "1",
+      "numberOfFibers" : "2"
+    }
+  }, {
+    "templateName" : "BFU_4_12",
+    "templateElementName" : null,
+    "className" : "WireContainer",
+    "templateFunction" : "ColoredFiberWireContainerFunction",
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ ],
+    "templateFunctionAttributes" : {
+      "numberOfCables" : "4",
+      "numberOfFibers" : "12"
+    }
   } ],
   "kuwaibaClassList" : [ {
     "className" : "City",
@@ -3015,7 +3037,7 @@
     }
   }, {
     "className" : "Rack",
-    "templateName" : null,
+    "templateName" : "FEX_RACK_001",
     "name" : "SOTNOO1_RACK001",
     "special" : false,
     "parentClassName" : "Facility",
@@ -3029,26 +3051,9 @@
     "parentClassName" : "Neighborhood",
     "parentName" : "BitternePk",
     "attributes" : {
-      "latitude" : "50.92445000",
-      "longitude" : "-1.37204500",
-      "serialNumber" : "ALCLF2E910B1A04"
+      "latitude" : "-1.37188121",
+      "longitude" : "50.92471325"
     }
-  }, {
-    "className" : "OpticalNetworkTerminal",
-    "templateName" : "ONT_NOKIA_01",
-    "name" : "ONT_200001919492",
-    "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_200001919492",
-    "attributes" : { }
-  }, {
-    "className" : "SpliceBox",
-    "templateName" : "CSP_BFU_1_2_01",
-    "name" : "ONC_200001919492",
-    "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_200001919492",
-    "attributes" : { }
   }, {
     "className" : "Pole",
     "templateName" : "POLE_2_16drop",
@@ -3057,45 +3062,8 @@
     "parentClassName" : "Neighborhood",
     "parentName" : "BitternePk",
     "attributes" : {
-      "latitude" : "0.00000000",
-      "longitude" : "0.00000000"
-    }
-  }, {
-    "className" : "FiberSplitter",
-    "templateName" : "SPL16",
-    "name" : "SO18BPK1_POLE_001_SPL16_001",
-    "special" : false,
-    "parentClassName" : "Pole",
-    "parentName" : "SO18BPK1_POLE_001",
-    "attributes" : { }
-  }, {
-    "className" : "OutdoorsCabinet",
-    "templateName" : "CAB_10SPL8",
-    "name" : "SO18BPK1_CAB_001",
-    "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "BitternePk",
-    "attributes" : {
-      "latitude" : "0.00000000",
-      "longitude" : "0.00000000"
-    }
-  }, {
-    "className" : "FiberSplitter",
-    "templateName" : "SPL8",
-    "name" : "SO18BPK1_CAB_001_SPL8_001",
-    "special" : false,
-    "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_001",
-    "attributes" : { }
-  }, {
-    "className" : "OpticalLineTerminal",
-    "templateName" : "OLT_NOKIA_01",
-    "name" : "SOTN001_OLT_103",
-    "special" : false,
-    "parentClassName" : "Rack",
-    "parentName" : "SOTNOO1_RACK001",
-    "attributes" : {
-      "serialNumber" : ""
+      "latitude" : "-1.37165175",
+      "longitude" : "50.92451031"
     }
   } ]
 }

@@ -108,7 +108,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             String createObjectName = kuwaibaClass.getName();
             String parentObjectName = kuwaibaClass.getParentName();
             String parentClassName = kuwaibaClass.getParentClassName();
-            String templateName = null; //TODO
+            String templateName = kuwaibaClass.getTemplateName();
             HashMap<String, String> initialAttributes = kuwaibaClass.getAttributes();
 
             BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
@@ -215,6 +215,9 @@ public class EntimossKuwaibaProvisioningTask2 {
             attributes.put(Constants.PROPERTY_NAME, createObjectName);
 
             String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), attributes, templateId);
+
+            // this is added because the created object takes the name of the template and not the name we want to give it.
+            bem.updateObject(createObjectClassName, createdObjectId, attributes);
 
             createdObject = bem.getObject(createObjectClassName, createdObjectId);
 

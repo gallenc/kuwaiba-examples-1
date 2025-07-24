@@ -69,18 +69,19 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
       kuwaibaGponProvisoner.addStaticObjectsToProvisioningRequisition();
 
-      kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
-               ontComment, ontSerialNumber, ontAssetNumber,
-
-               oncLabelName,
-
-               secondarySplitterName, secondarySplitterContainerName, secondarySplitterContainerLatitude, secondarySplitterContainerLongitude,
-               secondarySplitterComment, secondarySplitterSerialNumber, secondarySplitterAssetNumber,
-
-               primarySplitterName, primarySplitterContainerName, primarySplitterContainerLatitude, primarySplitterContainerLongitude,
-               primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber,
-
-               oltLabelName, oltRackName, oltFexLatitude, oltFexLongitude, oltIpAddress, oltComment, oltSerialNumber, oltAssetNumber);
+      //TODO restore
+      //      kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
+      //               ontComment, ontSerialNumber, ontAssetNumber,
+      //
+      //               oncLabelName,
+      //
+      //               secondarySplitterName, secondarySplitterContainerName, secondarySplitterContainerLatitude, secondarySplitterContainerLongitude,
+      //               secondarySplitterComment, secondarySplitterSerialNumber, secondarySplitterAssetNumber,
+      //
+      //               primarySplitterName, primarySplitterContainerName, primarySplitterContainerLatitude, primarySplitterContainerLongitude,
+      //               primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber,
+      //
+      //               oltLabelName, oltRackName, oltFexLatitude, oltFexLongitude, oltIpAddress, oltComment, oltSerialNumber, oltAssetNumber);
 
       pr = kuwaibaGponProvisoner.finalise();
 
@@ -290,9 +291,56 @@ public class TestKuwaibaProvisioningRequisitionJson {
             pr.getKuwaibaClassList().add(kuwaibaClass1);
 
             kuwaibaClass1.setClassName(GponConstants.OLT_CONTAINER_CLASS_NAME);
+            kuwaibaClass1.setTemplateName(GponConstants.OLT_CONTAINER_TEMPLATE_NAME); // FEX_RACK_001
             kuwaibaClass1.setName(GponConstants.OLT_CONTAINER_NAME);
             kuwaibaClass1.setParentName(GponConstants.PARENT_FACILITY);
             kuwaibaClass1.setParentClassName("Facility");
+
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+
+         // TODO REMOVE TEST OBJECTS - as will be created from data
+         // House ont container
+         // block to isolate repeat variables
+         try {
+            KuwaibaClass ontContainer = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(ontContainer);
+
+            ontContainer.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
+            ontContainer.setTemplateName(GponConstants.ONT_CONTAINER_TEMPLATE_NAME); // House_01
+            ontContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
+            ontContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+            ontContainer.setName("UPRN_200001919492");
+
+            HashMap<String, String> ontContainerAttributes = new HashMap<String, String>();
+            // BURNETT CLOSE
+            ontContainerAttributes.put("latitude", String.format("%.8f", -1.371881206));
+            ontContainerAttributes.put("longitude", String.format("%.8f", 50.92471325));
+            ontContainer.getAttributes().putAll(ontContainerAttributes);
+
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+
+         // pole POLE_2_16drop
+         // block to isolate repeat variables
+         try {
+            // pole secondary splitter container
+            KuwaibaClass secondarySplitterContainer = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(secondarySplitterContainer);
+
+            secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
+            secondarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
+            secondarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+            secondarySplitterContainer.setName("SO18BPK1_POLE_001");
+
+            HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
+            // pole 50.92451031284738, -1.371651746700767
+            secondarySplitterContainerAttributes.put("latitude", String.format("%.8f", -1.371651746700767));
+            secondarySplitterContainerAttributes.put("longitude", String.format("%.8f", 50.92451031284738));
+            secondarySplitterContainer.getAttributes().putAll(secondarySplitterContainerAttributes);
 
          } catch (Exception e) {
             e.printStackTrace();
@@ -423,7 +471,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
             // 10 splitters in template
             for (int splitterNo = 1; splitterNo <= 10; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("SPL_" + String.format("%02d", splitterNo) );
+               childDefinition1.setTemplateElementName("SPL_" + String.format("%02d", splitterNo));
                childDefinition1.setClassName("FiberSplitter");
                childDefinition1.setSpecial(false);
                // build ports using function
@@ -434,7 +482,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
                definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
             }
-            
+
             kuwaibaTemplateDefinitionList.add(definition1);
 
          } catch (Exception e) {
@@ -462,14 +510,14 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
                for (int card = 1; card <= 2; card++) {
                   KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
-                  childDefinition1_1.setTemplateElementName("card-"+String.format("%02d", card));
+                  childDefinition1_1.setTemplateElementName("card-" + String.format("%02d", card));
                   childDefinition1_1.setClassName("OLTBoard");
                   childDefinition1_1.setSpecial(false);
                   childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
 
                   for (int opticalPort = 1; opticalPort <= 16; opticalPort++) {
                      KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
-                     childDefinition1_2.setTemplateElementName("IN-"+String.format("%02d", opticalPort));
+                     childDefinition1_2.setTemplateElementName("IN-" + String.format("%02d", opticalPort));
                      childDefinition1_2.setClassName("OpticalPort");
                      childDefinition1_2.setSpecial(false);
                      childDefinition1_1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);
@@ -479,7 +527,49 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
                definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
             }
-            
+
+            kuwaibaTemplateDefinitionList.add(definition1);
+
+         } catch (Exception e) {
+            throw new IllegalArgumentException("problem creating definition");
+         }
+
+         // wire containers
+
+         // BFU_1_2 blown fiber unit 1 cable, 2 cores coloured
+         // block to isolate local variables            
+         try {
+            KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+            definition1.setTemplateName("BFU_1_2");
+            definition1.setClassName("WireContainer");
+            definition1.setSpecial(false);
+            definition1.setTemplateFunction("ColoredFiberWireContainerFunction");
+
+            HashMap<String, String> attributes1 = new HashMap<String, String>();
+            attributes1.put("numberOfCables", "1");
+            attributes1.put("numberOfFibers", "2");
+            definition1.setTemplateFunctionAttributes(attributes1);
+
+            kuwaibaTemplateDefinitionList.add(definition1);
+
+         } catch (Exception e) {
+            throw new IllegalArgumentException("problem creating definition");
+         }
+
+         // BFU_4_12 blown fiber unit 4 cables, 12 cores  coloured
+         // block to isolate local variables            
+         try {
+            KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+            definition1.setTemplateName("BFU_4_12");
+            definition1.setClassName("WireContainer");
+            definition1.setSpecial(false);
+            definition1.setTemplateFunction("ColoredFiberWireContainerFunction");
+
+            HashMap<String, String> attributes1 = new HashMap<String, String>();
+            attributes1.put("numberOfCables", "4");
+            attributes1.put("numberOfFibers", "12");
+            definition1.setTemplateFunctionAttributes(attributes1);
+
             kuwaibaTemplateDefinitionList.add(definition1);
 
          } catch (Exception e) {
