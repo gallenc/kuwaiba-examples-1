@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.entimoss.misc.test.NamedObjectTest.OpenNMSRequisitionPopulator;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 
 public class ExtractOSMDataFromUprn {
-   static Logger LOG = LoggerFactory.getLogger(NamedObjectTest.class); // remove static in groovy
+   static Logger LOG = LoggerFactory.getLogger(ExtractOSMDataFromUprn.class); // remove static in groovy
 
    String jsonOutputFileStr = "./target/output-json/uprnBitternePk1nominatum.json";
 

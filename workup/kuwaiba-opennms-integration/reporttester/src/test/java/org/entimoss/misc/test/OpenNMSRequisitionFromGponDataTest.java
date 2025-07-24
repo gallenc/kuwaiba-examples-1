@@ -21,10 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This test class creates an opennms requisition for UPRN data
+ * This test class creates an opennms requisition direct from UPRN data
  */
-public class NamedObjectTest {
-   static Logger LOG = LoggerFactory.getLogger(NamedObjectTest.class); // remove static in groovy
+public class OpenNMSRequisitionFromGponDataTest {
+   static Logger LOG = LoggerFactory.getLogger(OpenNMSRequisitionFromGponDataTest.class); // remove static in groovy
 
    String requisitionOutputFileLocation = "./target/requisitions/";
 
