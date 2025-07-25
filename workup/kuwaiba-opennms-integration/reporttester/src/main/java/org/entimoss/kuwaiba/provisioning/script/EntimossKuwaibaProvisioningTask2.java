@@ -91,8 +91,9 @@ public class EntimossKuwaibaProvisioningTask2 {
          }
 
          ObjectMapper om = new ObjectMapper();
-
+        
          KuwaibaProvisioningRequisition kuwaibaProvisioningRequisition = om.readValue(kuwaibaProvisioningFile, KuwaibaProvisioningRequisition.class);
+         
          LOG.info("Starting to load requistionFile " + kuwaibaProvisioningFile.getAbsolutePath() + " containing " + kuwaibaProvisioningRequisition.getKuwaibaTemplateList().size() +
                   " templates and" + kuwaibaProvisioningRequisition.getKuwaibaClassList().size() + " classes");
 

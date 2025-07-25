@@ -98,7 +98,8 @@ public class KuwaibaRequisitionFromGponDataTest {
     * UPRN_limitLines defines range in file to read
     * set to number of lines to read or null if read to end.
     */
-   Integer UPRN_limitLines = null;
+   //TODO - REMOVE limit lines for full file
+   Integer UPRN_limitLines = 500;
 
    /* lteRangeStartNumber
     * number to start range of lte in FEX (e.g one lte per region)
@@ -145,6 +146,10 @@ public class KuwaibaRequisitionFromGponDataTest {
       try {
 
          KuwaibaGponProvisoner kuwaibaGponProvisoner = new KuwaibaGponProvisoner();
+         
+         kuwaibaGponProvisoner.addTemplatesToProvisioningRequisition();
+
+         kuwaibaGponProvisoner.addStaticObjectsToProvisioningRequisition();
 
          br = new BufferedReader(new FileReader(csvFileName));
 
@@ -378,24 +383,31 @@ public class KuwaibaRequisitionFromGponDataTest {
             }
          }
 
-         kuwaibaGponProvisoner.addTemplatesToProvisioningRequisition();
-
-         kuwaibaGponProvisoner.addStaticObjectsToProvisioningRequisition();
 
          pr = kuwaibaGponProvisoner.finalise();
 
          ObjectMapper om = new ObjectMapper();
          om.enable(SerializationFeature.INDENT_OUTPUT);
+         
+         File outputDirectory = new File("./target/data-overlay");
+         System.out.println("output directory: " + outputDirectory.getAbsolutePath());
+         outputDirectory.mkdirs();
 
-         File file = new File("./target/data-overlay/kuwaibaProvisioningRequisition-data.json");
-         file.delete();
+         File provisioningFile = new File(outputDirectory, "kuwaibaProvisioningRequisition-data.json");
+         provisioningFile.delete();
 
-         File dir = file.getParentFile();
-         System.out.println("output directory: " + dir.getAbsolutePath());
-         dir.mkdirs();
+         om.writeValue(provisioningFile, pr);
+         System.out.println("Provisioning File saved to: " + provisioningFile.getAbsolutePath());
+         
+         File metadataTemplateFile = new File(outputDirectory, "kuwaibaProvisioningRequisition-metadata.json");
+         metadataTemplateFile.delete();
+         
+         KuwaibaProvisioningRequisition metadataTemplates = new KuwaibaProvisioningRequisition();
+         
+         metadataTemplates.setKuwaibaTemplateList(pr.getKuwaibaTemplateList());
 
-         om.writeValue(file, pr);
-         System.out.println("Filed saved to: " + dir.getAbsolutePath());
+         om.writeValue(metadataTemplateFile, metadataTemplates);
+         System.out.println("Metadata File saved to: " + metadataTemplateFile.getAbsolutePath());
 
          // check you can read the file
          // KuwaibaProvisioningRequisition pr2 = om.readValue(file, KuwaibaProvisioningRequisition.class);
@@ -487,14 +499,14 @@ public class KuwaibaRequisitionFromGponDataTest {
          pr.getKuwaibaClassList().add(ont);
 
          ont.setClassName(GponConstants.ONT_CLASS_NAME);
-         ont.setTemplateName(GponConstants.ONT_TEMPLATE_NAME); // house
+         ont.setTemplateName(GponConstants.ONT_TEMPLATE_NAME); 
          ont.setParentName(ontContainerName);
          ont.setParentClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
          ont.setName(ontLabelName);
          HashMap<String, String> ontAttributes = new HashMap<String, String>();
 
          ontAttributes.put("serialNumber", ontSerialNumber);
-         ontContainer.getAttributes().putAll(ontAttributes);
+         ont.getAttributes().putAll(ontAttributes);
 
          // onc
          KuwaibaClass onc = new KuwaibaClass();
@@ -514,8 +526,8 @@ public class KuwaibaRequisitionFromGponDataTest {
 
             secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
             secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
-            secondarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
-            secondarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+            secondarySplitterContainer.setParentName(ontStreet); // pole is in street
+            secondarySplitterContainer.setParentClassName(GponConstants.STREET_CONTAINER_CLASS_NAME);  
             secondarySplitterContainer.setName(secondarySplitterContainerName);
 
             HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
