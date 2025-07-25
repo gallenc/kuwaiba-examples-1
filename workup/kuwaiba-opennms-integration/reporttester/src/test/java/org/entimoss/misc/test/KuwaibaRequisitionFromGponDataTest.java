@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.ArrayList;
 
 import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
@@ -137,14 +139,13 @@ public class KuwaibaRequisitionFromGponDataTest {
       Map<String, List<Double>> poles = new HashMap<String, List<Double>>();
 
       BufferedReader br = null;
-      
+
       KuwaibaProvisioningRequisition pr = null;
 
-
       try {
-         
+
          KuwaibaGponProvisoner kuwaibaGponProvisoner = new KuwaibaGponProvisoner();
-         
+
          br = new BufferedReader(new FileReader(csvFileName));
 
          String line;
@@ -174,12 +175,14 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String uprn = csvColumns.get(UPRN_COLUMN).replaceFirst("'", "");
 
                   long uprnNo = Long.parseUnsignedLong(uprn);
-                  
+
                   // may not have 5 columns
                   String ontAddress = (csvColumns.size() > FULL_ADDRESS) ? csvColumns.get(FULL_ADDRESS) : "";
 
+                  String ontStreet = (csvColumns.size() > FULL_ADDRESS) ? csvColumns.get(this.ROAD_COLUMN) : "";
+
                   int poleNo = uprnCount / (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); // pole number
-                  int localPolePortNo = uprnCount % (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); 
+                  int localPolePortNo = uprnCount % (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO);
                   int poleSplitterNo = localPolePortNo / SECONDARY_SPLIT_RATIO; // splitter number on pole
                   int poleSplitterPortNo = localPolePortNo % SECONDARY_SPLIT_RATIO; // port on splitter
 
@@ -196,7 +199,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                   int oltNo = oltRangeStartNumber + cabinetNo;
 
                   LOG.debug("***********");
-                  LOG.debug("calculations:  uprnCount=" + uprnCount + ", poleNo=" + poleNo + ", poleSplitterNo=" + poleSplitterNo + ", poleSplitterPortNo=" + poleSplitterPortNo + 
+                  LOG.debug("calculations:  uprnCount=" + uprnCount + ", poleNo=" + poleNo + ", poleSplitterNo=" + poleSplitterNo + ", poleSplitterPortNo=" + poleSplitterPortNo +
                            ", cabinetNo=" + cabinetNo +
                            ", cabinetSplitterNo=" + cabinetSplitterNo + ", cabinetSplitterPortNo=" + cabinetSplitterPortNo + ", oltNo=" + oltNo + ", oltShelfNo=" + oltShelfNo +
                            ", oltPortNo=" + oltPortNo);
@@ -209,7 +212,6 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String buildingName = "UPRN_" + uprn;
                   String ontName = "ONT_" + uprn;
                   String cspName = "CSP_" + uprn;
-                  
 
                   // create pole
                   // parentLocationObjectPrefixValue_POLE_<NUMBER>   SO18BPK1_POLE_001
@@ -229,25 +231,24 @@ public class KuwaibaRequisitionFromGponDataTest {
                   // create fibre container pole to house 2 fibres
                   // BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
-                  String poleToBuildingContainerName = "BFU_1_2_"+buildingName+"_"+poleName;
+                  String poleToBuildingContainerName = "BFU_1_2_" + buildingName + "_" + poleName;
 
                   // create fibre container pole to cabinet 4x12 fibres
                   // BFU_4_12_SO18BPK1_CAB_001_SO18BPK1_POLE_001
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
-                  String cabinetToPoleContainerName = "BFU_4_12_"+cabinetName+"_"+poleName;
+                  String cabinetToPoleContainerName = "BFU_4_12_" + cabinetName + "_" + poleName;
 
                   // create olt in fex
                   // parentFexName_OLT_<NUMBER>   SOTN001_OLT_001
                   String oltName = parentFexName + "_OLT_" + oltNo;
-                  
+
                   // create fibre container fex to cabinet 4x12 fibres  (10 + 2 spare)
                   // BFU_4_12_SOTN001_SO18BPK1_CAB_001
                   // <CONTAINER_TYPE>_parentLocationObjectPrefixValue_CAB_<NUMBER>_parentLocationObjectPrefixValue_POLE_<NUMBER>
-                  String cabinetToFexContainerName = "BFU_4_12_"+parentFexName+"_"+cabinetName;
-                  
+                  String cabinetToFexContainerName = "BFU_4_12_" + parentFexName + "_" + cabinetName;
+
                   // create circuit ont to olt
 
-                  
                   Double latitude = Double.valueOf(csvColumns.get(LATITUDE_COLUMN));
                   Double longitude = Double.valueOf(csvColumns.get(LONGITUDE_COLUMN));
 
@@ -311,13 +312,13 @@ public class KuwaibaRequisitionFromGponDataTest {
                            "vendor: %s, ontName: %s, ontAssetNo: %s, ontSerialNo: %s, cspName: %s, buildingName: %s, poleName: %s, poleSplitterName: %s, cabinetName: %s, cabinetSplitterName: %s, lteName %s",
                            vendor, ontName, ontAssetNo, ontSerialNo, cspName, buildingName, poleName, poleSplitterName, cabinetName, cabinetSplitterName, oltName));
 
-                  // POPULATE OPENNMS REQUISITION
+                  // POPULATE REQUISITION
                   String ontLabelName = ontName;
                   String ontContainerName = buildingName;
                   Double ontContainerLatitude = latitude;
                   Double ontContainerLongitude = longitude;
                   String ontIpAddress = DUMMY_IP_ADDRESS;
-                  String ontComment = ontAddress ;
+                  String ontComment = ontAddress;
                   String ontSerialNumber = ontSerialNo;
                   String ontAssetNumber = ontAssetNo;
 
@@ -345,17 +346,15 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String oltComment = "";
                   String oltSerialNumber = "";
                   String oltAssetNumber = "";
-                  
+
                   // todo 
                   String oncLabelName = "ONC_200001919492";
                   String oltRackName = "SOTNOO1_RACK001";
 
-
-
-
-
                   kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
                            ontComment, ontSerialNumber, ontAssetNumber,
+
+                           ontAddress, ontStreet,
 
                            oncLabelName,
 
@@ -366,8 +365,6 @@ public class KuwaibaRequisitionFromGponDataTest {
                            primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber,
 
                            oltLabelName, oltRackName, oltFexLatitude, oltFexLongitude, oltIpAddress, oltComment, oltSerialNumber, oltAssetNumber);
-
-                  
 
                   uprnCount++;
 
@@ -380,13 +377,11 @@ public class KuwaibaRequisitionFromGponDataTest {
 
             }
          }
-         
-
 
          kuwaibaGponProvisoner.addTemplatesToProvisioningRequisition();
 
          kuwaibaGponProvisoner.addStaticObjectsToProvisioningRequisition();
-         
+
          pr = kuwaibaGponProvisoner.finalise();
 
          ObjectMapper om = new ObjectMapper();
@@ -403,8 +398,8 @@ public class KuwaibaRequisitionFromGponDataTest {
          System.out.println("Filed saved to: " + dir.getAbsolutePath());
 
          // check you can read the file
-         KuwaibaProvisioningRequisition pr2 = om.readValue(file, KuwaibaProvisioningRequisition.class);
-         System.out.println("read file: " + pr2);
+         // KuwaibaProvisioningRequisition pr2 = om.readValue(file, KuwaibaProvisioningRequisition.class);
+         // System.out.println("read file: " + pr2);
 
       } catch (Exception e) {
          LOG.error("problem running script ", e);
@@ -422,8 +417,15 @@ public class KuwaibaRequisitionFromGponDataTest {
 
    }
 
- 
    public class KuwaibaGponProvisoner {
+
+      // used to avoid duplicate definitions
+      Set<String> streetNames = new HashSet<String>();
+      Set<String> secondarySplitterContainerNames = new HashSet<String>(); //pole
+      Set<String> secondarySplitterNames = new HashSet<String>();
+      Set<String> primarySplitterContainerNames = new HashSet<String>();  // cabinet
+      Set<String> primarySplitterNames = new HashSet<String>();
+      Set<String> oltNames = new HashSet<String>();
 
       KuwaibaProvisioningRequisition pr = new KuwaibaProvisioningRequisition();
 
@@ -435,6 +437,8 @@ public class KuwaibaRequisitionFromGponDataTest {
                String ontLabelName, String ontContainerName, Double ontContainerLatitude, Double ontContainerLongitude, String ontIpAddress,
                String ontComment, String ontSerialNumber, String ontAssetNumber,
 
+               String ontAddress, String ontStreet,
+
                String oncLabelName,
 
                String secondarySplitterName, String secondarySplitterContainerName, Double secondarySplitterContainerLatitude, Double secondarySplitterContainerLongitude,
@@ -445,19 +449,37 @@ public class KuwaibaRequisitionFromGponDataTest {
 
                String oltLabelName, String oltFexName, Double oltFexLatitude, Double oltFexLongitude, String oltIpAddress, String oltComment, String oltSerialNumber, String oltAssetNumber) {
 
-         // House ont container
+         // Street container 
+         if (!streetNames.contains(ontStreet)) {
+            streetNames.add(ontStreet);
+
+            KuwaibaClass streetContainer = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(streetContainer);
+
+            streetContainer.setClassName(GponConstants.STREET_CONTAINER_CLASS_NAME);
+            streetContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
+            streetContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+            streetContainer.setName(ontStreet);
+
+            HashMap<String, String> streetContainerAttributes = new HashMap<String, String>();
+            streetContainer.getAttributes().putAll(streetContainerAttributes);
+         }
+
+         // only ever one house so no need to de-duplicate house, ont, onc
+         // House ont container 
          KuwaibaClass ontContainer = new KuwaibaClass();
          pr.getKuwaibaClassList().add(ontContainer);
 
          ontContainer.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
          ontContainer.setTemplateName(GponConstants.ONT_CONTAINER_TEMPLATE_NAME); // house
-         ontContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
-         ontContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+         ontContainer.setParentName(ontStreet);
+         ontContainer.setParentClassName(GponConstants.STREET_CONTAINER_CLASS_NAME);
          ontContainer.setName(ontContainerName);
 
          HashMap<String, String> ontContainerAttributes = new HashMap<String, String>();
          ontContainerAttributes.put("latitude", String.format("%.8f", ontContainerLatitude));
          ontContainerAttributes.put("longitude", String.format("%.8f", ontContainerLongitude));
+         ontContainerAttributes.put("address", ontAddress.replace(",", " "));
          ontContainer.getAttributes().putAll(ontContainerAttributes);
 
          // ont
@@ -484,70 +506,88 @@ public class KuwaibaRequisitionFromGponDataTest {
          onc.setParentClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
          onc.setName(oncLabelName); // TODO
 
-         // pole secondary splitter container
-         KuwaibaClass secondarySplitterContainer = new KuwaibaClass();
-         pr.getKuwaibaClassList().add(secondarySplitterContainer);
+         if (!secondarySplitterContainerNames.contains(secondarySplitterContainerName)) {
+            secondarySplitterContainerNames.add(secondarySplitterContainerName);
+            // pole secondary splitter container 
+            KuwaibaClass secondarySplitterContainer = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(secondarySplitterContainer);
 
-         secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
-         secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
-         secondarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
-         secondarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
-         secondarySplitterContainer.setName(secondarySplitterContainerName);
+            secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
+            secondarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
+            secondarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+            secondarySplitterContainer.setName(secondarySplitterContainerName);
 
-         HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
-         secondarySplitterContainerAttributes.put("latitude", String.format("%.8f", secondarySplitterContainerLatitude));
-         secondarySplitterContainerAttributes.put("longitude", String.format("%.8f", secondarySplitterContainerLongitude));
-         secondarySplitterContainer.getAttributes().putAll(secondarySplitterContainerAttributes);
+            HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
+            secondarySplitterContainerAttributes.put("latitude", String.format("%.8f", secondarySplitterContainerLatitude));
+            secondarySplitterContainerAttributes.put("longitude", String.format("%.8f", secondarySplitterContainerLongitude));
+            secondarySplitterContainer.getAttributes().putAll(secondarySplitterContainerAttributes);
+         }
 
-         // secondarySplitter 
-         KuwaibaClass secondarySplitter = new KuwaibaClass();
-         pr.getKuwaibaClassList().add(secondarySplitter);
+         if (!secondarySplitterNames.contains(secondarySplitterName)) {
+            secondarySplitterNames.add(secondarySplitterName);
+            // secondarySplitter 
+            KuwaibaClass secondarySplitter = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(secondarySplitter);
 
-         secondarySplitter.setClassName(GponConstants.SECONDARY_SPLITTER_CLASS_NAME);
-         secondarySplitter.setTemplateName(GponConstants.SECONDARY_SPLITTER_TEMPLATE_NAME); // house
-         secondarySplitter.setParentName(secondarySplitterContainerName);
-         secondarySplitter.setParentClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
-         secondarySplitter.setName(secondarySplitterName);
+            secondarySplitter.setClassName(GponConstants.SECONDARY_SPLITTER_CLASS_NAME);
+            secondarySplitter.setTemplateName(GponConstants.SECONDARY_SPLITTER_TEMPLATE_NAME); // house
+            secondarySplitter.setParentName(secondarySplitterContainerName);
+            secondarySplitter.setParentClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            secondarySplitter.setName(secondarySplitterName);
+         }
 
          // cab primarySplitter container
-         KuwaibaClass primarySplitterContainer = new KuwaibaClass();
-         pr.getKuwaibaClassList().add(primarySplitterContainer);
+         if (!primarySplitterContainerNames.contains(primarySplitterContainerName)) {
+            secondarySplitterNames.add(primarySplitterContainerName);
 
-         primarySplitterContainer.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
-         primarySplitterContainer.setTemplateName(GponConstants.PRIMARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
-         primarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
-         primarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
-         primarySplitterContainer.setName(primarySplitterContainerName);
+            KuwaibaClass primarySplitterContainer = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(primarySplitterContainer);
 
-         HashMap<String, String> primarySplitterContainerAttributes = new HashMap<String, String>();
-         primarySplitterContainerAttributes.put("latitude", String.format("%.8f", primarySplitterContainerLatitude));
-         primarySplitterContainerAttributes.put("longitude", String.format("%.8f", primarySplitterContainerLongitude));
-         primarySplitterContainer.getAttributes().putAll(primarySplitterContainerAttributes);
+            primarySplitterContainer.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
+            primarySplitterContainer.setTemplateName(GponConstants.PRIMARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
+            primarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
+            primarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+            primarySplitterContainer.setName(primarySplitterContainerName);
+
+            HashMap<String, String> primarySplitterContainerAttributes = new HashMap<String, String>();
+            primarySplitterContainerAttributes.put("latitude", String.format("%.8f", primarySplitterContainerLatitude));
+            primarySplitterContainerAttributes.put("longitude", String.format("%.8f", primarySplitterContainerLongitude));
+            primarySplitterContainer.getAttributes().putAll(primarySplitterContainerAttributes);
+         }
 
          // primarySplitter 
-         KuwaibaClass primarySplitter = new KuwaibaClass();
-         pr.getKuwaibaClassList().add(primarySplitter);
+         if (!primarySplitterNames.contains(primarySplitterName)) {
+            secondarySplitterNames.add(primarySplitterName);
+            
+            KuwaibaClass primarySplitter = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(primarySplitter);
 
-         primarySplitter.setClassName(GponConstants.PRIMARY_SPLITTER_CLASS_NAME);
-         primarySplitter.setTemplateName(GponConstants.PRIMARY_SPLITTER_TEMPLATE_NAME); // house
-         primarySplitter.setParentName(primarySplitterContainerName);
-         primarySplitter.setParentClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
-         primarySplitter.setName(primarySplitterName);
+            primarySplitter.setClassName(GponConstants.PRIMARY_SPLITTER_CLASS_NAME);
+            primarySplitter.setTemplateName(GponConstants.PRIMARY_SPLITTER_TEMPLATE_NAME); // house
+            primarySplitter.setParentName(primarySplitterContainerName);
+            primarySplitter.setParentClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
+            primarySplitter.setName(primarySplitterName);
+         }
 
          // olt 
-         KuwaibaClass olt = new KuwaibaClass();
-         pr.getKuwaibaClassList().add(olt);
+         if (!oltNames.contains(oltLabelName)) {
+            oltNames.add(oltLabelName);
+            
+            KuwaibaClass olt = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(olt);
 
-         olt.setClassName(GponConstants.OLT_CLASS_NAME);
-         olt.setTemplateName(GponConstants.OLT_TEMPLATE_NAME); // fex
+            olt.setClassName(GponConstants.OLT_CLASS_NAME);
+            olt.setTemplateName(GponConstants.OLT_TEMPLATE_NAME); // fex
 
-         olt.setParentName(GponConstants.OLT_CONTAINER_NAME);
-         olt.setParentClassName(GponConstants.OLT_CONTAINER_CLASS_NAME);
-         olt.setName(oltLabelName);
-         HashMap<String, String> oltAttributes = new HashMap<String, String>();
+            olt.setParentName(GponConstants.OLT_CONTAINER_NAME);
+            olt.setParentClassName(GponConstants.OLT_CONTAINER_CLASS_NAME);
+            olt.setName(oltLabelName);
+            HashMap<String, String> oltAttributes = new HashMap<String, String>();
 
-         oltAttributes.put("serialNumber", oltSerialNumber);
-         olt.getAttributes().putAll(oltAttributes);
+            oltAttributes.put("serialNumber", oltSerialNumber);
+            olt.getAttributes().putAll(oltAttributes);
+         }
 
       }
 
@@ -739,7 +779,7 @@ public class KuwaibaRequisitionFromGponDataTest {
             definition1.setTemplateElementName("POLE_2_16drop");
             definition1.setClassName("Pole");
             definition1.setSpecial(false);
-            
+
             // 2 x 8 way splitters in template
             for (int splitterNo = 1; splitterNo <= 2; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
@@ -755,7 +795,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
             }
 
-             kuwaibaTemplateDefinitionList.add(definition1);
+            kuwaibaTemplateDefinitionList.add(definition1);
 
          } catch (Exception e) {
             throw new IllegalArgumentException("problem creating definition");
@@ -901,6 +941,8 @@ public class KuwaibaRequisitionFromGponDataTest {
       public static final String PARENT_LOCATION_CLASS_NAME = "Neighborhood";
       public static final String PARENT_LOCATION_VALUE = "BitternePk";
 
+      public static final String STREET_CONTAINER_CLASS_NAME = "Neighborhood";
+
       public static final String ONT_CONTAINER_CLASS_NAME = "House";
       public static final String ONT_CONTAINER_TEMPLATE_NAME = "House_01";
 
@@ -932,5 +974,3 @@ public class KuwaibaRequisitionFromGponDataTest {
    }
 
 }
-
-

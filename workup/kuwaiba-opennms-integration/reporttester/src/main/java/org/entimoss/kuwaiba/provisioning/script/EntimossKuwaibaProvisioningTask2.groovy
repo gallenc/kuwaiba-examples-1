@@ -79,7 +79,7 @@ public class EntimossKuwaibaProvisioningTask2 {
        * file name and location of kuwaibaProvisioningRequisition
        * Defaults to
        */
-      String kuwaibaProvisioningRequisitionFileName = parameters.getOrDefault("kuwaibaProvisioningRequisitionFileName", "/external-data/kuwaibaProvisioningRequisition.json");
+      String kuwaibaProvisioningRequisitionFileName = parameters.getOrDefault("kuwaibaProvisioningRequisitionFileName", "/external-data/kuwaibaProvisioningRequisition-data.json");
 
       try {
 
