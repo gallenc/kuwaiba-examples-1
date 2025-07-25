@@ -699,6 +699,8 @@ public class EntimossKuwaibaProvisioningTask2 {
    
       private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
       
+      private List<KuwaibaWireContainerConnection> kuwaibaWireContainerConnectionList = new ArrayList<KuwaibaWireContainerConnection>();
+      
       public KuwaibaProvisioningRequisition() {
          super();
       }
@@ -719,9 +721,18 @@ public class EntimossKuwaibaProvisioningTask2 {
          this.kuwaibaClassList = kuwaibaClassList;
       }
    
+      public List<KuwaibaWireContainerConnection> getKuwaibaWireContainerConnectionList() {
+         return kuwaibaWireContainerConnectionList;
+      }
+
+      public void setKuwaibaWireContainerConnectionList(List<KuwaibaWireContainerConnection> kuwaibaWireContainerConnectionList) {
+         this.kuwaibaWireContainerConnectionList = kuwaibaWireContainerConnectionList;
+      }
+
       @Override
       public String toString() {
-         return "ProvisioningRecord [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + kuwaibaClassList + "]";
+         return "KuwaibaProvisioningRequisition [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + 
+                 kuwaibaClassList + ", kuwaibaWireContainerConnectionList=" + kuwaibaWireContainerConnectionList + "]";
       }
    
       
@@ -813,6 +824,49 @@ public class EntimossKuwaibaProvisioningTask2 {
                   templateFunctionAttributes + "]";
       }
 
+   }
+
+   public static class KuwaibaWireContainerConnection {
+      
+      private KuwaibaClass connectionClass;
+      
+      private KuwaibaClass aEnd;
+      
+      private KuwaibaClass bEnd;
+
+      public KuwaibaWireContainerConnection() {
+         super();
+      }
+
+      public KuwaibaClass getConnectionClass() {
+         return connectionClass;
+      }
+
+      public void setConnectionClass(KuwaibaClass connectionClass) {
+         this.connectionClass = connectionClass;
+      }
+
+      public KuwaibaClass getaEnd() {
+         return aEnd;
+      }
+
+      public void setaEnd(KuwaibaClass aEnd) {
+         this.aEnd = aEnd;
+      }
+
+      public KuwaibaClass getbEnd() {
+         return bEnd;
+      }
+
+      public void setbEnd(KuwaibaClass bEnd) {
+         this.bEnd = bEnd;
+      }
+
+      @Override
+      public String toString() {
+         return "KuwaibaWireContainerConnection [connectionClass=" + connectionClass + ", aEnd=" + aEnd + ", bEnd=" + bEnd + "]";
+      }
+      
    }
 
 }

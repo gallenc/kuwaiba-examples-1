@@ -26,7 +26,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
       String ontLabelName = "ONT_200001919492";
       String ontContainerName = "UPRN_200001919492"; // BUILDING
 
-      Double ontContainerLatitude = 50.924450;
+      Double ontContainerLatitude = 50.924450;  
       Double ontContainerLongitude = -1.372045;
       String ontIpAddress = "254.0.0.1";
       String ontComment = "";
