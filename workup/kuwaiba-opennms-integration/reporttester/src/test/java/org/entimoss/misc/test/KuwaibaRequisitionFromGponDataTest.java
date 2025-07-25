@@ -80,9 +80,9 @@ public class KuwaibaRequisitionFromGponDataTest {
 
    String vendor = "NOKIA";
 
-   Double fexLatitude = Double.valueOf("50.9178581");
+   Double fexLatitude = Double.valueOf("-1.3762576");
 
-   Double fexLongitude = Double.valueOf("-1.3762576");
+   Double fexLongitude = Double.valueOf("50.9178581");
 
    /*
     * Foreign source name used in naming the file and also in parent foreign source references
