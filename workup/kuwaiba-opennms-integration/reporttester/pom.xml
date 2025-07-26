@@ -99,6 +99,22 @@
       <!-- <classifier>sources</classifier> -->
       <!-- <systemPath>${project.basedir}/lib/reports-2.1.1-sources.jar</systemPath> -->
       <!-- </dependency> -->
+      
+<!--       <dependency> -->
+<!--          <groupId>org.neotropic.kuwaiba</groupId> -->
+<!--          <artifactId>webclient</artifactId> -->
+<!--          <version>2.1.1</version> -->
+<!--          <scope>system</scope> -->
+<!--          <systemPath>${project.basedir}/lib/webclient-2.1.1.jar</systemPath> -->
+<!--       </dependency> -->
+
+      <dependency>
+         <groupId>org.neotropic.kuwaiba</groupId>
+         <artifactId>physical-connections</artifactId>
+         <version>2.1.1</version>
+<!--     <scope>system</scope> -->
+<!--     <systemPath>${project.basedir}/lib/physical-connections-2.1.1.jar</systemPath> -->
+      </dependency>
 
       <!-- for json binding -->
       <dependency>

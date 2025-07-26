@@ -1,6 +1,7 @@
 package org.entimoss.kuwaiba.provisioning.script;
 
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neotropic.kuwaiba.core.apis.persistence.application.ActivityLogEntry;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TemplateObject;
@@ -11,6 +12,7 @@ import org.neotropic.kuwaiba.core.apis.persistence.exceptions.InvalidArgumentExc
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.InventoryException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.MetadataObjectNotFoundException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.OperationNotPermittedException;
+import org.neotropic.kuwaiba.core.apis.persistence.metadata.MetadataEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +44,7 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
  */
 // note use COMMIT ON EXECUTE
 // uncomment in groovy script
-EntimossKuwaibaProvisioningTask2 kuwaibaImport = new EntimossKuwaibaProvisioningTask2(bem, aem, scriptParameters, connectionHandler);
+EntimossKuwaibaProvisioningTask2 kuwaibaImport = new EntimossKuwaibaProvisioningTask2(bem, aem, mem, scriptParameters, connectionHandler);
 return kuwaibaImport.runTask();
 
 public class EntimossKuwaibaProvisioningTask2 {
@@ -50,6 +52,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
+   MetadataEntityManager mem = null; // injected in groovy
    Map<String, String> parameters = null; // injected in groovy
    GraphDatabaseService connectionHandler = null; //injected in groovy
 
@@ -58,10 +61,11 @@ public class EntimossKuwaibaProvisioningTask2 {
    int kuwaibaClassesExisting = 0;
    int kuwaibaClassesNew = 0;
    
-   public EntimossKuwaibaProvisioningTask2(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> scriptParameters,GraphDatabaseService connectionHandler) {
+   public EntimossKuwaibaProvisioningTask2(BusinessEntityManager bem, ApplicationEntityManager aem, MetadataEntityManager mem, Map<String, String> scriptParameters, GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
       this.aem = aem;
+      this.mem = mem;
       this.parameters = (scriptParameters == null) ? new HashMap<String, String>() : scriptParameters;
       this.connectionHandler = connectionHandler;
 
@@ -122,6 +126,65 @@ public class EntimossKuwaibaProvisioningTask2 {
          LOG.info("Templates new: " + kuwaibaTemplatesExisting + " existing: " + kuwaibaTemplatesNew +
                   " Classes: new: " + kuwaibaClassesExisting + " existing: " + kuwaibaClassesNew);
 
+         // create the connection manager
+         PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy( aem, bem,  mem);
+         // create new connections
+         for ( KuwaibaWireContainerConnection kuwaibaConnection : kuwaibaProvisioningRequisition.getKuwaibaWireContainerConnectionList()) {
+            LOG.info("creating connection from: " + kuwaibaConnection);
+            
+            String aObjectClass = kuwaibaConnection.getaEnd().getClassName();
+            String aObjectName = kuwaibaConnection.getaEnd().getName();
+
+            String bObjectClass = kuwaibaConnection.getbEnd().getClassName();
+            String bObjectName = kuwaibaConnection.getbEnd().getName();
+
+            // check if a and and b objects exist
+            BusinessObject aObject = null;
+            BusinessObject bObject = null;
+            try {
+               // see if there is an object with the same name
+               List<BusinessObject> foundObjects = bem.getObjectsWithFilter(aObjectClass, Constants.PROPERTY_NAME, aObjectName);
+               if (!foundObjects.isEmpty()) {
+                  aObject = foundObjects.get(0);
+               }
+               foundObjects = bem.getObjectsWithFilter(bObjectClass, Constants.PROPERTY_NAME, bObjectName);
+               if (!foundObjects.isEmpty()) {
+                  bObject = foundObjects.get(0);
+               }
+            } catch (Exception ex) {
+               LOG.error("problem finding a and b end objects:", ex);
+            }
+            if (aObject == null || bObject == null)
+               throw new IllegalArgumentException("ends of connection cannot be null: aObject=" + aObject + "  bObject=" + bObject);
+
+            String aObjectId = aObject.getId();
+            String bObjectId = bObject.getId();
+            String name = kuwaibaConnection.getConnectionClass().getName();
+            String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
+            String connectionTemplateName = kuwaibaConnection.getConnectionClass().getTemplateName();
+
+            // find template if exists
+            String templateId = null;
+            if (connectionTemplateName != null && !connectionTemplateName.isEmpty()) {
+               List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(connectionClass);
+               for (TemplateObjectLight tmplate : foundTemplates) {
+                  if (connectionTemplateName.equals(tmplate.getName())) {
+                     templateId = tmplate.getId();
+                     LOG.info("creating connection " + connectionClass + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
+                     break;
+         }
+               }
+            }
+
+            String userName = "admin";
+
+            LOG.info("creating connection name " + name + " connectionClass" + connectionClass + " template" +
+                     templateId + " to end objects aObject=" + businessObjectToString(aObject) + "bObject=" + businessObjectToString(bObject));
+         
+            physicalConnectionService.createPhysicalConnection(aObjectClass, aObjectId, bObjectClass, bObjectId, name, connectionClass, templateId, userName);
+
+         }
+
       } catch (Exception ex) {
          LOG.error("problem running task",ex);
          taskResult.getMessages().add(TaskResult.createErrorMessage(
@@ -139,7 +202,8 @@ public class EntimossKuwaibaProvisioningTask2 {
       return taskResult;
    }
 
-   /**
+
+ /**
     * creates new object with parent if object doesn't exist
     * return BusinessObject of existing object or new object if does already exist
     * @param createObjectClassName
@@ -608,6 +672,121 @@ public class EntimossKuwaibaProvisioningTask2 {
    }
 
    
+   // TODO 
+   // this is a clone of methods in the internal PhysicalConnectionsService because it is not accesible from a script
+   public static class PhysicalConnectionsServiceProxy  {
+      
+      private ApplicationEntityManager aem;
+
+      private BusinessEntityManager bem;
+
+      private MetadataEntityManager mem;
+
+      public PhysicalConnectionsServiceProxy(ApplicationEntityManager aem, BusinessEntityManager bem, MetadataEntityManager mem) {
+         super();
+         this.aem = aem;
+         this.bem = bem;
+         this.mem = mem;
+      }
+      
+      /**
+       * A side in a physical connection.
+       */
+      public static String RELATIONSHIP_ENDPOINTA = "endpointA"; //NOI18N
+      /**
+       * B side in a physical connection.
+       */
+      public static String RELATIONSHIP_ENDPOINTB = "endpointB"; //NOI18N
+
+
+      /**
+       * Creates a physical connection.
+       * @param aObjectClass The class name of the first object to related.
+       * @param aObjectId The id of the first object to related.
+       * @param bObjectClass The class name of the second object to related.
+       * @param bObjectId The id of the first object to related.
+       * @param name The connection name.
+       * @param connectionClass The class name of the connection. Must be subclass of GenericPhysicalConnection.
+       * @param templateId Template id to be used to create the current object. 
+       * Use null as string or empty string to not use a template.
+       * @param userName The user name of the session.
+       * @return The id of the newly created physical connection.
+       * @throws IllegalStateException
+       * @throws OperationNotPermittedException
+       */
+      public String createPhysicalConnection(String aObjectClass, String aObjectId, 
+          String bObjectClass, String bObjectId, String name, String connectionClass,
+          String templateId, String userName) throws IllegalStateException, OperationNotPermittedException {
+         
+//          if (persistenceService.getState() == EXECUTION_STATE.STOPPED)
+//              throw new IllegalStateException(ts.getTranslatedString("module.general.messages.cant-reach-backend"));
+          
+          String newConnectionId = null;
+          try {
+              if (!mem.isSubclassOf(Constants.CLASS_GENERICPHYSICALCONNECTION, connectionClass)) //NOI18N
+                  throw new OperationNotPermittedException(connectionClass+" is not a subclass of "+ Constants.CLASS_GENERICPHYSICALCONNECTION); //NOI18N
+              
+              //The connection (either link or container, will be created in the closest common parent between the endpoints)
+              BusinessObjectLight commonParent = bem.getCommonParent(aObjectClass, aObjectId, bObjectClass, bObjectId);
+              
+              if (commonParent == null || commonParent.getName().equals(Constants.DUMMY_ROOT))
+                  throw new OperationNotPermittedException("no common parent for A and B side");
+              
+              boolean isLink = false;
+              
+              //Check if the endpoints are already connected, but only if the connection is a link (the endpoints are ports)
+              if (mem.isSubclassOf(Constants.CLASS_GENERICPHYSICALLINK, connectionClass)) { //NOI18N
+                  
+                  if (!mem.isSubclassOf(Constants.CLASS_GENERICPORT, aObjectClass) || !mem.isSubclassOf(Constants.CLASS_GENERICPORT, bObjectClass)) //NOI18N
+                      throw new OperationNotPermittedException(" a or b side ared not ports");
+                  
+                  if (!bem.getSpecialAttribute(aObjectClass, aObjectId, RELATIONSHIP_ENDPOINTA).isEmpty()) //NOI18N
+                      
+                      throw new OperationNotPermittedException("A endpoint  not connected :"+ bem.getObjectLight(aObjectClass, aObjectId));
+
+                  if (!bem.getSpecialAttribute(bObjectClass, bObjectId, RELATIONSHIP_ENDPOINTB).isEmpty()) //NOI18N
+                      throw new OperationNotPermittedException("B endpoint  not connected :"+  bem.getObjectLight(bObjectClass, bObjectId));
+                  
+                  isLink = true;
+              }
+
+              
+              HashMap<String, String> attributes = new HashMap<>();
+              if (name == null || name.isEmpty())
+                  throw new OperationNotPermittedException(" name is empty");
+              
+              attributes.put(Constants.PROPERTY_NAME, name);
+              
+              newConnectionId = bem.createSpecialObject(connectionClass, commonParent.getClassName(), commonParent.getId(), attributes, templateId);
+              
+              if (isLink) { //Check connector mappings only if it's a link
+                  aem.checkRelationshipByAttributeValueBusinessRules(connectionClass, newConnectionId, aObjectClass, aObjectId);
+                  aem.checkRelationshipByAttributeValueBusinessRules(connectionClass, newConnectionId, bObjectClass, bObjectId);
+              }
+              
+              bem.createSpecialRelationship(connectionClass, newConnectionId, aObjectClass, aObjectId, RELATIONSHIP_ENDPOINTA, true);
+              bem.createSpecialRelationship(connectionClass, newConnectionId, bObjectClass, bObjectId, RELATIONSHIP_ENDPOINTB, true);
+              
+              aem.createGeneralActivityLogEntry(userName, 
+                      ActivityLogEntry.ACTIVITY_TYPE_CREATE_INVENTORY_OBJECT, String.format("%s [%s] (%s)", name, connectionClass, newConnectionId));
+              
+              return newConnectionId;
+          } catch (InventoryException e) {
+              //If the new connection was successfully created, but there's a problem creating the relationships,
+              //delete the connection and throw an exception
+              if (newConnectionId != null) {
+                  try {
+                      bem.deleteObject(connectionClass, newConnectionId, true);
+                  } catch (InventoryException ex) {
+                  }
+              }
+              throw new OperationNotPermittedException(e.getMessage());
+          }
+      }
+
+      
+   }
+
    /*
     * These classes could be in separate java classes if not in a groovy script
     */

@@ -11,6 +11,7 @@ import java.util.List;
 import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
 import org.entimoss.kuwaiba.provisioning.KuwaibaProvisioningRequisition;
 import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
+import org.entimoss.kuwaiba.provisioning.KuwaibaWireContainerConnection;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.exc.StreamWriteException;
@@ -26,7 +27,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
       String ontLabelName = "ONT_200001919492";
       String ontContainerName = "UPRN_200001919492"; // BUILDING
 
-      Double ontContainerLatitude = 50.924450;  
+      Double ontContainerLatitude = 50.924450;
       Double ontContainerLongitude = -1.372045;
       String ontIpAddress = "254.0.0.1";
       String ontComment = "";
@@ -330,7 +331,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
             pr.getKuwaibaClassList().add(secondarySplitterContainer);
 
             secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
-            secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
+            secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME);
             secondarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
             secondarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
             secondarySplitterContainer.setName("SO18BPK1_POLE_001");
@@ -345,6 +346,36 @@ public class TestKuwaibaProvisioningRequisitionJson {
             e.printStackTrace();
          }
 
+         // Add Static connections 
+         
+         // pole to house
+         // block to isolate repeat variables
+         try {
+            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+            pr.getKuwaibaWireContainerConnectionList().add(connection1);
+
+            // pole
+            KuwaibaClass aEnd = new KuwaibaClass();
+            aEnd.setName("SO18BPK1_POLE_001");
+            aEnd.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setaEnd(aEnd);
+
+            //house
+            KuwaibaClass bEnd = new KuwaibaClass();
+            bEnd.setName("UPRN_200001919492");
+            bEnd.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
+            connection1.setbEnd(bEnd);
+
+            KuwaibaClass connectionClass = new KuwaibaClass();
+            connectionClass.setName("BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492");
+            connectionClass.setClassName("WireContainer");
+            connectionClass.setTemplateName("BFU_1_2");
+            connection1.setConnectionClass(connectionClass);
+
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         
       }
 
       public void addTemplatesToProvisioningRequisition() {
@@ -419,7 +450,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
             definition1.setTemplateElementName("POLE_2_16drop");
             definition1.setClassName("Pole");
             definition1.setSpecial(false);
-            
+
             // 2 x 8 way splitters in template
             for (int splitterNo = 1; splitterNo <= 2; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
@@ -435,7 +466,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
                definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
             }
 
-             kuwaibaTemplateDefinitionList.add(definition1);
+            kuwaibaTemplateDefinitionList.add(definition1);
 
          } catch (Exception e) {
             throw new IllegalArgumentException("problem creating definition");

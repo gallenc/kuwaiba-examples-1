@@ -3141,5 +3141,34 @@
     "attributes" : {
       "serialNumber" : ""
     }
+  } ],
+  "kuwaibaWireContainerConnectionList" : [ {
+    "connectionClass" : {
+      "className" : "WireContainer",
+      "templateName" : "BFU_1_2",
+      "name" : "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492",
+      "special" : false,
+      "parentClassName" : null,
+      "parentName" : null,
+      "attributes" : { }
+    },
+    "aEnd" : {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_001",
+      "special" : false,
+      "parentClassName" : null,
+      "parentName" : null,
+      "attributes" : { }
+    },
+    "bEnd" : {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_200001919492",
+      "special" : false,
+      "parentClassName" : null,
+      "parentName" : null,
+      "attributes" : { }
+    }
   } ]
 }
