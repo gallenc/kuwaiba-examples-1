@@ -88,7 +88,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
       ObjectMapper om = new ObjectMapper();
       om.enable(SerializationFeature.INDENT_OUTPUT);
 
-      File file = new File("./target/data-overlay/kuwaibaProvisioningRequisition.json");
+      File file = new File("./target/external-data/kuwaibaProvisioningRequisition.json");
       file.delete();
 
       File dir = file.getParentFile();
@@ -420,7 +420,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
             // CSP
             KuwaibaTemplateDefinition childDefinition2 = new KuwaibaTemplateDefinition();
-            childDefinition2.setTemplateElementName("CSP_BFU_1_2_01");
+            childDefinition2.setTemplateElementName(GponConstants.ONC_TEMPLATE_NAME); // "CSP_BFU_1_2_01"
             childDefinition2.setClassName("SpliceBox");
             childDefinition2.setSpecial(false);
             // build ports using function
@@ -454,7 +454,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
             // 2 x 8 way splitters in template
             for (int splitterNo = 1; splitterNo <= 2; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("SPL16_" + String.format("%02d", splitterNo));
+               childDefinition1.setTemplateElementName("SPL16_" + String.format("%03d", splitterNo));
                childDefinition1.setClassName("FiberSplitter");
                childDefinition1.setSpecial(false);
                // build ports using function
@@ -490,7 +490,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
             // 10 splitters in template
             for (int splitterNo = 1; splitterNo <= 10; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("SPL8_" + String.format("%02d", splitterNo));
+               childDefinition1.setTemplateElementName("SPL8_" + String.format("%03d", splitterNo));
                childDefinition1.setClassName("FiberSplitter");
                childDefinition1.setSpecial(false);
                // build ports using function
@@ -523,20 +523,20 @@ public class TestKuwaibaProvisioningRequisitionJson {
             // 10 OLT in rack
             for (int oltNo = 1; oltNo <= 10; oltNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("OLT_NOKIA_01_" + String.format("%02d", oltNo));
+               childDefinition1.setTemplateElementName("OLT_NOKIA_01_" + String.format("%03d", oltNo));
                childDefinition1.setClassName("OpticalLineTerminal");
                childDefinition1.setSpecial(false);
 
                for (int card = 1; card <= 2; card++) {
                   KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
-                  childDefinition1_1.setTemplateElementName("card-" + String.format("%02d", card));
+                  childDefinition1_1.setTemplateElementName("card-" + String.format("%03d", card));
                   childDefinition1_1.setClassName("OLTBoard");
                   childDefinition1_1.setSpecial(false);
                   childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
 
                   for (int opticalPort = 1; opticalPort <= 16; opticalPort++) {
                      KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
-                     childDefinition1_2.setTemplateElementName("IN-" + String.format("%02d", opticalPort));
+                     childDefinition1_2.setTemplateElementName("IN-" + String.format("%03d", opticalPort));
                      childDefinition1_2.setClassName("OpticalPort");
                      childDefinition1_2.setSpecial(false);
                      childDefinition1_1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);

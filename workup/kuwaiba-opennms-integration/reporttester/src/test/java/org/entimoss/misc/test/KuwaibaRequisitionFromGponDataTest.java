@@ -99,7 +99,7 @@ public class KuwaibaRequisitionFromGponDataTest {
     * set to number of lines to read or null if read to end.
     */
    //TODO - REMOVE limit lines for full file
-   Integer UPRN_limitLines = 500;
+   Integer UPRN_limitLines = 5;
 
    /* lteRangeStartNumber
     * number to start range of lte in FEX (e.g one lte per region)
@@ -353,8 +353,8 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String oltAssetNumber = "";
 
                   // todo 
-                  String oncLabelName = "ONC_200001919492";
-                  String oltRackName = "SOTNOO1_RACK001";
+                  String oncLabelName = cspName;
+                  String oltRackName = "SOTNOO1_RACK001";  //TODO
 
                   kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
                            ontComment, ontSerialNumber, ontAssetNumber,
@@ -389,7 +389,7 @@ public class KuwaibaRequisitionFromGponDataTest {
          ObjectMapper om = new ObjectMapper();
          om.enable(SerializationFeature.INDENT_OUTPUT);
          
-         File outputDirectory = new File("./target/data-overlay");
+         File outputDirectory = new File("./target/external-data");
          System.out.println("output directory: " + outputDirectory.getAbsolutePath());
          outputDirectory.mkdirs();
 
@@ -605,7 +605,7 @@ public class KuwaibaRequisitionFromGponDataTest {
 
       public void addStaticObjectsToProvisioningRequisition() {
 
-         // create southampton if doesn't exist
+         // create Southampton if doesn't exist
          // block to isolate repeat variables
          try {
             KuwaibaClass kuwaibaClass1 = new KuwaibaClass();
@@ -674,48 +674,48 @@ public class KuwaibaRequisitionFromGponDataTest {
          // TODO REMOVE TEST OBJECTS - as will be created from data
          // House ont container
          // block to isolate repeat variables
-         try {
-            KuwaibaClass ontContainer = new KuwaibaClass();
-            pr.getKuwaibaClassList().add(ontContainer);
-
-            ontContainer.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
-            ontContainer.setTemplateName(GponConstants.ONT_CONTAINER_TEMPLATE_NAME); // House_01
-            ontContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
-            ontContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
-            ontContainer.setName("UPRN_200001919492");
-
-            HashMap<String, String> ontContainerAttributes = new HashMap<String, String>();
-            // BURNETT CLOSE
-            ontContainerAttributes.put("latitude", String.format("%.8f", -1.371881206));
-            ontContainerAttributes.put("longitude", String.format("%.8f", 50.92471325));
-            ontContainer.getAttributes().putAll(ontContainerAttributes);
-
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-
-         // pole POLE_2_16drop
-         // block to isolate repeat variables
-         try {
-            // pole secondary splitter container
-            KuwaibaClass secondarySplitterContainer = new KuwaibaClass();
-            pr.getKuwaibaClassList().add(secondarySplitterContainer);
-
-            secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
-            secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
-            secondarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
-            secondarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
-            secondarySplitterContainer.setName("SO18BPK1_POLE_001");
-
-            HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
-            // pole 50.92451031284738, -1.371651746700767
-            secondarySplitterContainerAttributes.put("latitude", String.format("%.8f", -1.371651746700767));
-            secondarySplitterContainerAttributes.put("longitude", String.format("%.8f", 50.92451031284738));
-            secondarySplitterContainer.getAttributes().putAll(secondarySplitterContainerAttributes);
-
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
+//         try {
+//            KuwaibaClass ontContainer = new KuwaibaClass();
+//            pr.getKuwaibaClassList().add(ontContainer);
+//
+//            ontContainer.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
+//            ontContainer.setTemplateName(GponConstants.ONT_CONTAINER_TEMPLATE_NAME); // House_01
+//            ontContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
+//            ontContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+//            ontContainer.setName("UPRN_200001919492");
+//
+//            HashMap<String, String> ontContainerAttributes = new HashMap<String, String>();
+//            // BURNETT CLOSE
+//            ontContainerAttributes.put("latitude", String.format("%.8f", -1.371881206));
+//            ontContainerAttributes.put("longitude", String.format("%.8f", 50.92471325));
+//            ontContainer.getAttributes().putAll(ontContainerAttributes);
+//
+//         } catch (Exception e) {
+//            e.printStackTrace();
+//         }
+//
+//         // pole POLE_2_16drop
+//         // block to isolate repeat variables
+//         try {
+//            // pole secondary splitter container
+//            KuwaibaClass secondarySplitterContainer = new KuwaibaClass();
+//            pr.getKuwaibaClassList().add(secondarySplitterContainer);
+//
+//            secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+//            secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
+//            secondarySplitterContainer.setParentName(GponConstants.PARENT_LOCATION_VALUE); // bitterne park
+//            secondarySplitterContainer.setParentClassName(GponConstants.PARENT_LOCATION_CLASS_NAME);
+//            secondarySplitterContainer.setName("SO18BPK1_POLE_001");
+//
+//            HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
+//            // pole 50.92451031284738, -1.371651746700767
+//            secondarySplitterContainerAttributes.put("latitude", String.format("%.8f", -1.371651746700767));
+//            secondarySplitterContainerAttributes.put("longitude", String.format("%.8f", 50.92451031284738));
+//            secondarySplitterContainer.getAttributes().putAll(secondarySplitterContainerAttributes);
+//
+//         } catch (Exception e) {
+//            e.printStackTrace();
+//         }
 
       }
 
@@ -795,7 +795,7 @@ public class KuwaibaRequisitionFromGponDataTest {
             // 2 x 8 way splitters in template
             for (int splitterNo = 1; splitterNo <= 2; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("SPL16_" + String.format("%02d", splitterNo));
+               childDefinition1.setTemplateElementName("SPL16_" + String.format("%03d", splitterNo));
                childDefinition1.setClassName("FiberSplitter");
                childDefinition1.setSpecial(false);
                // build ports using function
@@ -831,7 +831,7 @@ public class KuwaibaRequisitionFromGponDataTest {
             // 10 splitters in template
             for (int splitterNo = 1; splitterNo <= 10; splitterNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("SPL8_" + String.format("%02d", splitterNo));
+               childDefinition1.setTemplateElementName("SPL8_" + String.format("%03d", splitterNo));
                childDefinition1.setClassName("FiberSplitter");
                childDefinition1.setSpecial(false);
                // build ports using function
@@ -864,20 +864,20 @@ public class KuwaibaRequisitionFromGponDataTest {
             // 10 OLT in rack
             for (int oltNo = 1; oltNo <= 10; oltNo++) {
                KuwaibaTemplateDefinition childDefinition1 = new KuwaibaTemplateDefinition();
-               childDefinition1.setTemplateElementName("OLT_NOKIA_01_" + String.format("%02d", oltNo));
+               childDefinition1.setTemplateElementName("OLT_NOKIA_01_" + String.format("%03d", oltNo));
                childDefinition1.setClassName("OpticalLineTerminal");
                childDefinition1.setSpecial(false);
 
                for (int card = 1; card <= 2; card++) {
                   KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
-                  childDefinition1_1.setTemplateElementName("card-" + String.format("%02d", card));
+                  childDefinition1_1.setTemplateElementName("card-" + String.format("%03d", card));
                   childDefinition1_1.setClassName("OLTBoard");
                   childDefinition1_1.setSpecial(false);
                   childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
 
                   for (int opticalPort = 1; opticalPort <= 16; opticalPort++) {
                      KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
-                     childDefinition1_2.setTemplateElementName("IN-" + String.format("%02d", opticalPort));
+                     childDefinition1_2.setTemplateElementName("IN-" + String.format("%03d", opticalPort));
                      childDefinition1_2.setClassName("OpticalPort");
                      childDefinition1_2.setSpecial(false);
                      childDefinition1_1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);

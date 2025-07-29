@@ -1,6 +1,7 @@
 package org.entimoss.kuwaiba.provisioning.script;
 
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neotropic.kuwaiba.core.apis.persistence.ChangeDescriptor;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ActivityLogEntry;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.TaskResult;
@@ -77,7 +78,7 @@ public class EntimossKuwaibaProvisioningTask2 {
       taskResult.getMessages().add(TaskResult.createInformationMessage(
                String.format("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters)));
 
-      LOG.info("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters);
+      LOG.info("STARTING RUNNING SCRIPT " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters);
 
       /*
        * file name and location of kuwaibaProvisioningRequisition
@@ -87,7 +88,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
       try {
 
-         // TODO file with multiple separate objects
+         // TODO very large file file with multiple separate objects
          File kuwaibaProvisioningFile = new File(kuwaibaProvisioningRequisitionFileName);
          if (!kuwaibaProvisioningFile.exists()) {
             throw new IllegalArgumentException("sctipt cannot find file:" + kuwaibaProvisioningFile);
@@ -102,61 +103,69 @@ public class EntimossKuwaibaProvisioningTask2 {
 
 
          //create new templates
+         LOG.info("STARTING CREATING TEMPLATES");
          createTemplates(kuwaibaProvisioningRequisition.getKuwaibaTemplateList());
+         LOG.info("FINISHED CREATING TEMPLATES");
 
          // create new objects
-         for (KuwaibaClass kuwaibaClass : kuwaibaProvisioningRequisition.getKuwaibaClassList()) {
-            LOG.info("creating kuwaibaClass: " + kuwaibaClass);
+         LOG.info("STARTING CREATING NEW OBJECT CLASSES");
+         createObjects(kuwaibaProvisioningRequisition.getKuwaibaClassList());
+         LOG.info("FINISHED CREATING NEW OBJECT CLASSES");
 
-            String createObjectClassName = kuwaibaClass.getClassName();
-            String createObjectName = kuwaibaClass.getName();
-            String parentObjectName = kuwaibaClass.getParentName();
-            String parentClassName = kuwaibaClass.getParentClassName();
-            String templateName = kuwaibaClass.getTemplateName();
-            HashMap<String, String> initialAttributes = kuwaibaClass.getAttributes();
+         // create new connection objects
+         LOG.info("STARTING CREATING CONNECTION OBJECTS");
+         createConnections(kuwaibaProvisioningRequisition.getKuwaibaWireContainerConnectionList());
+         LOG.info("FINISHED CREATING CONNECTION OBJECTS");
 
-            BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
-                      parentClassName, parentObjectName, templateName, initialAttributes);
+      } catch (Exception ex) {
+         LOG.error("problem running task", ex);
+         taskResult.getMessages().add(TaskResult.createErrorMessage(
+                  String.format("error running task " + ex)));
+      }
+      
+      String msg = "End of task Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " used existing templates: " + kuwaibaTemplatesExisting +
+               " newTemplates: "+ kuwaibaTemplatesNew +" existingClasses: "+ kuwaibaClassesExisting +" new Classes:"+ kuwaibaClassesNew;
 
-            LOG.info("created business object: " + businessObjectToString(businessObject));
+      taskResult.getMessages().add(TaskResult.createInformationMessage(msg));
 
-         }
+      LOG.info(msg);
 
+      return taskResult;
+   }
 
-         LOG.info("Templates new: " + kuwaibaTemplatesExisting + " existing: " + kuwaibaTemplatesNew +
-                  " Classes: new: " + kuwaibaClassesExisting + " existing: " + kuwaibaClassesNew);
+   public void createConnections(List<KuwaibaWireContainerConnection> containerConnectionList) {
+      // create the connection manager
+      PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem);
+      // create new connections
+      for (KuwaibaWireContainerConnection kuwaibaConnection : containerConnectionList) {
+         LOG.info("creating connection from: " + kuwaibaConnection);
 
-         // create the connection manager
-         PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy( aem, bem,  mem);
-         // create new connections
-         for ( KuwaibaWireContainerConnection kuwaibaConnection : kuwaibaProvisioningRequisition.getKuwaibaWireContainerConnectionList()) {
-            LOG.info("creating connection from: " + kuwaibaConnection);
-            
-            String aObjectClass = kuwaibaConnection.getaEnd().getClassName();
-            String aObjectName = kuwaibaConnection.getaEnd().getName();
+         String aObjectClass = kuwaibaConnection.getaEnd().getClassName();
+         String aObjectName = kuwaibaConnection.getaEnd().getName();
 
-            String bObjectClass = kuwaibaConnection.getbEnd().getClassName();
-            String bObjectName = kuwaibaConnection.getbEnd().getName();
+         String bObjectClass = kuwaibaConnection.getbEnd().getClassName();
+         String bObjectName = kuwaibaConnection.getbEnd().getName();
 
-            // check if a and and b objects exist
-            BusinessObject aObject = null;
-            BusinessObject bObject = null;
-            try {
-               // see if there is an object with the same name
-               List<BusinessObject> foundObjects = bem.getObjectsWithFilter(aObjectClass, Constants.PROPERTY_NAME, aObjectName);
-               if (!foundObjects.isEmpty()) {
-                  aObject = foundObjects.get(0);
-               }
-               foundObjects = bem.getObjectsWithFilter(bObjectClass, Constants.PROPERTY_NAME, bObjectName);
-               if (!foundObjects.isEmpty()) {
-                  bObject = foundObjects.get(0);
-               }
-            } catch (Exception ex) {
-               LOG.error("problem finding a and b end objects:", ex);
+         // check if a and and b objects exist
+         BusinessObject aObject = null;
+         BusinessObject bObject = null;
+         try {
+            // see if there is an object with the same name
+            List<BusinessObject> foundObjects = bem.getObjectsWithFilter(aObjectClass, Constants.PROPERTY_NAME, aObjectName);
+            if (!foundObjects.isEmpty()) {
+               aObject = foundObjects.get(0);
             }
-            if (aObject == null || bObject == null)
-               throw new IllegalArgumentException("ends of connection cannot be null: aObject=" + aObject + "  bObject=" + bObject);
+            foundObjects = bem.getObjectsWithFilter(bObjectClass, Constants.PROPERTY_NAME, bObjectName);
+            if (!foundObjects.isEmpty()) {
+               bObject = foundObjects.get(0);
+            }
+         } catch (Exception ex) {
+            LOG.error("problem finding a and b end objects:", ex);
+         }
+         if (aObject == null || bObject == null)
+            throw new IllegalArgumentException("ends of connection cannot be null: aObject=" + aObject + "  bObject=" + bObject);
 
+         try {
             String aObjectId = aObject.getId();
             String bObjectId = bObject.getId();
             String name = kuwaibaConnection.getConnectionClass().getName();
@@ -172,7 +181,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                      templateId = tmplate.getId();
                      LOG.info("creating connection " + connectionClass + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
                      break;
-         }
+                  }
                }
             }
 
@@ -180,28 +189,37 @@ public class EntimossKuwaibaProvisioningTask2 {
 
             LOG.info("creating connection name " + name + " connectionClass" + connectionClass + " template" +
                      templateId + " to end objects aObject=" + businessObjectToString(aObject) + "bObject=" + businessObjectToString(bObject));
-         
-            physicalConnectionService.createPhysicalConnection(aObjectClass, aObjectId, bObjectClass, bObjectId, name, connectionClass, templateId, userName);
 
+            physicalConnectionService.createPhysicalConnection(aObjectClass, aObjectId, bObjectClass, bObjectId, name, connectionClass, templateId, userName);
+         } catch (Exception ex) {
+            throw new IllegalArgumentException("problem creating physical connection:", ex);
          }
 
-      } catch (Exception ex) {
-         LOG.error("problem running task",ex);
-         taskResult.getMessages().add(TaskResult.createErrorMessage(
-                  String.format("error running task " + ex)));
       }
-
-      
-      String msg = "End of task Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " used existing templates: " + kuwaibaTemplatesExisting +
-               " newTemplates: "+ kuwaibaTemplatesNew +" existingClasses: "+ kuwaibaClassesExisting +" new Classes:"+ kuwaibaClassesNew;
-
-      taskResult.getMessages().add(TaskResult.createInformationMessage(msg));
-
-      LOG.info(msg);
-
-      return taskResult;
    }
 
+   public void createObjects(List<KuwaibaClass> kuwaibaClassList) {
+      for (KuwaibaClass kuwaibaClass : kuwaibaClassList) {
+         LOG.info("PROCESSING kuwaibaClass: " + kuwaibaClass);
+
+         String createObjectClassName = kuwaibaClass.getClassName();
+         String createObjectName = kuwaibaClass.getName();
+         String parentObjectName = kuwaibaClass.getParentName();
+         String parentClassName = kuwaibaClass.getParentClassName();
+         String templateName = kuwaibaClass.getTemplateName();
+         HashMap<String, String> initialAttributes = kuwaibaClass.getAttributes();
+
+         BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
+                  parentClassName, parentObjectName, templateName, initialAttributes);
+
+         LOG.info("FINISHED PROCESSING kuwaibaClass:"+ kuwaibaClass + " MATCHING business object: " + businessObjectToString(businessObject));
+
+      }
+
+      LOG.info("Templates new: " + kuwaibaTemplatesExisting + " existing: " + kuwaibaTemplatesNew +
+               " Classes: new: " + kuwaibaClassesExisting + " existing: " + kuwaibaClassesNew);
+
+   }
 
  /**
     * creates new object with parent if object doesn't exist
@@ -224,12 +242,12 @@ public class EntimossKuwaibaProvisioningTask2 {
          List<BusinessObject> foundObjects = bem.getObjectsWithFilter(createObjectClassName, Constants.PROPERTY_NAME, createObjectName);
          if (!foundObjects.isEmpty()) {
             createdObject = foundObjects.get(0);
-            LOG.info("createIfDoesntExist - object already exists " + businessObjectToString(createdObject));
+            LOG.info("createIfDoesntExist - OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
             kuwaibaClassesExisting++;
             return createdObject;
          }
       } catch (Exception ex) {
-         LOG.error("problem finding object:", ex);
+         throw new RuntimeException ("problem finding existing object:", ex);
       }
 
       // check if parent object exists
@@ -238,16 +256,19 @@ public class EntimossKuwaibaProvisioningTask2 {
          List<BusinessObject> foundObjects = bem.getObjectsWithFilter(parentClassName, Constants.PROPERTY_NAME, parentObjectName);
          if (!foundObjects.isEmpty()) {
             parentObject = foundObjects.get(0);
-            LOG.info("createIfDoesntExist - parentObject exists " + businessObjectToString(parentObject));
+            LOG.info("createIfDoesntExist - createIfDoesntExist - parentObject exists " + businessObjectToString(parentObject));
          }
       } catch (Exception ex) {
-         LOG.error("problem finding parent object:", ex);
+         throw new RuntimeException ("createIfDoesntExist - problem finding parent object:", ex);
       }
 
       if (parentObject == null)
          throw new IllegalArgumentException("parent object does not exist for createObjectClassName=" + createObjectClassName + "  createObjectName =" +
                   createObjectName + " parentObjectName=" + parentObjectName + " parentClassName=" + parentClassName);
 
+
+      // check if template exists if not null
+      
       TemplateObjectLight template = null;
       String templateId = null;
 
@@ -256,7 +277,6 @@ public class EntimossKuwaibaProvisioningTask2 {
       HashMap<String, String> newAttributes = (initialAttributes == null) ? new HashMap<String, String>() : new HashMap<String, String>(initialAttributes);
       newAttributes.put(Constants.PROPERTY_NAME, createObjectName);
 
-      // check if template exists if not null
       if (templateName != null && !templateName.isEmpty()) {
          try {
 
@@ -268,10 +288,12 @@ public class EntimossKuwaibaProvisioningTask2 {
                   existingChildId = child.getId();
                   createdObject = child;
                   
-                  LOG.info("matched templateName=" + templateName + " child object="+businessObjectToString(child) + " will be updated in parent "+
+                  LOG.info("createIfDoesntExist - matched templateName=" + templateName + " child object=" + businessObjectToString(child) + " will be updated in parent " +
                                businessObjectToString(parentObject));
                   
-                  bem.updateObject(child.getClassName(), existingChildId, newAttributes);
+                  ChangeDescriptor changeDescriptor = bem.updateObject(child.getClassName(), existingChildId, newAttributes);
+                  LOG.info("createIfDoesntExist - updated child object name ChangeDescriptor [getAffectedProperties()=" + changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
+                           changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() + ", getNotes()=" + changeDescriptor.getNotes() + "]");
                   
                   break;
                }
@@ -286,7 +308,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                if (templateName.equals(tmplate.getName())) {
                   template = tmplate;
                   templateId = template.getId();
-                  LOG.info("creating object " + template.getClassName() + " with template: " + template.getName() + " templateId: " + template.getId());
+                     LOG.info("createIfDoesntExist - creating object " + template.getClassName() + " with template: " + template.getName() + " templateId: " + template.getId());
                   break;
                }
             }
@@ -306,11 +328,30 @@ public class EntimossKuwaibaProvisioningTask2 {
             String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), newAttributes, templateId);
 
             // this is added because the created object takes the name of the template and not the name we want to give it.
-            bem.updateObject(createObjectClassName, createdObjectId, newAttributes);
+            ChangeDescriptor changeDescriptor = bem.updateObject(createObjectClassName, createdObjectId, newAttributes);
+            LOG.info("createIfDoesntExist - updated new object name  ChangeDescriptor [getAffectedProperties()=" + changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
+                     changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() + ", getNotes()=" + changeDescriptor.getNotes() + "]");
 
             createdObject = bem.getObject(createObjectClassName, createdObjectId);
 
-            LOG.info("createIfDoesntExist - created new object " + businessObjectToString(createdObject));
+            // TODO WORK AROUND changes splitter input port names WHICH ARE INCORRECTLY LABELED IN OpticalSplitter TEMPLATE
+            // CANNOT CHANGE TEMPLATE because transaction not closed
+            if (templateId != null && !templateId.isEmpty()) {
+
+               List<BusinessObject> opticalPorts = bem.getObjectsWithFilter("OpticalPort", "name", "001-IN");
+               for (BusinessObject port : opticalPorts) {
+                  //TODO isParent(String parentClass, String parentId, String childClass, String childId) - doesnt work - TRANSACTION IS NOT CLOSED
+                  List<BusinessObjectLight> portParents = bem.getParentsUntilFirstOfClass("OpticalPort", port.getId(), "OpticalSplitter");
+                  if (!portParents.isEmpty()) {
+                     LOG.warn("createIfDoesntExist - updating OpticalSplitter IN port " + port.getId() + " name from 001-IN to IN-001");
+                  HashMap<String, String> attributes = new HashMap<String, String>();
+                  attributes.put("name", "IN-001");
+                  bem.updateObject("OpticalPort", port.getId(), attributes);
+               }
+            }
+            }
+
+            LOG.info("createIfDoesntExist - FINISHED CREATING NEW OBJECT " + businessObjectToString(createdObject));
 
             kuwaibaClassesNew++;
          } catch (Exception e) {
@@ -450,7 +491,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             }
 
             if (templateId != null) {
-               LOG.info("template " + templateName + " already exists, will not create a new template with templateId=" + templateId);
+               LOG.info("TEMPLATE " + templateName + " ALREADY EXISTS, will not create a new template with templateId=" + templateId);
 
             } else {
                // if template doesn't exist
@@ -514,8 +555,12 @@ public class EntimossKuwaibaProvisioningTask2 {
             elementId = aem.createTemplateElement("FiberSplitter", templateElementParentClassName, templateElementParentId, nameOfTemplateElement);
          }
 
-         
+         // TODO MIRROR PORT FUNCTION CREATES IN PORT WITH WRONG NAME
+         // TODO - FIX TEMPLATE ENGINE - splitter must start with IN
          String templateElementNamePattern = "[multiple-mirror(1," + numberOfPorts + ")]";
+
+         // CANT USE UPDATE TEMPLATE BECAUSE getTemplateEement fails as does not close transaction
+         // updateTemplate updateTemplateElement(String templateElementClass, String templateElementId, String[] attributeNames, String[] attributeValues)
 
          List<String> childTemplateElementIds = Arrays
                   .asList(aem.createBulkTemplateElement("OpticalPort", "FiberSplitter", elementId, templateElementNamePattern));
@@ -661,19 +706,19 @@ public class EntimossKuwaibaProvisioningTask2 {
    // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {
       return (bo == null) ? "BusinessObject[ null ]"
-               : "BusinessObject[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
-                        bo.getClassDisplayName() + " getAttributes()=" + bo.getAttributes() + "]";
+               : "BusinessObject[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + " getAttributes()=" + bo.getAttributes() + "]";
    }
 
    String businessObjectToString(BusinessObjectLight bo) {
       return (bo == null) ? "BusinessObject[ null ]"
-               : "BusinessObjectLight[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
-                        bo.getClassDisplayName() + "]";
+               : "BusinessObjectLight[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + "]";
    }
 
    
    // TODO 
-   // this is a clone of methods in the internal PhysicalConnectionsService because it is not accesible from a script
+   // this is a clone of methods in the internal PhysicalConnectionsService because it is not accessible from a script
    public static class PhysicalConnectionsServiceProxy  {
       
       private ApplicationEntityManager aem;
