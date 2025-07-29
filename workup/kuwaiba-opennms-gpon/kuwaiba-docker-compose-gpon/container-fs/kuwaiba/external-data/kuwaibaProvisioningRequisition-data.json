@@ -3084,7 +3084,7 @@
   }, {
     "className" : "Pole",
     "templateName" : "POLE_2_16drop",
-    "name" : "SO18BPK1_POLE_0000",
+    "name" : "SO18BPK1_POLE_0001",
     "special" : false,
     "parentClassName" : "Neighborhood",
     "parentName" : "Appleton Road",
@@ -3095,15 +3095,15 @@
   }, {
     "className" : "FiberSplitter",
     "templateName" : "SPL16",
-    "name" : "SO18BPK1_POLE_0000_SPL16_0000",
+    "name" : "SO18BPK1_POLE_0001_SPL16_0001",
     "special" : false,
     "parentClassName" : "Pole",
-    "parentName" : "SO18BPK1_POLE_0000",
+    "parentName" : "SO18BPK1_POLE_0001",
     "attributes" : { }
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
-    "name" : "SO18BPK1_CAB_0000",
+    "name" : "SO18BPK1_CAB_0001",
     "special" : false,
     "parentClassName" : "Neighborhood",
     "parentName" : "BitternePk",
@@ -3114,10 +3114,10 @@
   }, {
     "className" : "FiberSplitter",
     "templateName" : "SPL8",
-    "name" : "SO18BPK1_CAB_0000_SPL8_0000",
+    "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
     "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0000",
+    "parentName" : "SO18BPK1_CAB_0001",
     "attributes" : { }
   }, {
     "className" : "OpticalLineTerminal",
@@ -3162,7 +3162,7 @@
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
-    "name" : "SO18BPK1_CAB_0000",
+    "name" : "SO18BPK1_CAB_0001",
     "special" : false,
     "parentClassName" : "Neighborhood",
     "parentName" : "BitternePk",
@@ -3173,10 +3173,10 @@
   }, {
     "className" : "FiberSplitter",
     "templateName" : "SPL8",
-    "name" : "SO18BPK1_CAB_0000_SPL8_0000",
+    "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
     "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0000",
+    "parentName" : "SO18BPK1_CAB_0001",
     "attributes" : { }
   }, {
     "className" : "House",
@@ -3211,7 +3211,7 @@
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
-    "name" : "SO18BPK1_CAB_0000",
+    "name" : "SO18BPK1_CAB_0001",
     "special" : false,
     "parentClassName" : "Neighborhood",
     "parentName" : "BitternePk",
@@ -3222,10 +3222,10 @@
   }, {
     "className" : "FiberSplitter",
     "templateName" : "SPL8",
-    "name" : "SO18BPK1_CAB_0000_SPL8_0000",
+    "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
     "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0000",
+    "parentName" : "SO18BPK1_CAB_0001",
     "attributes" : { }
   }, {
     "className" : "House",
@@ -3260,7 +3260,7 @@
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
-    "name" : "SO18BPK1_CAB_0000",
+    "name" : "SO18BPK1_CAB_0001",
     "special" : false,
     "parentClassName" : "Neighborhood",
     "parentName" : "BitternePk",
@@ -3271,10 +3271,10 @@
   }, {
     "className" : "FiberSplitter",
     "templateName" : "SPL8",
-    "name" : "SO18BPK1_CAB_0000_SPL8_0000",
+    "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
     "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0000",
+    "parentName" : "SO18BPK1_CAB_0001",
     "attributes" : { }
   }, {
     "className" : "House",
@@ -3309,7 +3309,7 @@
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
-    "name" : "SO18BPK1_CAB_0000",
+    "name" : "SO18BPK1_CAB_0001",
     "special" : false,
     "parentClassName" : "Neighborhood",
     "parentName" : "BitternePk",
@@ -3320,10 +3320,10 @@
   }, {
     "className" : "FiberSplitter",
     "templateName" : "SPL8",
-    "name" : "SO18BPK1_CAB_0000_SPL8_0000",
+    "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
     "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0000",
+    "parentName" : "SO18BPK1_CAB_0001",
     "attributes" : { }
   } ],
   "kuwaibaWireContainerConnectionList" : [ ]

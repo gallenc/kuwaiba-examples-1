@@ -220,18 +220,18 @@ public class KuwaibaRequisitionFromGponDataTest {
 
                   // create pole
                   // parentLocationObjectPrefixValue_POLE_<NUMBER>   SO18BPK1_POLE_0001
-                  String poleName = parentLocationObjectPrefixValue + "_POLE_" + String.format("%04d", poleNo);
+                  String poleName = parentLocationObjectPrefixValue + "_POLE_" + String.format("%04d", poleNo +1);
 
                   // create pole splitters 2 splitters per pole 1:16 
                   // parentLocationObjectPrefixValue_POLE_<NUMBER>_<SPTYPE>_<NUMBER>   SO18BPK1_POLE_0001_SPL16_0001
-                  String poleSplitterName = poleName + "_SPL16_" + String.format("%04d", poleSplitterNo);
+                  String poleSplitterName = poleName + "_SPL16_" + String.format("%04d", poleSplitterNo +1 );
 
                   // Cabinet parentLocationObjectPrefixValue_CAB_<NUMBER>   SO18BPK1_CAB_0001
-                  String cabinetName = parentLocationObjectPrefixValue + "_CAB_" + String.format("%04d", cabinetNo);
+                  String cabinetName = parentLocationObjectPrefixValue + "_CAB_" + String.format("%04d", cabinetNo +1);
 
                   // cabinet splitters 10 splitters per cabinet 1:8 
                   // parentLocationObjectPrefixValue_CAB_<NUMBER>_<SPTYPE>_<NUMBER>     SO18BPK1_CAB_0001_SPL8_0001
-                  String cabinetSplitterName = cabinetName + "_SPL8_" + String.format("%04d", cabinetSplitterNo);
+                  String cabinetSplitterName = cabinetName + "_SPL8_" + String.format("%04d", cabinetSplitterNo +1);
 
                   // create fibre container pole to house 2 fibres
                   // BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492
