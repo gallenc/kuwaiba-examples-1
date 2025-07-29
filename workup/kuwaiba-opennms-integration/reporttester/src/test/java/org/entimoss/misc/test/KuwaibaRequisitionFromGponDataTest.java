@@ -824,6 +824,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                childDefinition1.setClassName("OpticalLineTerminal");
                childDefinition1.setSpecial(false);
 
+               // 2 cards per olt
                for (int card = 1; card <= 2; card++) {
                   KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
                   childDefinition1_1.setTemplateElementName("card-" + String.format("%03d", card));
@@ -831,9 +832,10 @@ public class KuwaibaRequisitionFromGponDataTest {
                   childDefinition1_1.setSpecial(false);
                   childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_1);
 
+                  // 16 pon ports per card
                   for (int opticalPort = 1; opticalPort <= 16; opticalPort++) {
                      KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
-                     childDefinition1_2.setTemplateElementName("IN-" + String.format("%03d", opticalPort));
+                     childDefinition1_2.setTemplateElementName("PON-" + String.format("%03d", opticalPort));
                      childDefinition1_2.setClassName("OpticalPort");
                      childDefinition1_2.setSpecial(false);
                      childDefinition1_1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);
