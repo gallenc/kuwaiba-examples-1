@@ -157,7 +157,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             List<BusinessObject> foundObjects = bem.getObjectsWithFilter(connectionClass, Constants.PROPERTY_NAME, name);
             if (!foundObjects.isEmpty()) {
                BusinessObject createdObject = foundObjects.get(0);
-               LOG.info("createConnections - CONENECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
+               LOG.info("createConnections - CONNECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
                kuwaibaClassesExisting++;
                continue; // go to next connection
             }
