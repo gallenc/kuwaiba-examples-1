@@ -140,11 +140,29 @@ public class EntimossKuwaibaProvisioningTask2 {
       for (KuwaibaWireContainerConnection kuwaibaConnection : containerConnectionList) {
          LOG.info("creating connection from: " + kuwaibaConnection);
 
+         String name = kuwaibaConnection.getConnectionClass().getName();
+         String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
+         String connectionTemplateName = kuwaibaConnection.getConnectionClass().getTemplateName();
+         
          String aObjectClass = kuwaibaConnection.getaEnd().getClassName();
          String aObjectName = kuwaibaConnection.getaEnd().getName();
 
          String bObjectClass = kuwaibaConnection.getbEnd().getClassName();
          String bObjectName = kuwaibaConnection.getbEnd().getName();
+
+         // check if container already exists
+         try {
+            // see if there is an object with the same name
+            List<BusinessObject> foundObjects = bem.getObjectsWithFilter(connectionClass, Constants.PROPERTY_NAME, name);
+            if (!foundObjects.isEmpty()) {
+               BusinessObject createdObject = foundObjects.get(0);
+               LOG.info("createConnections - CONENECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
+               kuwaibaClassesExisting++;
+               continue; // go to next connection
+            }
+         } catch (Exception ex) {
+            throw new RuntimeException ("problem finding existing container:", ex);
+         }
 
          // check if a and and b objects exist
          BusinessObject aObject = null;
@@ -168,9 +186,6 @@ public class EntimossKuwaibaProvisioningTask2 {
          try {
             String aObjectId = aObject.getId();
             String bObjectId = bObject.getId();
-            String name = kuwaibaConnection.getConnectionClass().getName();
-            String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
-            String connectionTemplateName = kuwaibaConnection.getConnectionClass().getTemplateName();
 
             // find template if exists
             String templateId = null;
@@ -292,8 +307,10 @@ public class EntimossKuwaibaProvisioningTask2 {
                                businessObjectToString(parentObject));
                   
                   ChangeDescriptor changeDescriptor = bem.updateObject(child.getClassName(), existingChildId, newAttributes);
-                  LOG.info("createIfDoesntExist - updated child object name ChangeDescriptor [getAffectedProperties()=" + changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
-                           changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() + ", getNotes()=" + changeDescriptor.getNotes() + "]");
+                  LOG.info("createIfDoesntExist - updated child object name ChangeDescriptor [getAffectedProperties()=" +
+                           changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
+                           changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() +
+                           ", getNotes()=" + changeDescriptor.getNotes() + "]");
                   
                   break;
                }
@@ -383,8 +400,27 @@ public class EntimossKuwaibaProvisioningTask2 {
                } else {
                   clildId = aem.createTemplateElement(templateElement.getClassName(), elementParentClassName, elementParentId, templateElement.getTemplateElementName());
                }
-               LOG.warn("created child:" + templateElement + ", clildId=" + clildId + " template element for elementParentClassName=" +
+
+               // add attributes
+               //ChangeDescriptor updateTemplateElement(String templateElementClass, String templateElementId, String[] attributeNames, String[] attributeValues)
+               ArrayList<String> attributeNames = new ArrayList<String>();
+               ArrayList<String> attributeValues = new ArrayList<String>();
+               for (String key : templateElement.getTemplateAttributes().keySet()) {
+                  String value = templateElement.getTemplateAttributes().get(key);
+                  attributeNames.add(key);
+                  attributeValues.add(value);
+               }
+
+               LOG.warn("created template child:" + templateElement + ", clildId=" + clildId + " template element for elementParentClassName=" +
                         elementParentClassName + ", elementParentId=" + elementParentId);
+
+               ChangeDescriptor changeDescriptor = aem.updateTemplateElement(templateElement.getClassName(), clildId,
+                        (String[]) attributeNames.toArray(), (String[]) attributeValues.toArray());
+               LOG.info("added properties to child ChangeDescriptor [getAffectedProperties()=" +
+                        changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
+                        changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() +
+                        ", getNotes()=" + changeDescriptor.getNotes() + "]");
+
                templateElementsCreated++;
 
                if (templateElement.getChildKuwaibaTemplateDefinitions() != null && !templateElement.getChildKuwaibaTemplateDefinitions().isEmpty()) {
@@ -401,8 +437,10 @@ public class EntimossKuwaibaProvisioningTask2 {
 
                HashMap<String, String> functionAttributes = templateElement.getTemplateFunctionAttributes();
 
-               LOG.info("trying to create template elements from function=" + function + " with functionAttributes=" + functionAttributes + " className=" +
-                        templateElement.getClassName() + "  templateElementParentClassName=" + elementParentClassName + "  templateElementParentId=" + elementParentId);
+               LOG.info("trying to create template elements from function=" + function + " with functionAttributes=" +
+                        functionAttributes + " className=" +
+                        templateElement.getClassName() + "  templateElementParentClassName=" + elementParentClassName +
+                        "  templateElementParentId=" + elementParentId);
 
                templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(null, templateElement.getTemplateElementName(), elementParentClassName, elementParentId, function, functionAttributes);
 
@@ -505,6 +543,23 @@ public class EntimossKuwaibaProvisioningTask2 {
                   templateId = aem.createTemplate(className, templateName);
                   templateElementsCreated++;
                   LOG.info("template " + templateName + " Was created. New templateId=" + templateId);
+
+                  // add attributes
+                  //ChangeDescriptor updateTemplateElement(String templateElementClass, String templateElementId, String[] attributeNames, String[] attributeValues)
+                  ArrayList<String> attributeNames = new ArrayList<String>();
+                  ArrayList<String> attributeValues = new ArrayList<String>();
+                  for (String key : kuwaibaTemplateDefinition.getTemplateAttributes().keySet()) {
+                     String value = kuwaibaTemplateDefinition.getTemplateAttributes().get(key);
+                     attributeNames.add(key);
+                     attributeValues.add(value);
+                  }
+
+                  ChangeDescriptor changeDescriptor = aem.updateTemplateElement(kuwaibaTemplateDefinition.getClassName(), templateId,
+                           (String[]) attributeNames.toArray(), (String[]) attributeValues.toArray());
+                  LOG.info("added properties to template ChangeDescriptor [getAffectedProperties()=" +
+                           changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
+                           changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() +
+                           ", getNotes()=" + changeDescriptor.getNotes() + "]");
 
                   if (childKuwaibaTemplateElements != null && !childKuwaibaTemplateElements.isEmpty()) {
                      // recursively create child templates
@@ -980,6 +1035,8 @@ public class EntimossKuwaibaProvisioningTask2 {
       
       private HashMap<String,String> templateFunctionAttributes = new HashMap<String,String>();
    
+      private HashMap<String, String> templateAttributes = new HashMap<String, String>();
+
       public KuwaibaTemplateDefinition() {
          super();
       }
@@ -1040,12 +1097,20 @@ public class EntimossKuwaibaProvisioningTask2 {
          this.special = special;
       }
    
+      public HashMap<String, String> getTemplateAttributes() {
+         return templateAttributes;
+      }
+
+      public void setTemplateAttributes(HashMap<String, String> templateAttributes) {
+         this.templateAttributes = templateAttributes;
+      }
+
       @Override
       public String toString() {
          return "KuwaibaTemplateDefinition [templateName=" + templateName + ", templateElementName=" + templateElementName +
                   ", className=" + className + ", templateFunction=" + templateFunction + ", special=" + special +
-                  ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" +
-                  templateFunctionAttributes + "]";
+                  ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions +
+                  ", templateFunctionAttributes=" + templateFunctionAttributes + ", templateAttributes=" + templateAttributes + "]";
       }
 
    }

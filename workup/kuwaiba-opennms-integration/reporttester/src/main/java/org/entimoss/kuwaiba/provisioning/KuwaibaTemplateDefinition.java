@@ -19,6 +19,8 @@ public class KuwaibaTemplateDefinition {
    private List<KuwaibaTemplateDefinition> childKuwaibaTemplateDefinitions = new ArrayList<KuwaibaTemplateDefinition>();
    
    private HashMap<String,String> templateFunctionAttributes = new HashMap<String,String>();
+   
+   private HashMap<String, String> templateAttributes = new HashMap<String, String>();
 
    public KuwaibaTemplateDefinition() {
       super();
@@ -80,11 +82,20 @@ public class KuwaibaTemplateDefinition {
       this.special = special;
    }
 
+   public HashMap<String, String> getTemplateAttributes() {
+      return templateAttributes;
+   }
+
+   public void setTemplateAttributes(HashMap<String, String> templateAttributes) {
+      this.templateAttributes = templateAttributes;
+   }
+
    @Override
    public String toString() {
       return "KuwaibaTemplateDefinition [templateName=" + templateName + ", templateElementName=" + templateElementName + 
                ", className=" + className + ", templateFunction=" + templateFunction + ", special=" + special + 
-               ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions + ", templateFunctionAttributes=" + templateFunctionAttributes + "]";
+               ", childKuwaibaTemplateDefinitions=" + childKuwaibaTemplateDefinitions +
+               ", templateFunctionAttributes=" + templateFunctionAttributes + ", templateAttributes=" + templateAttributes + "]";
    }
 
 }

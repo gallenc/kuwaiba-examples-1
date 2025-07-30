@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
 import org.entimoss.kuwaiba.provisioning.KuwaibaProvisioningRequisition;
 import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
+import org.entimoss.kuwaiba.provisioning.KuwaibaWireContainerConnection;
+import org.entimoss.misc.test.TestKuwaibaProvisioningRequisitionJson.GponConstants;
 import org.entimoss.misc.test.TestKuwaibaProvisioningRequisitionJson.KuwaibaGponProvisoner;
 
 import com.fasterxml.jackson.core.exc.StreamWriteException;
@@ -352,8 +354,8 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String oltSerialNumber = "";
                   String oltAssetNumber = "";
 
-                  // todo 
                   String oncLabelName = cspName;
+                  
                   String oltRackName = "SOTNOO1_RACK001";  //TODO
 
                   kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
@@ -437,6 +439,7 @@ public class KuwaibaRequisitionFromGponDataTest {
       Set<String> secondarySplitterNames = new HashSet<String>();
       Set<String> primarySplitterContainerNames = new HashSet<String>();  // cabinet
       Set<String> primarySplitterNames = new HashSet<String>();
+      Set<String> connectionNames = new HashSet<String>();
       Set<String> oltNames = new HashSet<String>();
 
       KuwaibaProvisioningRequisition pr = new KuwaibaProvisioningRequisition();
@@ -482,11 +485,12 @@ public class KuwaibaRequisitionFromGponDataTest {
          KuwaibaClass ontContainer = new KuwaibaClass();
          pr.getKuwaibaClassList().add(ontContainer);
 
+         ontContainer.setName(ontContainerName);
          ontContainer.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
          ontContainer.setTemplateName(GponConstants.ONT_CONTAINER_TEMPLATE_NAME); // house
          ontContainer.setParentName(ontStreet);
          ontContainer.setParentClassName(GponConstants.STREET_CONTAINER_CLASS_NAME);
-         ontContainer.setName(ontContainerName);
+
 
          HashMap<String, String> ontContainerAttributes = new HashMap<String, String>();
          ontContainerAttributes.put("latitude", String.format("%.8f", ontContainerLatitude));
@@ -498,11 +502,11 @@ public class KuwaibaRequisitionFromGponDataTest {
          KuwaibaClass ont = new KuwaibaClass();
          pr.getKuwaibaClassList().add(ont);
 
+         ont.setName(ontLabelName);
          ont.setClassName(GponConstants.ONT_CLASS_NAME);
          ont.setTemplateName(GponConstants.ONT_TEMPLATE_NAME); 
          ont.setParentName(ontContainerName);
          ont.setParentClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
-         ont.setName(ontLabelName);
          HashMap<String, String> ontAttributes = new HashMap<String, String>();
 
          ontAttributes.put("serialNumber", ontSerialNumber);
@@ -512,11 +516,12 @@ public class KuwaibaRequisitionFromGponDataTest {
          KuwaibaClass onc = new KuwaibaClass();
          pr.getKuwaibaClassList().add(onc);
 
+         onc.setName(oncLabelName);
          onc.setClassName(GponConstants.ONC_CLASS_NAME);
          onc.setTemplateName(GponConstants.ONC_TEMPLATE_NAME); // house
          onc.setParentName(ontContainerName);
          onc.setParentClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
-         onc.setName(oncLabelName); // TODO
+
 
          if (!secondarySplitterContainerNames.contains(secondarySplitterContainerName)) {
             secondarySplitterContainerNames.add(secondarySplitterContainerName);
@@ -524,11 +529,12 @@ public class KuwaibaRequisitionFromGponDataTest {
             KuwaibaClass secondarySplitterContainer = new KuwaibaClass();
             pr.getKuwaibaClassList().add(secondarySplitterContainer);
 
+            secondarySplitterContainer.setName(secondarySplitterContainerName);
             secondarySplitterContainer.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
             secondarySplitterContainer.setTemplateName(GponConstants.SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME); // house
             secondarySplitterContainer.setParentName(ontStreet); // pole is in street
             secondarySplitterContainer.setParentClassName(GponConstants.STREET_CONTAINER_CLASS_NAME);  
-            secondarySplitterContainer.setName(secondarySplitterContainerName);
+            
 
             HashMap<String, String> secondarySplitterContainerAttributes = new HashMap<String, String>();
             secondarySplitterContainerAttributes.put("latitude", String.format("%.8f", secondarySplitterContainerLatitude));
@@ -600,6 +606,157 @@ public class KuwaibaRequisitionFromGponDataTest {
             oltAttributes.put("serialNumber", oltSerialNumber);
             olt.getAttributes().putAll(oltAttributes);
          }
+         
+
+         // connections
+         // csp to ont
+         // e.g "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492"
+         // block to isolate repeat variables
+         try {
+            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+
+            // csp
+            KuwaibaClass aEnd = new KuwaibaClass();
+            aEnd.setName(oncLabelName);
+            aEnd.setClassName(GponConstants.ONC_CLASS_NAME);
+            connection1.setaEnd(aEnd);
+
+            // ont
+            KuwaibaClass bEnd = new KuwaibaClass();
+            bEnd.setName(ontLabelName);
+            bEnd.setClassName(GponConstants.ONT_CLASS_NAME);
+            connection1.setbEnd(bEnd);
+
+            KuwaibaClass connectionClass = new KuwaibaClass();
+            
+            connectionClass.setClassName("WireContainer");
+            connectionClass.setTemplateName("BFU_1_2");
+            
+            connectionClass.setName(connectionClass.getTemplateName()+ "_"+aEnd.getName()+ "_"+ bEnd.getName());  
+            
+            connection1.setConnectionClass(connectionClass);
+            
+            // only add to list if doesn't exist
+            if (!connectionNames.contains(connectionClass.getName())) {
+               connectionNames.add(connectionClass.getName());
+               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+            }
+
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         
+         // pole to house
+         // e.g "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492"
+         // block to isolate repeat variables
+         try {
+            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+            
+            // pole
+            KuwaibaClass aEnd = new KuwaibaClass();
+            aEnd.setName(secondarySplitterContainerName);
+            aEnd.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setaEnd(aEnd);
+
+            //house
+            KuwaibaClass bEnd = new KuwaibaClass();
+            bEnd.setName(ontContainerName);
+            bEnd.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
+            connection1.setbEnd(bEnd);
+
+            KuwaibaClass connectionClass = new KuwaibaClass();
+            
+            connectionClass.setClassName("WireContainer");
+            connectionClass.setTemplateName("BFU_1_2");
+            
+            connectionClass.setName(connectionClass.getTemplateName()+ "_"+aEnd.getName()+ "_"+ bEnd.getName());  
+            
+            connection1.setConnectionClass(connectionClass);
+            
+            // only add to list if doesn't exist
+            if (!connectionNames.contains(connectionClass.getName())) {
+               connectionNames.add(connectionClass.getName());
+               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+            }
+
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         
+         // cabinet to pole
+         // BFU_1_4_SO18BPK1_CAB_001_SO18BPK1_POLE_001
+         // block to isolate repeat variables
+         try {
+            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+
+            // cabinet
+            KuwaibaClass aEnd = new KuwaibaClass();
+            aEnd.setName(primarySplitterContainerName);
+            aEnd.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setaEnd(aEnd);
+
+            // pole
+            KuwaibaClass bEnd = new KuwaibaClass();
+            bEnd.setName(secondarySplitterContainerName);
+            bEnd.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setbEnd(bEnd);
+
+            KuwaibaClass connectionClass = new KuwaibaClass();
+            
+            connectionClass.setClassName("WireContainer");
+            connectionClass.setTemplateName("BFU_1_4");
+            
+            connectionClass.setName(connectionClass.getTemplateName()+ "_"+aEnd.getName()+ "_"+ bEnd.getName());  
+            
+            connection1.setConnectionClass(connectionClass);
+            
+            // only add to list if doesn't exist
+            if (!connectionNames.contains(connectionClass.getName())) {
+               connectionNames.add(connectionClass.getName());
+               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+            }
+
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         
+         
+         // fex to cabinet
+         // e.g "BFU_4_12_SOTN001_SO18BPK1_CAB_001"
+         // block to isolate repeat variables
+         try {
+            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+
+            // fex rack
+            KuwaibaClass aEnd = new KuwaibaClass();
+            aEnd.setName(GponConstants.OLT_CONTAINER_NAME); //TODO make dynamic
+            aEnd.setClassName("Rack");
+            connection1.setaEnd(aEnd);
+            
+            // pole
+            KuwaibaClass bEnd = new KuwaibaClass();
+            bEnd.setName(primarySplitterContainerName);
+            bEnd.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setbEnd(bEnd);
+
+            KuwaibaClass connectionClass = new KuwaibaClass();
+            connectionClass.setClassName("WireContainer");
+            connectionClass.setTemplateName("BFU_4_12");
+            
+            connectionClass.setName(connectionClass.getTemplateName()+ "_"+aEnd.getName()+ "_"+ bEnd.getName());  
+            
+            connection1.setConnectionClass(connectionClass);
+            
+            // only add to list if doesn't exist
+            if (!connectionNames.contains(connectionClass.getName())) {
+               connectionNames.add(connectionClass.getName());
+               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+            }
+
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         
 
       }
 
@@ -661,9 +818,9 @@ public class KuwaibaRequisitionFromGponDataTest {
             KuwaibaClass kuwaibaClass1 = new KuwaibaClass();
             pr.getKuwaibaClassList().add(kuwaibaClass1);
 
+            kuwaibaClass1.setName(GponConstants.OLT_CONTAINER_NAME);
             kuwaibaClass1.setClassName(GponConstants.OLT_CONTAINER_CLASS_NAME);
             kuwaibaClass1.setTemplateName(GponConstants.OLT_CONTAINER_TEMPLATE_NAME); // FEX_RACK_001
-            kuwaibaClass1.setName(GponConstants.OLT_CONTAINER_NAME);
             kuwaibaClass1.setParentName(GponConstants.PARENT_FACILITY);
             kuwaibaClass1.setParentClassName("Facility");
 
@@ -816,6 +973,11 @@ public class KuwaibaRequisitionFromGponDataTest {
             definition1.setTemplateElementName("FEX_RACK_001");
             definition1.setClassName("Rack");
             definition1.setSpecial(false);
+            
+            HashMap<String, String> definition1Attributes = new HashMap<String, String>();
+            definition1Attributes.put("rackUnits","42");
+            definition1Attributes.put("rackUnitsNumberingDescending","true");
+            definition1.getTemplateAttributes().putAll(definition1Attributes);
 
             // 10 OLT in rack
             for (int oltNo = 1; oltNo <= 10; oltNo++) {
@@ -823,6 +985,11 @@ public class KuwaibaRequisitionFromGponDataTest {
                childDefinition1.setTemplateElementName("OLT_NOKIA_01_" + String.format("%03d", oltNo));
                childDefinition1.setClassName("OpticalLineTerminal");
                childDefinition1.setSpecial(false);
+               
+               HashMap<String, String> childDefinition1Attributes = new HashMap<String, String>();
+               childDefinition1Attributes.put("rackUnits","2");
+               childDefinition1Attributes.put("position",Integer.toString(2 + oltNo*2 )); // top 2 slots free
+               childDefinition1.getTemplateAttributes().putAll(childDefinition1Attributes);
 
                // 2 cards per olt
                for (int card = 1; card <= 2; card++) {
@@ -866,6 +1033,26 @@ public class KuwaibaRequisitionFromGponDataTest {
             HashMap<String, String> attributes1 = new HashMap<String, String>();
             attributes1.put("numberOfCables", "1");
             attributes1.put("numberOfFibers", "2");
+            definition1.setTemplateFunctionAttributes(attributes1);
+
+            kuwaibaTemplateDefinitionList.add(definition1);
+
+         } catch (Exception e) {
+            throw new IllegalArgumentException("problem creating definition");
+         }
+         
+         // BFU_1_4 blown fiber unit 1 cables, 4 cores  coloured
+         // block to isolate local variables            
+         try {
+            KuwaibaTemplateDefinition definition1 = new KuwaibaTemplateDefinition();
+            definition1.setTemplateName("BFU_1_4");
+            definition1.setClassName("WireContainer");
+            definition1.setSpecial(false);
+            definition1.setTemplateFunction("ColoredFiberWireContainerFunction");
+
+            HashMap<String, String> attributes1 = new HashMap<String, String>();
+            attributes1.put("numberOfCables", "4");
+            attributes1.put("numberOfFibers", "12");
             definition1.setTemplateFunctionAttributes(attributes1);
 
             kuwaibaTemplateDefinitionList.add(definition1);
@@ -936,7 +1123,7 @@ public class KuwaibaRequisitionFromGponDataTest {
 
       public static final String OLT_CONTAINER_TEMPLATE_NAME = "FEX_RACK_001";
       public static final String OLT_CONTAINER_CLASS_NAME = "Rack";
-      public static final String OLT_CONTAINER_NAME = "SOTNOO1_RACK001";
+      public static final String OLT_CONTAINER_NAME = "SOTN001_RACK001";
 
       public static final String OLT_TEMPLATE_NAME = "OLT_NOKIA_01";
       public static final String OLT_CLASS_NAME = "OpticalLineTerminal";

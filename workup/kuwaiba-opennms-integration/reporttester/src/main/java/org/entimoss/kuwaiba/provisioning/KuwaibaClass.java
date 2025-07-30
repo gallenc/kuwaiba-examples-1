@@ -12,7 +12,7 @@ public class KuwaibaClass {
    private String parentClassName = null;
    private String parentName = null;
 
-   private HashMap<String, String> attributes = new HashMap();
+   private HashMap<String, String> attributes = new HashMap<String, String>();
 
    public KuwaibaClass() {
       super();
