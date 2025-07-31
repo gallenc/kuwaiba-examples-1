@@ -437,19 +437,19 @@ public class TestKuwaibaProvisioningRequisitionJson {
          // block to isolate repeat variables
          try {
             KuwaibaConnection connection1 = new KuwaibaConnection();
-            pr.getKuwaibaWireContainerConnectionList().add(connection1);
+            pr.getKuwaibaConnectionList().add(connection1);
 
             // pole
-            KuwaibaClass aEnd = new KuwaibaClass();
-            aEnd.setName("SO18BPK1_POLE_001");
-            aEnd.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
-            connection1.setaEnd(aEnd);
+            KuwaibaClass endpointA = new KuwaibaClass();
+            endpointA.setName("SO18BPK1_POLE_001");
+            endpointA.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setEndpointA(endpointA);
 
             //house
-            KuwaibaClass bEnd = new KuwaibaClass();
-            bEnd.setName("UPRN_200001919492");
-            bEnd.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
-            connection1.setbEnd(bEnd);
+            KuwaibaClass endpointB = new KuwaibaClass();
+            endpointB.setName("UPRN_200001919492");
+            endpointB.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
+            connection1.setEndpointB(endpointB);
 
             KuwaibaClass connectionClass = new KuwaibaClass();
             connectionClass.setName("BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492");

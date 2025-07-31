@@ -3941,7 +3941,7 @@
     } ],
     "attributes" : { }
   } ],
-  "kuwaibaWireContainerConnectionList" : [ {
+  "kuwaibaConnectionList" : [ {
     "connectionClass" : {
       "className" : "WireContainer",
       "templateName" : "BFU_1_2",
@@ -3950,7 +3950,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "SpliceBox",
       "templateName" : null,
       "name" : "CSP_10001317283",
@@ -3958,7 +3958,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_10001317283",
@@ -3975,7 +3975,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "Pole",
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
@@ -3983,7 +3983,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "House",
       "templateName" : null,
       "name" : "UPRN_10001317283",
@@ -4000,7 +4000,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "OutdoorsCabinet",
       "templateName" : null,
       "name" : "SO18BPK1_CAB_0001",
@@ -4008,7 +4008,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "Pole",
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
@@ -4025,7 +4025,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "Rack",
       "templateName" : null,
       "name" : "SOTN001_RACK001",
@@ -4033,7 +4033,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "OutdoorsCabinet",
       "templateName" : null,
       "name" : "SO18BPK1_CAB_0001",
@@ -4050,7 +4050,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "SpliceBox",
       "templateName" : null,
       "name" : "CSP_100060677240",
@@ -4058,7 +4058,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677240",
@@ -4075,7 +4075,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "Pole",
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
@@ -4083,7 +4083,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "House",
       "templateName" : null,
       "name" : "UPRN_100060677240",
@@ -4100,7 +4100,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "SpliceBox",
       "templateName" : null,
       "name" : "CSP_100060677241",
@@ -4108,7 +4108,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677241",
@@ -4125,7 +4125,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "Pole",
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
@@ -4133,7 +4133,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "House",
       "templateName" : null,
       "name" : "UPRN_100060677241",
@@ -4150,7 +4150,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "SpliceBox",
       "templateName" : null,
       "name" : "CSP_100060677242",
@@ -4158,7 +4158,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677242",
@@ -4175,7 +4175,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "Pole",
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
@@ -4183,7 +4183,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "House",
       "templateName" : null,
       "name" : "UPRN_100060677242",
@@ -4200,7 +4200,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "SpliceBox",
       "templateName" : null,
       "name" : "CSP_100060677243",
@@ -4208,7 +4208,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677243",
@@ -4225,7 +4225,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "aEnd" : {
+    "endpointA" : {
       "className" : "Pole",
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
@@ -4233,7 +4233,7 @@
       "parentClasses" : [ ],
       "attributes" : { }
     },
-    "bEnd" : {
+    "endpointB" : {
       "className" : "House",
       "templateName" : null,
       "name" : "UPRN_100060677243",

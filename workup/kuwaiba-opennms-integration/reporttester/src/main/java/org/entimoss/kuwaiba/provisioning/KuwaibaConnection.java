@@ -3,10 +3,10 @@ package org.entimoss.kuwaiba.provisioning;
 public class KuwaibaConnection {
    
    private KuwaibaClass connectionClass;
-   
-   private KuwaibaClass aEnd;
-   
-   private KuwaibaClass bEnd;
+
+   private KuwaibaClass endpointA;
+
+   private KuwaibaClass endpointB;
 
    public KuwaibaConnection() {
       super();
@@ -20,25 +20,25 @@ public class KuwaibaConnection {
       this.connectionClass = connectionClass;
    }
 
-   public KuwaibaClass getaEnd() {
-      return aEnd;
+   public KuwaibaClass getEndpointA() {
+      return endpointA;
    }
 
-   public void setaEnd(KuwaibaClass aEnd) {
-      this.aEnd = aEnd;
+   public void setEndpointA(KuwaibaClass endpointA) {
+      this.endpointA = endpointA;
    }
 
-   public KuwaibaClass getbEnd() {
-      return bEnd;
+   public KuwaibaClass getEndpointB() {
+      return endpointB;
    }
 
-   public void setbEnd(KuwaibaClass bEnd) {
-      this.bEnd = bEnd;
+   public void setEndpointB(KuwaibaClass endpointB) {
+      this.endpointB = endpointB;
    }
 
    @Override
    public String toString() {
-      return "KuwaibaWireContainerConnection [connectionClass=" + connectionClass + ", aEnd=" + aEnd + ", bEnd=" + bEnd + "]";
+      return "KuwaibaConnection [connectionClass=" + connectionClass + ", endpointA=" + endpointA + ", endpointB=" + endpointB + "]";
    }
 
 }

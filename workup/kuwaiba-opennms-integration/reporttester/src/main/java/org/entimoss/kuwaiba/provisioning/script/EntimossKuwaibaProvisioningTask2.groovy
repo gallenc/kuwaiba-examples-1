@@ -115,7 +115,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
          // create new connection objects
          LOG.info("STARTING CREATING CONNECTION OBJECTS");
-         createConnections(kuwaibaProvisioningRequisition.getKuwaibaWireContainerConnectionList());
+         createConnections(kuwaibaProvisioningRequisition.getKuwaibaConnectionList());
          LOG.info("FINISHED CREATING CONNECTION OBJECTS");
 
       } catch (Exception ex) {
@@ -134,22 +134,22 @@ public class EntimossKuwaibaProvisioningTask2 {
       return taskResult;
    }
 
-   public void createConnections(List<KuwaibaWireContainerConnection> containerConnectionList) {
+   public void createConnections(List<KuwaibaConnection> containerConnectionList) {
       // create the connection manager
       PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem);
       // create new connections
-      for (KuwaibaWireContainerConnection kuwaibaConnection : containerConnectionList) {
+      for (KuwaibaConnection kuwaibaConnection : containerConnectionList) {
          LOG.info("creating connection from: " + kuwaibaConnection);
 
          String name = kuwaibaConnection.getConnectionClass().getName();
          String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
          String connectionTemplateName = kuwaibaConnection.getConnectionClass().getTemplateName();
          
-         String aObjectClass = kuwaibaConnection.getaEnd().getClassName();
-         String aObjectName = kuwaibaConnection.getaEnd().getName();
+         String aObjectClass = kuwaibaConnection.getEndpointA().getClassName();
+         String aObjectName = kuwaibaConnection.getEndpointA().getName();
 
-         String bObjectClass = kuwaibaConnection.getbEnd().getClassName();
-         String bObjectName = kuwaibaConnection.getbEnd().getName();
+         String bObjectClass = kuwaibaConnection.getEndpointB().getClassName();
+         String bObjectName = kuwaibaConnection.getEndpointB().getName();
 
          // check if container already exists
          try {
@@ -1013,7 +1013,7 @@ public class EntimossKuwaibaProvisioningTask2 {
    
       private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
       
-      private List<KuwaibaWireContainerConnection> kuwaibaWireContainerConnectionList = new ArrayList<KuwaibaWireContainerConnection>();
+      private List<KuwaibaConnection> kuwaibaConnectionList = new ArrayList<KuwaibaConnection>();
       
       public KuwaibaProvisioningRequisition() {
          super();
@@ -1035,21 +1035,20 @@ public class EntimossKuwaibaProvisioningTask2 {
          this.kuwaibaClassList = kuwaibaClassList;
       }
    
-      public List<KuwaibaWireContainerConnection> getKuwaibaWireContainerConnectionList() {
-         return kuwaibaWireContainerConnectionList;
+      public List<KuwaibaConnection> getKuwaibaConnectionList() {
+         return kuwaibaConnectionList;
       }
 
-      public void setKuwaibaWireContainerConnectionList(List<KuwaibaWireContainerConnection> kuwaibaWireContainerConnectionList) {
-         this.kuwaibaWireContainerConnectionList = kuwaibaWireContainerConnectionList;
+      public void setKuwaibaConnectionList(List<KuwaibaConnection> kuwaibaConnectionList) {
+         this.kuwaibaConnectionList = kuwaibaConnectionList;
       }
 
       @Override
       public String toString() {
-         return "KuwaibaProvisioningRequisition [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + 
-                 kuwaibaClassList + ", kuwaibaWireContainerConnectionList=" + kuwaibaWireContainerConnectionList + "]";
+         return "KuwaibaProvisioningRequisition [kuwaibaTemplateList=" + kuwaibaTemplateList + ", kuwaibaClassList=" + kuwaibaClassList +
+                  ", kuwaibaConnectionList=" + kuwaibaConnectionList + "]";
       }
-   
-      
+
    }
 
 
@@ -1150,15 +1149,15 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   public static class KuwaibaWireContainerConnection {
+   public static class KuwaibaConnection {
       
       private KuwaibaClass connectionClass;
       
-      private KuwaibaClass aEnd;
+      private KuwaibaClass endpointA;
       
-      private KuwaibaClass bEnd;
+      private KuwaibaClass endpointB;
 
-      public KuwaibaWireContainerConnection() {
+      public KuwaibaConnection() {
          super();
       }
 
@@ -1170,25 +1169,25 @@ public class EntimossKuwaibaProvisioningTask2 {
          this.connectionClass = connectionClass;
       }
 
-      public KuwaibaClass getaEnd() {
-         return aEnd;
+      public KuwaibaClass getEndpointA() {
+         return endpointA;
       }
 
-      public void setaEnd(KuwaibaClass aEnd) {
-         this.aEnd = aEnd;
+      public void setEndpointA(KuwaibaClass endpointA) {
+         this.endpointA = endpointA;
       }
 
-      public KuwaibaClass getbEnd() {
-         return bEnd;
+      public KuwaibaClass getEndpointB() {
+         return endpointB;
       }
 
-      public void setbEnd(KuwaibaClass bEnd) {
-         this.bEnd = bEnd;
+      public void setEndpointB(KuwaibaClass endpointB) {
+         this.endpointB = endpointB;
       }
 
       @Override
       public String toString() {
-         return "KuwaibaWireContainerConnection [connectionClass=" + connectionClass + ", aEnd=" + aEnd + ", bEnd=" + bEnd + "]";
+         return "KuwaibaConnection [connectionClass=" + connectionClass + ", endpointA=" + endpointA + ", endpointB=" + endpointB + "]";
       }
       
    }

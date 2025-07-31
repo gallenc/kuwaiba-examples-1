@@ -666,30 +666,30 @@ public class KuwaibaRequisitionFromGponDataTest {
             KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // csp
-            KuwaibaClass aEnd = new KuwaibaClass();
-            aEnd.setName(cspLabelName);
-            aEnd.setClassName(GponConstants.CSP_CLASS_NAME);
-            connection1.setaEnd(aEnd);
+            KuwaibaClass endpointA = new KuwaibaClass();
+            endpointA.setName(cspLabelName);
+            endpointA.setClassName(GponConstants.CSP_CLASS_NAME);
+            connection1.setEndpointA(endpointA);
 
             // ont
-            KuwaibaClass bEnd = new KuwaibaClass();
-            bEnd.setName(ontLabelName);
-            bEnd.setClassName(GponConstants.ONT_CLASS_NAME);
-            connection1.setbEnd(bEnd);
+            KuwaibaClass endpointB = new KuwaibaClass();
+            endpointB.setName(ontLabelName);
+            endpointB.setClassName(GponConstants.ONT_CLASS_NAME);
+            connection1.setEndpointB(endpointB);
 
             KuwaibaClass connectionClass = new KuwaibaClass();
 
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_1_2");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + aEnd.getName() + "_" + bEnd.getName());
+            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
 
             connection1.setConnectionClass(connectionClass);
 
             // only add to list if doesn't exist
             if (!connectionNames.contains(connectionClass.getName())) {
                connectionNames.add(connectionClass.getName());
-               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+               pr.getKuwaibaConnectionList().add(connection1);
             }
 
          } catch (Exception e) {
@@ -703,30 +703,30 @@ public class KuwaibaRequisitionFromGponDataTest {
             KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // pole
-            KuwaibaClass aEnd = new KuwaibaClass();
-            aEnd.setName(secondarySplitterContainerName);
-            aEnd.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
-            connection1.setaEnd(aEnd);
+            KuwaibaClass endpointA = new KuwaibaClass();
+            endpointA.setName(secondarySplitterContainerName);
+            endpointA.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setEndpointA(endpointA);
 
             //house
-            KuwaibaClass bEnd = new KuwaibaClass();
-            bEnd.setName(ontContainerName);
-            bEnd.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
-            connection1.setbEnd(bEnd);
+            KuwaibaClass endpointB = new KuwaibaClass();
+            endpointB.setName(ontContainerName);
+            endpointB.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
+            connection1.setEndpointB(endpointB);
 
             KuwaibaClass connectionClass = new KuwaibaClass();
 
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_1_2");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + aEnd.getName() + "_" + bEnd.getName());
+            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
 
             connection1.setConnectionClass(connectionClass);
 
             // only add to list if doesn't exist
             if (!connectionNames.contains(connectionClass.getName())) {
                connectionNames.add(connectionClass.getName());
-               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+               pr.getKuwaibaConnectionList().add(connection1);
             }
 
          } catch (Exception e) {
@@ -740,30 +740,30 @@ public class KuwaibaRequisitionFromGponDataTest {
             KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // cabinet
-            KuwaibaClass aEnd = new KuwaibaClass();
-            aEnd.setName(primarySplitterContainerName);
-            aEnd.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
-            connection1.setaEnd(aEnd);
+            KuwaibaClass endpointA = new KuwaibaClass();
+            endpointA.setName(primarySplitterContainerName);
+            endpointA.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setEndpointA(endpointA);
 
             // pole
-            KuwaibaClass bEnd = new KuwaibaClass();
-            bEnd.setName(secondarySplitterContainerName);
-            bEnd.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
-            connection1.setbEnd(bEnd);
+            KuwaibaClass endpointB = new KuwaibaClass();
+            endpointB.setName(secondarySplitterContainerName);
+            endpointB.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setEndpointB(endpointB);
 
             KuwaibaClass connectionClass = new KuwaibaClass();
 
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_1_4");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + aEnd.getName() + "_" + bEnd.getName());
+            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
 
             connection1.setConnectionClass(connectionClass);
 
             // only add to list if doesn't exist
             if (!connectionNames.contains(connectionClass.getName())) {
                connectionNames.add(connectionClass.getName());
-               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+               pr.getKuwaibaConnectionList().add(connection1);
             }
 
          } catch (Exception e) {
@@ -777,36 +777,34 @@ public class KuwaibaRequisitionFromGponDataTest {
             KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // fex rack
-            KuwaibaClass aEnd = new KuwaibaClass();
-            aEnd.setName(GponConstants.OLT_CONTAINER_NAME); //TODO make dynamic
-            aEnd.setClassName("Rack");
-            connection1.setaEnd(aEnd);
+            KuwaibaClass endpointA = new KuwaibaClass();
+            endpointA.setName(GponConstants.OLT_CONTAINER_NAME); //TODO make dynamic
+            endpointA.setClassName("Rack");
+            connection1.setEndpointA(endpointA);
 
             // pole
-            KuwaibaClass bEnd = new KuwaibaClass();
-            bEnd.setName(primarySplitterContainerName);
-            bEnd.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
-            connection1.setbEnd(bEnd);
+            KuwaibaClass endpointB = new KuwaibaClass();
+            endpointB.setName(primarySplitterContainerName);
+            endpointB.setClassName(GponConstants.PRIMARY_SPLITTER_CONTAINER_CLASS_NAME);
+            connection1.setEndpointB(endpointB);
 
             KuwaibaClass connectionClass = new KuwaibaClass();
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_4_12");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + aEnd.getName() + "_" + bEnd.getName());
+            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
 
             connection1.setConnectionClass(connectionClass);
 
             // only add to list if doesn't exist
             if (!connectionNames.contains(connectionClass.getName())) {
                connectionNames.add(connectionClass.getName());
-               pr.getKuwaibaWireContainerConnectionList().add(connection1);
+               pr.getKuwaibaConnectionList().add(connection1);
             }
 
          } catch (Exception e) {
             e.printStackTrace();
          }
-
- 
 
       }
 
