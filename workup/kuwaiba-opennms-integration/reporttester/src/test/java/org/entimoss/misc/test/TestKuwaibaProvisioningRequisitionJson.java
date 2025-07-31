@@ -38,7 +38,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
       String ontAssetNumber = "200001919492";
 
-      String oncLabelName = "ONC_200001919492";
+      String cspLabelName = "CSP_200001919492";
 
       String secondarySplitterName = "SO18BPK1_POLE_001_SPL16_001"; // SPLITTER
       String secondarySplitterContainerName = "SO18BPK1_POLE_001"; //NAME
@@ -76,7 +76,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
       kuwaibaGponProvisoner.addLineToKuwaibaRequisition(ontLabelName, ontContainerName, ontContainerLatitude, ontContainerLongitude, ontIpAddress,
                ontComment, ontSerialNumber, ontAssetNumber,
 
-               oncLabelName,
+               cspLabelName,
 
                secondarySplitterName, secondarySplitterContainerName, secondarySplitterContainerLatitude, secondarySplitterContainerLongitude,
                secondarySplitterComment, secondarySplitterSerialNumber, secondarySplitterAssetNumber,
@@ -119,7 +119,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
                String ontLabelName, String ontContainerName, Double ontContainerLatitude, Double ontContainerLongitude, String ontIpAddress,
                String ontComment, String ontSerialNumber, String ontAssetNumber,
 
-               String oncLabelName,
+               String cspLabelName,
 
                String secondarySplitterName, String secondarySplitterContainerName, Double secondarySplitterContainerLatitude, Double secondarySplitterContainerLongitude,
                String secondarySplitterComment, String secondarySplitterSerialNumber, String secondarySplitterAssetNumber,
@@ -175,17 +175,17 @@ public class TestKuwaibaProvisioningRequisitionJson {
             LOG.error("problem configurion", ex);
          }
 
-         // onc
+         // csp
          try {
-            KuwaibaClass onc = new KuwaibaClass();
-            pr.getKuwaibaClassList().add(onc);
+            KuwaibaClass csp = new KuwaibaClass();
+            pr.getKuwaibaClassList().add(csp);
             
-            onc.setName(oncLabelName); // TODO
-            onc.setClassName(GponConstants.ONC_CLASS_NAME);
-            onc.setTemplateName(GponConstants.ONC_TEMPLATE_NAME); // house
+            csp.setName(cspLabelName); // TODO
+            csp.setClassName(GponConstants.CSP_CLASS_NAME);
+            csp.setTemplateName(GponConstants.CSP_TEMPLATE_NAME); // house
             
             KuwaibaClass parent1 = new KuwaibaClass();
-            onc.getParentClasses().add(parent1);
+            csp.getParentClasses().add(parent1);
             parent1.setName(ontContainerName);
             parent1.setClassName(GponConstants.ONT_CONTAINER_CLASS_NAME);
 
@@ -472,8 +472,8 @@ public class TestKuwaibaProvisioningRequisitionJson {
          //         
          // ONT_CLASS_NAME = "OpticalNetworkTerminal";
          // ONT_TEMPLATE_NAME = "ONT_NOKIA_01";
-         // ONC_CLASS_NAME = "SpliceBox";
-         // ONC_TEMPLATE_NAME = "CSP_BFU_1_2_01";
+         // CSP_CLASS_NAME = "SpliceBox";
+         // CSP_TEMPLATE_NAME = "CSP_BFU_1_2_01";
 
          // block to isolate local variables  
          // creating template from function definitions
@@ -505,7 +505,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
             // CSP
             KuwaibaTemplateDefinition childDefinition2 = new KuwaibaTemplateDefinition();
-            childDefinition2.setTemplateElementName(GponConstants.ONC_TEMPLATE_NAME); // "CSP_BFU_1_2_01"
+            childDefinition2.setTemplateElementName(GponConstants.CSP_TEMPLATE_NAME); // "CSP_BFU_1_2_01"
             childDefinition2.setClassName("SpliceBox");
             childDefinition2.setSpecial(false);
             // build ports using function
@@ -703,8 +703,8 @@ public class TestKuwaibaProvisioningRequisitionJson {
       public static final String ONT_CLASS_NAME = "OpticalNetworkTerminal";
       public static final String ONT_TEMPLATE_NAME = "ONT_NOKIA_01";
 
-      public static final String ONC_CLASS_NAME = "SpliceBox";
-      public static final String ONC_TEMPLATE_NAME = "CSP_BFU_1_2_01";
+      public static final String CSP_CLASS_NAME = "SpliceBox";
+      public static final String CSP_TEMPLATE_NAME = "CSP_BFU_1_2_01";
 
       public static final String SECONDARY_SPLITTER_CONTAINER_CLASS_NAME = "Pole";
       public static final String SECONDARY_SPLITTER_CONTAINER_TEMPLATE_NAME = "POLE_2_16drop";
