@@ -3430,24 +3430,42 @@
     "templateName" : null,
     "name" : "Southampton",
     "special" : false,
-    "parentClassName" : "State",
-    "parentName" : "Hampshire",
+    "parentClasses" : [ {
+      "className" : "State",
+      "templateName" : null,
+      "name" : "Hampshire",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "Neighborhood",
     "templateName" : null,
     "name" : "BitternePk",
     "special" : false,
-    "parentClassName" : "City",
-    "parentName" : "Southampton",
+    "parentClasses" : [ {
+      "className" : "City",
+      "templateName" : null,
+      "name" : "Southampton",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "Facility",
     "templateName" : null,
     "name" : "SOTNOO1",
     "special" : false,
-    "parentClassName" : "City",
-    "parentName" : "Southampton",
+    "parentClasses" : [ {
+      "className" : "City",
+      "templateName" : null,
+      "name" : "Southampton",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "latitude" : "-1.39399900",
       "longitude" : "50.92387300"
@@ -3457,24 +3475,42 @@
     "templateName" : "FEX_RACK_001",
     "name" : "SOTN001_RACK001",
     "special" : false,
-    "parentClassName" : "Facility",
-    "parentName" : "SOTNOO1",
+    "parentClasses" : [ {
+      "className" : "Facility",
+      "templateName" : null,
+      "name" : "SOTNOO1",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "Neighborhood",
     "templateName" : null,
     "name" : "Appleton Road",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "BitternePk",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "House",
     "templateName" : "House_01",
     "name" : "UPRN_10001317283",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "Appleton Road",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "Appleton Road",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "address" : "Appleton Road  Bitterne Park  Southampton  England  SO18 1LB  United Kingdom",
       "latitude" : "50.92660800",
@@ -3485,8 +3521,14 @@
     "templateName" : "ONT_NOKIA_01",
     "name" : "ONT_10001317283",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_10001317283",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_10001317283",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "serialNumber" : "ALCLF2541FFDA3"
     }
@@ -3495,16 +3537,28 @@
     "templateName" : "CSP_BFU_1_2_01",
     "name" : "CSP_10001317283",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_10001317283",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_10001317283",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "Pole",
     "templateName" : "POLE_2_16drop",
     "name" : "SO18BPK1_POLE_0001",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "Appleton Road",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "Appleton Road",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "latitude" : "50.92656800",
       "longitude" : "-1.37185220"
@@ -3514,16 +3568,28 @@
     "templateName" : "SPL16",
     "name" : "SO18BPK1_POLE_0001_SPL16_0001",
     "special" : false,
-    "parentClassName" : "Pole",
-    "parentName" : "SO18BPK1_POLE_0001",
+    "parentClasses" : [ {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
     "name" : "SO18BPK1_CAB_0001",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "BitternePk",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "latitude" : "50.92652800",
       "longitude" : "-1.37189220"
@@ -3533,16 +3599,28 @@
     "templateName" : "SPL8",
     "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
-    "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0001",
+    "parentClasses" : [ {
+      "className" : "OutdoorsCabinet",
+      "templateName" : null,
+      "name" : "SO18BPK1_CAB_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "OpticalLineTerminal",
     "templateName" : "OLT_NOKIA_01",
     "name" : "SOTN001_OLT_0100",
     "special" : false,
-    "parentClassName" : "Rack",
-    "parentName" : "SOTN001_RACK001",
+    "parentClasses" : [ {
+      "className" : "Rack",
+      "templateName" : null,
+      "name" : "SOTN001_RACK001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "serialNumber" : ""
     }
@@ -3551,8 +3629,14 @@
     "templateName" : "House_01",
     "name" : "UPRN_100060677240",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "Appleton Road",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "Appleton Road",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "address" : "Appleton Road  Bitterne Park  Southampton  England  SO18 1LB  United Kingdom",
       "latitude" : "50.92658160",
@@ -3563,8 +3647,14 @@
     "templateName" : "ONT_NOKIA_01",
     "name" : "ONT_100060677240",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677240",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677240",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "serialNumber" : "ALCLF174C14C478"
     }
@@ -3573,16 +3663,28 @@
     "templateName" : "CSP_BFU_1_2_01",
     "name" : "CSP_100060677240",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677240",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677240",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
     "name" : "SO18BPK1_CAB_0001",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "BitternePk",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "latitude" : "50.92652800",
       "longitude" : "-1.37189220"
@@ -3592,16 +3694,28 @@
     "templateName" : "SPL8",
     "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
-    "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0001",
+    "parentClasses" : [ {
+      "className" : "OutdoorsCabinet",
+      "templateName" : null,
+      "name" : "SO18BPK1_CAB_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "House",
     "templateName" : "House_01",
     "name" : "UPRN_100060677241",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "Appleton Road",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "Appleton Road",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "address" : "Appleton Road  Bitterne Park  Southampton  England  SO18 1LB  United Kingdom",
       "latitude" : "50.92662650",
@@ -3612,8 +3726,14 @@
     "templateName" : "ONT_NOKIA_01",
     "name" : "ONT_100060677241",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677241",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677241",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "serialNumber" : "ALCLF174C14C479"
     }
@@ -3622,16 +3742,28 @@
     "templateName" : "CSP_BFU_1_2_01",
     "name" : "CSP_100060677241",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677241",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677241",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
     "name" : "SO18BPK1_CAB_0001",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "BitternePk",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "latitude" : "50.92652800",
       "longitude" : "-1.37189220"
@@ -3641,16 +3773,28 @@
     "templateName" : "SPL8",
     "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
-    "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0001",
+    "parentClasses" : [ {
+      "className" : "OutdoorsCabinet",
+      "templateName" : null,
+      "name" : "SO18BPK1_CAB_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "House",
     "templateName" : "House_01",
     "name" : "UPRN_100060677242",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "Appleton Road",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "Appleton Road",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "address" : "Appleton Road  Bitterne Park  Southampton  England  SO18 1LB  United Kingdom",
       "latitude" : "50.92660800",
@@ -3661,8 +3805,14 @@
     "templateName" : "ONT_NOKIA_01",
     "name" : "ONT_100060677242",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677242",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677242",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "serialNumber" : "ALCLF174C14C47A"
     }
@@ -3671,16 +3821,28 @@
     "templateName" : "CSP_BFU_1_2_01",
     "name" : "CSP_100060677242",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677242",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677242",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
     "name" : "SO18BPK1_CAB_0001",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "BitternePk",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "latitude" : "50.92652800",
       "longitude" : "-1.37189220"
@@ -3690,16 +3852,28 @@
     "templateName" : "SPL8",
     "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
-    "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0001",
+    "parentClasses" : [ {
+      "className" : "OutdoorsCabinet",
+      "templateName" : null,
+      "name" : "SO18BPK1_CAB_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "House",
     "templateName" : "House_01",
     "name" : "UPRN_100060677243",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "Appleton Road",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "Appleton Road",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "address" : "Appleton Road  Bitterne Park  Southampton  England  SO18 1LB  United Kingdom",
       "latitude" : "50.92657120",
@@ -3710,8 +3884,14 @@
     "templateName" : "ONT_NOKIA_01",
     "name" : "ONT_100060677243",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677243",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677243",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "serialNumber" : "ALCLF174C14C47B"
     }
@@ -3720,16 +3900,28 @@
     "templateName" : "CSP_BFU_1_2_01",
     "name" : "CSP_100060677243",
     "special" : false,
-    "parentClassName" : "House",
-    "parentName" : "UPRN_100060677243",
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677243",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   }, {
     "className" : "OutdoorsCabinet",
     "templateName" : "CAB_10SPL8",
     "name" : "SO18BPK1_CAB_0001",
     "special" : false,
-    "parentClassName" : "Neighborhood",
-    "parentName" : "BitternePk",
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : {
       "latitude" : "50.92652800",
       "longitude" : "-1.37189220"
@@ -3739,8 +3931,14 @@
     "templateName" : "SPL8",
     "name" : "SO18BPK1_CAB_0001_SPL8_0001",
     "special" : false,
-    "parentClassName" : "OutdoorsCabinet",
-    "parentName" : "SO18BPK1_CAB_0001",
+    "parentClasses" : [ {
+      "className" : "OutdoorsCabinet",
+      "templateName" : null,
+      "name" : "SO18BPK1_CAB_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
     "attributes" : { }
   } ],
   "kuwaibaWireContainerConnectionList" : [ {
@@ -3749,8 +3947,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_CSP_10001317283_ONT_10001317283",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3758,8 +3955,7 @@
       "templateName" : null,
       "name" : "CSP_10001317283",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3767,8 +3963,7 @@
       "templateName" : null,
       "name" : "ONT_10001317283",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3777,8 +3972,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_10001317283",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3786,8 +3980,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3795,8 +3988,7 @@
       "templateName" : null,
       "name" : "UPRN_10001317283",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3805,8 +3997,7 @@
       "templateName" : "BFU_1_4",
       "name" : "BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3814,8 +4005,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_CAB_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3823,8 +4013,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3833,8 +4022,7 @@
       "templateName" : "BFU_4_12",
       "name" : "BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3842,8 +4030,7 @@
       "templateName" : null,
       "name" : "SOTN001_RACK001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3851,8 +4038,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_CAB_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3861,8 +4047,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_CSP_100060677240_ONT_100060677240",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3870,8 +4055,7 @@
       "templateName" : null,
       "name" : "CSP_100060677240",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3879,8 +4063,7 @@
       "templateName" : null,
       "name" : "ONT_100060677240",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3889,8 +4072,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677240",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3898,8 +4080,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3907,8 +4088,7 @@
       "templateName" : null,
       "name" : "UPRN_100060677240",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3917,8 +4097,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_CSP_100060677241_ONT_100060677241",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3926,8 +4105,7 @@
       "templateName" : null,
       "name" : "CSP_100060677241",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3935,8 +4113,7 @@
       "templateName" : null,
       "name" : "ONT_100060677241",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3945,8 +4122,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677241",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3954,8 +4130,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3963,8 +4138,7 @@
       "templateName" : null,
       "name" : "UPRN_100060677241",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -3973,8 +4147,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_CSP_100060677242_ONT_100060677242",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -3982,8 +4155,7 @@
       "templateName" : null,
       "name" : "CSP_100060677242",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -3991,8 +4163,7 @@
       "templateName" : null,
       "name" : "ONT_100060677242",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -4001,8 +4172,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677242",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -4010,8 +4180,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -4019,8 +4188,7 @@
       "templateName" : null,
       "name" : "UPRN_100060677242",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -4029,8 +4197,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_CSP_100060677243_ONT_100060677243",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -4038,8 +4205,7 @@
       "templateName" : null,
       "name" : "CSP_100060677243",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -4047,8 +4213,7 @@
       "templateName" : null,
       "name" : "ONT_100060677243",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   }, {
@@ -4057,8 +4222,7 @@
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677243",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "aEnd" : {
@@ -4066,8 +4230,7 @@
       "templateName" : null,
       "name" : "SO18BPK1_POLE_0001",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     },
     "bEnd" : {
@@ -4075,8 +4238,7 @@
       "templateName" : null,
       "name" : "UPRN_100060677243",
       "special" : false,
-      "parentClassName" : null,
-      "parentName" : null,
+      "parentClasses" : [ ],
       "attributes" : { }
     }
   } ]

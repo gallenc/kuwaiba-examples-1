@@ -1,6 +1,5 @@
 package org.entimoss.kuwaiba.provisioning.script;
 
-import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neotropic.kuwaiba.core.apis.persistence.ChangeDescriptor;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ActivityLogEntry;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -220,13 +220,12 @@ public class EntimossKuwaibaProvisioningTask2 {
 
          String createObjectClassName = kuwaibaClass.getClassName();
          String createObjectName = kuwaibaClass.getName();
-         String parentObjectName = kuwaibaClass.getParentName();
-         String parentClassName = kuwaibaClass.getParentClassName();
+         List<KuwaibaClass> parentClasses = kuwaibaClass.getParentClasses();
          String templateName = kuwaibaClass.getTemplateName();
          HashMap<String, String> initialAttributes = kuwaibaClass.getAttributes();
 
          BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
-                  parentClassName, parentObjectName, templateName, initialAttributes);
+                  parentClasses, templateName, initialAttributes);
 
          LOG.info("FINISHED PROCESSING kuwaibaClass:" + kuwaibaClass + " MATCHING business object: " + businessObjectToString(businessObject));
 
@@ -246,8 +245,7 @@ public class EntimossKuwaibaProvisioningTask2 {
     * @param parentObjectClass
     * @return
     */
-   public BusinessObject createClassIfDoesntExist(String createObjectClassName, String createObjectName, String parentClassName,
-            String parentObjectName, String templateName, HashMap<String, String> initialAttributes) {
+   public BusinessObject createClassIfDoesntExist(String createObjectClassName, String createObjectName, List<KuwaibaClass> parentClasses, String templateName, HashMap<String, String> initialAttributes) {
 
       BusinessObject createdObject = null;
       BusinessObject parentObject = null;
@@ -268,19 +266,12 @@ public class EntimossKuwaibaProvisioningTask2 {
 
       // check if parent object exists
       try {
-         // see if there is an object with the same name
-         List<BusinessObject> foundObjects = bem.getObjectsWithFilter(parentClassName, Constants.PROPERTY_NAME, parentObjectName);
-         if (!foundObjects.isEmpty()) {
-            parentObject = foundObjects.get(0);
-            LOG.info("createIfDoesntExist - createIfDoesntExist - parentObject exists " + businessObjectToString(parentObject));
-         }
+         
+         parentObject = findDirectParentClass( parentClasses);
+         
       } catch (Exception ex) {
          throw new RuntimeException("createIfDoesntExist - problem finding parent object:", ex);
       }
-
-      if (parentObject == null)
-         throw new IllegalArgumentException("parent object does not exist for createObjectClassName=" + createObjectClassName + "  createObjectName =" +
-                  createObjectName + " parentObjectName=" + parentObjectName + " parentClassName=" + parentClassName);
 
       // check if template exists if not null
 
@@ -343,7 +334,7 @@ public class EntimossKuwaibaProvisioningTask2 {
          // create new object with parent
          try {
 
-            String createdObjectId = bem.createObject(createObjectClassName, parentClassName, parentObject.getId(), newAttributes, templateId);
+            String createdObjectId = bem.createObject(createObjectClassName, parentObject.getClassName(), parentObject.getId(), newAttributes, templateId);
 
             // this is added because the created object takes the name of the template and not the name we want to give it.
             ChangeDescriptor changeDescriptor = bem.updateObject(createObjectClassName, createdObjectId, newAttributes);
@@ -374,13 +365,65 @@ public class EntimossKuwaibaProvisioningTask2 {
             kuwaibaClassesNew++;
          } catch (Exception e) {
             LOG.error("problem creating object createObjectClass " + createObjectClassName +
-                     ", createObjectName:" + createObjectName + ", parentOid:" + parentObject.getId() + ", parentClassName " + parentClassName, e);
+                     ", createObjectName:" + createObjectName + ", parentOid:" + parentObject.getId() + 
+                     ", parentClassName " + parentObject.getClassName(), e);
          }
       }
 
       return createdObject;
 
    }
+
+   public BusinessObject findDirectParentClass(List<KuwaibaClass> parentClasses) {
+
+      if (parentClasses == null || parentClasses.isEmpty())
+         return null;
+
+      BusinessObject parentObject = null;
+
+      try {
+
+         Iterator<KuwaibaClass> parentIterator = parentClasses.iterator();
+
+         // find first object in parent list
+         KuwaibaClass parentClass = parentIterator.next();
+         List<BusinessObject> foundObjects = bem.getObjectsWithFilter(parentClass.getClassName(), Constants.PROPERTY_NAME, parentClass.getName());
+         if (!foundObjects.isEmpty()) {
+            parentObject = foundObjects.get(0);
+            LOG.info("findParentClass parentObject exists " + businessObjectToString(parentObject));
+         } else {
+            throw new IllegalArgumentException("cannot find parent class " + parentClass.getClassName() + " name " + parentClass.getName());
+         }
+
+         // iterate to find any children
+         while (parentIterator.hasNext()) {
+            parentClass = parentIterator.next();
+
+            BusinessObject foundObject = null;
+
+            foundObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), parentClass.getClassName(), 0, 0);
+            for (BusinessObject businessObject : foundObjects) {
+               if (businessObject.getName().equals(parentClass.getName())) {
+                  foundObject = businessObject;
+                  LOG.info("findParentClass found parent child " + businessObjectToString(foundObject));
+                  break;
+               }
+            }
+
+            if (foundObject == null)
+               throw new IllegalArgumentException("cannot find parent class from listed parent " + parentClass.getClassName() +
+                        " name " + parentClass.getName() + "for kuwaiba parent object id" + parentObject.getId() +
+                        " parent object class " + parentObject.getClassName());
+         }
+
+      } catch (Exception ex) {
+         throw new RuntimeException("createIfDoesntExist - problem finding parent object:", ex);
+      }
+
+      return parentObject;
+   }
+   
+   
 
    public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaChildTemplateElementList, String elementParentClassName, String elementParentId) {
       int templateElementsCreated = 0;
@@ -893,10 +936,10 @@ public class EntimossKuwaibaProvisioningTask2 {
       private String name = null;
       private Boolean special = false;
 
-      private String parentClassName = null;
-      private String parentName = null;
+      // parent classes contains a hierarchy of classes to be searched in order to find parent.
+      private List<KuwaibaClass> parentClasses = new ArrayList<KuwaibaClass>();
 
-      private HashMap<String, String> attributes = new HashMap();
+      private HashMap<String, String> attributes = new HashMap<String, String>();
 
       public KuwaibaClass() {
          super();
@@ -926,20 +969,12 @@ public class EntimossKuwaibaProvisioningTask2 {
          this.name = name;
       }
 
-      public String getParentClassName() {
-         return parentClassName;
+      public List<KuwaibaClass> getParentClasses() {
+         return parentClasses;
       }
 
-      public void setParentClassName(String parentClassName) {
-         this.parentClassName = parentClassName;
-      }
-
-      public String getParentName() {
-         return parentName;
-      }
-
-      public void setParentName(String parentName) {
-         this.parentName = parentName;
+      public void setParentClasses(List<KuwaibaClass> parentClasses) {
+         this.parentClasses = parentClasses;
       }
 
       public HashMap<String, String> getAttributes() {
@@ -960,8 +995,8 @@ public class EntimossKuwaibaProvisioningTask2 {
 
       @Override
       public String toString() {
-         return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", special=" + special +
-                  ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes=" + attributes + "]";
+         return "KuwaibaClass [ name=" + name + ", className=" + className + ", templateName=" + templateName + ", special=" + special +
+                  ", parentClasses=" + parentClasses + ", attributes=" + attributes + "]";
       }
 
    }

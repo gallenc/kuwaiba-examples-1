@@ -1,6 +1,8 @@
 package org.entimoss.kuwaiba.provisioning;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class KuwaibaClass {
 
@@ -9,8 +11,9 @@ public class KuwaibaClass {
    private String name = null;
    private Boolean special = false;
 
-   private String parentClassName = null;
-   private String parentName = null;
+   // parent classes contain a hierarchy of classes to be searched to find parent.
+   // may only contain one class
+   private List<KuwaibaClass> parentClasses = new ArrayList<KuwaibaClass>();
 
    private HashMap<String, String> attributes = new HashMap<String, String>();
 
@@ -42,20 +45,12 @@ public class KuwaibaClass {
       this.name = name;
    }
 
-   public String getParentClassName() {
-      return parentClassName;
+   public List<KuwaibaClass> getParentClasses() {
+      return parentClasses;
    }
 
-   public void setParentClassName(String parentClassName) {
-      this.parentClassName = parentClassName;
-   }
-
-   public String getParentName() {
-      return parentName;
-   }
-
-   public void setParentName(String parentName) {
-      this.parentName = parentName;
+   public void setParentClasses(List<KuwaibaClass> parentClasses) {
+      this.parentClasses = parentClasses;
    }
 
    public HashMap<String, String> getAttributes() {
@@ -76,9 +71,8 @@ public class KuwaibaClass {
 
    @Override
    public String toString() {
-      return "KuwaibaClass [className=" + className + ", name=" + name + ", templateName=" + templateName + ", special=" + special + 
-               ", parentClassName=" + parentClassName + ", parentName=" + parentName + ", attributes=" + attributes + "]";
+      return "KuwaibaClass [ name=" + name + ", className=" + className + ", templateName=" + templateName + ", special=" + special + 
+               ", parentClasses=" + parentClasses + ", attributes=" + attributes + "]";
    }
 
 }
-
