@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
 import org.entimoss.kuwaiba.provisioning.KuwaibaProvisioningRequisition;
 import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
-import org.entimoss.kuwaiba.provisioning.KuwaibaWireContainerConnection;
+import org.entimoss.kuwaiba.provisioning.KuwaibaConnection;
 import org.entimoss.misc.test.TestKuwaibaProvisioningRequisitionJson.GponConstants;
 import org.entimoss.misc.test.TestKuwaibaProvisioningRequisitionJson.KuwaibaGponProvisoner;
 
@@ -663,7 +663,7 @@ public class KuwaibaRequisitionFromGponDataTest {
          // e.g "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492"
          // block to isolate repeat variables
          try {
-            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+            KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // csp
             KuwaibaClass aEnd = new KuwaibaClass();
@@ -700,7 +700,7 @@ public class KuwaibaRequisitionFromGponDataTest {
          // e.g "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492"
          // block to isolate repeat variables
          try {
-            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+            KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // pole
             KuwaibaClass aEnd = new KuwaibaClass();
@@ -737,7 +737,7 @@ public class KuwaibaRequisitionFromGponDataTest {
          // BFU_1_4_SO18BPK1_CAB_001_SO18BPK1_POLE_001
          // block to isolate repeat variables
          try {
-            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+            KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // cabinet
             KuwaibaClass aEnd = new KuwaibaClass();
@@ -774,7 +774,7 @@ public class KuwaibaRequisitionFromGponDataTest {
          // e.g "BFU_4_12_SOTN001_SO18BPK1_CAB_001"
          // block to isolate repeat variables
          try {
-            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+            KuwaibaConnection connection1 = new KuwaibaConnection();
 
             // fex rack
             KuwaibaClass aEnd = new KuwaibaClass();

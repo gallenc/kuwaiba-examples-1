@@ -11,7 +11,7 @@ import java.util.List;
 import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
 import org.entimoss.kuwaiba.provisioning.KuwaibaProvisioningRequisition;
 import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
-import org.entimoss.kuwaiba.provisioning.KuwaibaWireContainerConnection;
+import org.entimoss.kuwaiba.provisioning.KuwaibaConnection;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -436,7 +436,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
          // pole to house
          // block to isolate repeat variables
          try {
-            KuwaibaWireContainerConnection connection1 = new KuwaibaWireContainerConnection();
+            KuwaibaConnection connection1 = new KuwaibaConnection();
             pr.getKuwaibaWireContainerConnectionList().add(connection1);
 
             // pole
@@ -697,12 +697,17 @@ public class TestKuwaibaProvisioningRequisitionJson {
       public static final String PARENT_LOCATION_CLASS_NAME = "Neighborhood";
       public static final String PARENT_LOCATION_VALUE = "BitternePk";
 
+      public static final String STREET_CONTAINER_CLASS_NAME = "Neighborhood";
+
       public static final String ONT_CONTAINER_CLASS_NAME = "House";
       public static final String ONT_CONTAINER_TEMPLATE_NAME = "House_01";
 
+      // ONT (Optical Network Terminal)
       public static final String ONT_CLASS_NAME = "OpticalNetworkTerminal";
       public static final String ONT_TEMPLATE_NAME = "ONT_NOKIA_01";
 
+      // CSP (Customer Splice Point):
+      // The CSP is where the external fiber cable (usually coming from the street or a local cabinet) is spliced to the internal fiber cable that runs to the ONT
       public static final String CSP_CLASS_NAME = "SpliceBox";
       public static final String CSP_TEMPLATE_NAME = "CSP_BFU_1_2_01";
 
@@ -720,7 +725,7 @@ public class TestKuwaibaProvisioningRequisitionJson {
 
       public static final String OLT_CONTAINER_TEMPLATE_NAME = "FEX_RACK_001";
       public static final String OLT_CONTAINER_CLASS_NAME = "Rack";
-      public static final String OLT_CONTAINER_NAME = "SOTNOO1_RACK001";
+      public static final String OLT_CONTAINER_NAME = "SOTN001_RACK001";
 
       public static final String OLT_TEMPLATE_NAME = "OLT_NOKIA_01";
       public static final String OLT_CLASS_NAME = "OpticalLineTerminal";

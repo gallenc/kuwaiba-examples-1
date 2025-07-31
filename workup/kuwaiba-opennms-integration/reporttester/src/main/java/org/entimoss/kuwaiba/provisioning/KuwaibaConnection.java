@@ -1,6 +1,6 @@
 package org.entimoss.kuwaiba.provisioning;
 
-public class KuwaibaWireContainerConnection {
+public class KuwaibaConnection {
    
    private KuwaibaClass connectionClass;
    
@@ -8,7 +8,7 @@ public class KuwaibaWireContainerConnection {
    
    private KuwaibaClass bEnd;
 
-   public KuwaibaWireContainerConnection() {
+   public KuwaibaConnection() {
       super();
    }
 

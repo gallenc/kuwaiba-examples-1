@@ -10,7 +10,7 @@ public class KuwaibaProvisioningRequisition {
 
    private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
    
-   private List<KuwaibaWireContainerConnection> kuwaibaWireContainerConnectionList = new ArrayList<KuwaibaWireContainerConnection>();
+   private List<KuwaibaConnection> kuwaibaWireContainerConnectionList = new ArrayList<KuwaibaConnection>();
    
    public KuwaibaProvisioningRequisition() {
       super();
@@ -32,11 +32,11 @@ public class KuwaibaProvisioningRequisition {
       this.kuwaibaClassList = kuwaibaClassList;
    }
 
-   public List<KuwaibaWireContainerConnection> getKuwaibaWireContainerConnectionList() {
+   public List<KuwaibaConnection> getKuwaibaWireContainerConnectionList() {
       return kuwaibaWireContainerConnectionList;
    }
 
-   public void setKuwaibaWireContainerConnectionList(List<KuwaibaWireContainerConnection> kuwaibaWireContainerConnectionList) {
+   public void setKuwaibaWireContainerConnectionList(List<KuwaibaConnection> kuwaibaWireContainerConnectionList) {
       this.kuwaibaWireContainerConnectionList = kuwaibaWireContainerConnectionList;
    }
 
