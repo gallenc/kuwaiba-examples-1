@@ -991,14 +991,10 @@ public class EntimossKuwaibaProvisioningTask2 {
          // escape %1$4s as breaks in groovy
          String paddedbasen = String.format("%1\0444s", basen).replace(' ', '0');
 
-         System.out.println(circuitNo + " basen=" + basen + " paddedbasen=" + paddedbasen);
-
          for (int i = 0; i < paddedbasen.length(); i++) {
             String s = paddedbasen.substring(i, i + 1);
             Integer colorIndex = Integer.parseInt(s, radix);
-            System.out.println("colorIndex:" + colorIndex);
             String color = orderedFibreColours.get(colorIndex);
-            System.out.println("color:" + color);
             containerColourList.add(color);
          }
 
