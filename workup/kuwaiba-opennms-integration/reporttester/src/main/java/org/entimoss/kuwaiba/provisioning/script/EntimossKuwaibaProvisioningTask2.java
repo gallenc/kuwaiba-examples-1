@@ -134,86 +134,6 @@ public class EntimossKuwaibaProvisioningTask2 {
       return taskResult;
    }
 
-   public void createConnections(List<KuwaibaConnection> containerConnectionList) {
-      // create the connection manager
-      PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem);
-      // create new connections
-      for (KuwaibaConnection kuwaibaConnection : containerConnectionList) {
-         LOG.info("creating connection from: " + kuwaibaConnection);
-
-         String name = kuwaibaConnection.getConnectionClass().getName();
-         String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
-         String connectionTemplateName = kuwaibaConnection.getConnectionClass().getTemplateName();
-
-         String aObjectClass = kuwaibaConnection.getEndpointA().getClassName();
-         String aObjectName = kuwaibaConnection.getEndpointA().getName();
-
-         String bObjectClass = kuwaibaConnection.getEndpointB().getClassName();
-         String bObjectName = kuwaibaConnection.getEndpointB().getName();
-
-         // check if container already exists
-         try {
-            // see if there is an object with the same name
-            List<BusinessObject> foundObjects = bem.getObjectsWithFilter(connectionClass, Constants.PROPERTY_NAME, name);
-            if (!foundObjects.isEmpty()) {
-               BusinessObject createdObject = foundObjects.get(0);
-               LOG.info("createConnections - CONNECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
-               kuwaibaClassesExisting++;
-               continue; // go to next connection
-            }
-         } catch (Exception ex) {
-            throw new RuntimeException("problem finding existing container:", ex);
-         }
-
-         // check if a and and b objects exist
-         BusinessObject aObject = null;
-         BusinessObject bObject = null;
-         try {
-            // see if there is an object with the same name
-            List<BusinessObject> foundObjects = bem.getObjectsWithFilter(aObjectClass, Constants.PROPERTY_NAME, aObjectName);
-            if (!foundObjects.isEmpty()) {
-               aObject = foundObjects.get(0);
-            }
-            foundObjects = bem.getObjectsWithFilter(bObjectClass, Constants.PROPERTY_NAME, bObjectName);
-            if (!foundObjects.isEmpty()) {
-               bObject = foundObjects.get(0);
-            }
-         } catch (Exception ex) {
-            LOG.error("problem finding a and b end objects:", ex);
-         }
-         if (aObject == null || bObject == null)
-            throw new IllegalArgumentException("ends of connection cannot be null: aObject=" + aObject + "  bObject=" + bObject);
-
-         try {
-            String aObjectId = aObject.getId();
-            String bObjectId = bObject.getId();
-
-            // find template if exists
-            String templateId = null;
-            if (connectionTemplateName != null && !connectionTemplateName.isEmpty()) {
-               List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(connectionClass);
-               for (TemplateObjectLight tmplate : foundTemplates) {
-                  if (connectionTemplateName.equals(tmplate.getName())) {
-                     templateId = tmplate.getId();
-                     LOG.info("creating connection " + connectionClass + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
-                     break;
-                  }
-               }
-            }
-
-            String userName = "admin";
-
-            LOG.info("creating connection name " + name + " connectionClass" + connectionClass + " template" +
-                     templateId + " to end objects aObject=" + businessObjectToString(aObject) + "bObject=" + businessObjectToString(bObject));
-
-            physicalConnectionService.createPhysicalConnection(aObjectClass, aObjectId, bObjectClass, bObjectId, name, connectionClass, templateId, userName);
-         } catch (Exception ex) {
-            throw new IllegalArgumentException("problem creating physical connection:", ex);
-         }
-
-      }
-   }
-
    public void createObjects(List<KuwaibaClass> kuwaibaClassList) {
       for (KuwaibaClass kuwaibaClass : kuwaibaClassList) {
          LOG.info("PROCESSING kuwaibaClass: " + kuwaibaClass);
@@ -237,7 +157,7 @@ public class EntimossKuwaibaProvisioningTask2 {
    }
 
    /**
-    * creates new object with parent if object doesn't exist
+    * creates new object under parent if object doesn't exist
     * return BusinessObject of existing object or new object if does already exist
     * @param createObjectClassName
     * @param createObjectName
@@ -266,9 +186,9 @@ public class EntimossKuwaibaProvisioningTask2 {
 
       // check if parent object exists
       try {
-         
-         parentObject = findDirectParentClass( parentClasses);
-         
+
+         parentObject = findDirectParentClass(parentClasses);
+
       } catch (Exception ex) {
          throw new RuntimeException("createIfDoesntExist - problem finding parent object:", ex);
       }
@@ -365,7 +285,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             kuwaibaClassesNew++;
          } catch (Exception e) {
             LOG.error("problem creating object createObjectClass " + createObjectClassName +
-                     ", createObjectName:" + createObjectName + ", parentOid:" + parentObject.getId() + 
+                     ", createObjectName:" + createObjectName + ", parentOid:" + parentObject.getId() +
                      ", parentClassName " + parentObject.getClassName(), e);
          }
       }
@@ -374,6 +294,51 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
+   /**
+    * if KuwaibaClass searchCass has parents defined, find the parents and then find the class by name from among the children of parents.
+    * If KuwaibaClass does not have parents, try to find the class just by its name.
+    * @param searchClass
+    * @return null if not found
+    * @Throws exception if parents not null but do not exist
+    */
+   public BusinessObject findObjectWithParents(KuwaibaClass searchClass) {
+
+      BusinessObject foundObject = null;
+
+      try {
+
+         // find parent objects if specified
+         BusinessObject parentObject = findDirectParentClass(searchClass.getParentClasses());
+
+         List<BusinessObject> foundObjects;
+         if (parentObject != null) {
+            foundObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), searchClass.getName(), 0, 0);
+            for (BusinessObject child : foundObjects) {
+               if (child.getName().equals(searchClass.getName())) {
+                  foundObject = child;
+                  break;
+               }
+            }
+         } else {
+            foundObjects = bem.getObjectsWithFilter(searchClass.getClassName(), Constants.PROPERTY_NAME, searchClass.getName());
+            if (!foundObjects.isEmpty()) {
+               foundObject = foundObjects.get(0);
+
+            }
+         }
+
+         return foundObject;
+
+      } catch (Exception ex) {
+         throw new RuntimeException("problem finding existing object:", ex);
+      }
+   }
+
+   /**
+    * searches for parents in order of parentClasses list. 
+    * @param parentClasses
+    * @return parent class from the hierarchy
+    */
    public BusinessObject findDirectParentClass(List<KuwaibaClass> parentClasses) {
 
       if (parentClasses == null || parentClasses.isEmpty())
@@ -395,7 +360,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             throw new IllegalArgumentException("cannot find parent class " + parentClass.getClassName() + " name " + parentClass.getName());
          }
 
-         // iterate to find any children
+         // iterate parent list to find any children
          while (parentIterator.hasNext()) {
             parentClass = parentIterator.next();
 
@@ -417,13 +382,15 @@ public class EntimossKuwaibaProvisioningTask2 {
          }
 
       } catch (Exception ex) {
-         throw new RuntimeException("createIfDoesntExist - problem finding parent object:", ex);
+         throw new IllegalArgumentException("createIfDoesntExist - problem finding parent object:", ex);
       }
 
       return parentObject;
    }
-   
-   
+
+   /*
+    * TEMPLATE CREATION METHODS
+    */
 
    public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaChildTemplateElementList, String elementParentClassName, String elementParentId) {
       int templateElementsCreated = 0;
@@ -755,7 +722,7 @@ public class EntimossKuwaibaProvisioningTask2 {
          }
 
          for (int cableNo = 1; cableNo <= numberOfCables; cableNo++) {
-            String cableName = String.format("%02d", cableNo) + "-" + getColourForStrand(cableNo);
+            String cableName = String.format("%02d", cableNo) + "-" + ContainerColour.getColourForStrand(cableNo);
 
             // .createTemplateSpecialElement(String tsElementClass, String tsElementParentClassName, String tsElementParentId, String tsElementName)
             String cableObjectId = aem.createTemplateSpecialElement("WireContainer", "WireContainer", elementId, cableName);
@@ -763,7 +730,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
             // create fibers inside cable
             for (int fiberNo = 1; fiberNo <= numberOfFibers; fiberNo++) {
-               String fiberName = String.format("%02d", fiberNo) + "-" + getColourForStrand(fiberNo);
+               String fiberName = String.format("%02d", fiberNo) + "-" + ContainerColour.getColourForStrand(fiberNo);
                String opticalLinkObjectId = aem.createTemplateSpecialElement("OpticalLink", "WireContainer", cableObjectId, fiberName);
                LOG.info("created optical link id=" + opticalLinkObjectId + " cable name=" + fiberName);
                elementsCreated++;
@@ -780,26 +747,6 @@ public class EntimossKuwaibaProvisioningTask2 {
 
    }
 
-   /*
-    *  // https://www.thefoa.org/tech/ColCodes.htm
-    *  Inside the cable or inside each tube in a loose tube cable, individual fibers will be color coded for identification
-    *  1  Blue,  2  Orange, 3  Green, 4  Brown ,5  Slate, 6  White, 7  Red, 8  Black, 9  Yellow, 10    Violet, 11    Rose, 12    Aqua
-    */
-   static final List<String> orderedFibreColours = Arrays.asList("Blue", "Orange", "Green", "Brown", "Slate", "White", "Red", "Black", "Yellow", "Violet", "Rose", "Aqua");
-
-   public static String getColourForStrand(int no) {
-      if (no < 1 || no > orderedFibreColours.size()) {
-         throw new IllegalArgumentException("strand size out of range: " + no);
-      }
-      return orderedFibreColours.get(no - 1);
-   }
-
-   public static int getStrandForColour(String colour) {
-      int no = orderedFibreColours.indexOf(colour);
-      if (no < 0)
-         throw new IllegalArgumentException("unknown fibre colour: " + colour);
-      return no + 1;
-   }
 
    // overloaded toString methods for BusinessObjects
    String businessObjectToString(BusinessObject bo) {
@@ -814,8 +761,88 @@ public class EntimossKuwaibaProvisioningTask2 {
                         bo.getClassDisplayName() + ", getId()=" + bo.getId() + "]";
    }
 
-   // TODO 
-   // this is a clone of methods in the internal PhysicalConnectionsService because it is not accessible from a script
+   /*
+    * CONNECTION METHODS
+    */
+
+   public void createConnections(List<KuwaibaConnection> containerConnectionList) {
+      // create the connection manager
+      PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem);
+      // create new connections
+      for (KuwaibaConnection kuwaibaConnection : containerConnectionList) {
+         LOG.info("creating connection from: " + kuwaibaConnection);
+
+         String name = kuwaibaConnection.getConnectionClass().getName();
+         String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
+         String connectionTemplateName = kuwaibaConnection.getConnectionClass().getTemplateName();
+
+         //         String aObjectClass = kuwaibaConnection.getEndpointA().getClassName();
+         //         String aObjectName = kuwaibaConnection.getEndpointA().getName();
+         //
+         //         String bObjectClass = kuwaibaConnection.getEndpointB().getClassName();
+         //         String bObjectName = kuwaibaConnection.getEndpointB().getName();
+
+         // check if container already exists
+         try {
+            // see if there is an object with the same name
+            List<BusinessObject> foundObjects = bem.getObjectsWithFilter(connectionClass, Constants.PROPERTY_NAME, name);
+            if (!foundObjects.isEmpty()) {
+               BusinessObject createdObject = foundObjects.get(0);
+               LOG.info("createConnections - CONNECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
+               kuwaibaClassesExisting++;
+               continue; // go to next connection
+            }
+         } catch (Exception ex) {
+            throw new RuntimeException("problem finding existing container:", ex);
+         }
+
+         // check if a and and b objects exist
+         BusinessObject aObject = null;
+         BusinessObject bObject = null;
+         try {
+
+            aObject = findObjectWithParents(kuwaibaConnection.getEndpointA());
+
+            bObject = findObjectWithParents(kuwaibaConnection.getEndpointB());
+
+         } catch (Exception ex) {
+            LOG.error("problem finding a and b end objects:", ex);
+         }
+         if (aObject == null || bObject == null)
+            throw new IllegalArgumentException("ends of connection cannot be null: aObject=" + aObject + "  bObject=" + bObject);
+
+         try {
+            String aObjectId = aObject.getId();
+            String bObjectId = bObject.getId();
+
+            // find template if exists
+            String templateId = null;
+            if (connectionTemplateName != null && !connectionTemplateName.isEmpty()) {
+               List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(connectionClass);
+               for (TemplateObjectLight tmplate : foundTemplates) {
+                  if (connectionTemplateName.equals(tmplate.getName())) {
+                     templateId = tmplate.getId();
+                     LOG.info("creating connection " + connectionClass + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
+                     break;
+                  }
+               }
+            }
+
+            String userName = "admin";
+
+            LOG.info("creating connection name " + name + " connectionClass" + connectionClass + " template" +
+                     templateId + " to end objects aObject=" + businessObjectToString(aObject) + "bObject=" + businessObjectToString(bObject));
+
+            physicalConnectionService.createPhysicalConnection(aObject.getClassName(), aObjectId, bObject.getClassName(), bObjectId, name, connectionClass, templateId, userName);
+         } catch (Exception ex) {
+            throw new IllegalArgumentException("problem creating physical connection:", ex);
+         }
+
+      }
+   }
+
+   // TODO - allow service access from script in kuwaiba
+   // this is a clone of methods in the internal PhysicalConnectionsService because the service is not accessible from a script
    public static class PhysicalConnectionsServiceProxy {
 
       private ApplicationEntityManager aem;
@@ -927,8 +954,67 @@ public class EntimossKuwaibaProvisioningTask2 {
    }
 
    /*
+    * CLASS DEFINITIONS
     * These classes could be in separate java classes if not in a groovy script
     */
+
+   public static class ContainerColour {
+
+      /*
+       *  // https://www.thefoa.org/tech/ColCodes.htm
+       *  Inside the cable or inside each tube in a loose tube cable, individual fibers will be color coded for identification
+       *  1  Blue,  2  Orange, 3  Green, 4  Brown ,5  Slate, 6  White, 7  Red, 8  Black, 9  Yellow, 10    Violet, 11    Rose, 12    Aqua
+       */
+      public static final List<String> orderedFibreColours = Arrays.asList("Blue", "Orange", "Green", "Brown", "Slate", "White", "Red",
+               "Black", "Yellow", "Violet", "Rose", "Aqua");
+
+      public static String getColourForStrand(int no) {
+         if (no < 1 || no > orderedFibreColours.size()) {
+            throw new IllegalArgumentException("strand size out of range: " + no);
+         }
+         return orderedFibreColours.get(no - 1);
+      }
+
+      /**
+       * Used to find the fiber container colours for nested containers for a given circuit number 
+       * @param circuitNo circuit 1 .. n where n max is 12*12*12*12 - 1
+       * @return returns 4 segment array of colours for each nested container corresponding to a given circuit number
+       */
+      public static List<String> getNestedContainerColourList(int circuitNo) {
+         if (circuitNo < 1)
+            throw new IllegalArgumentException("circuitNo must be greater than 0: " + circuitNo);
+
+         ArrayList<String> containerColourList = new ArrayList<String>();
+         int radix = orderedFibreColours.size();
+
+         String basen = Integer.toString(circuitNo - 1, radix);
+         // escape %1$4s as breaks in groovy
+         String paddedbasen = String.format("%1\0444s", basen).replace(' ', '0');
+
+         System.out.println(circuitNo + " basen=" + basen + " paddedbasen=" + paddedbasen);
+
+         for (int i = 0; i < paddedbasen.length(); i++) {
+            String s = paddedbasen.substring(i, i + 1);
+            Integer colorIndex = Integer.parseInt(s, radix);
+            System.out.println("colorIndex:" + colorIndex);
+            String color = orderedFibreColours.get(colorIndex);
+            System.out.println("color:" + color);
+            containerColourList.add(color);
+         }
+
+         return containerColourList;
+
+      }
+
+      public static int getStrandForColour(String colour) {
+         int no = orderedFibreColours.indexOf(colour);
+         if (no < 0)
+            throw new IllegalArgumentException("unknown fibre colour: " + colour);
+         return no + 1;
+      }
+
+   }
+
    public static class KuwaibaClass {
 
       private String className = null;
@@ -1002,17 +1088,17 @@ public class EntimossKuwaibaProvisioningTask2 {
    }
 
    public static class KuwaibaProvisioningRequisition {
-      
+
       private List<KuwaibaTemplateDefinition> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateDefinition>();
 
       private List<KuwaibaClass> kuwaibaClassList = new ArrayList<KuwaibaClass>();
-      
+
       private List<KuwaibaConnection> kuwaibaConnectionList = new ArrayList<KuwaibaConnection>();
-      
+
       public KuwaibaProvisioningRequisition() {
          super();
       }
-      
+
       public List<KuwaibaTemplateDefinition> getKuwaibaTemplateList() {
          return kuwaibaTemplateList;
       }
@@ -1020,7 +1106,7 @@ public class EntimossKuwaibaProvisioningTask2 {
       public void setKuwaibaTemplateList(List<KuwaibaTemplateDefinition> kuwaibaTemplateList) {
          this.kuwaibaTemplateList = kuwaibaTemplateList;
       }
-      
+
       public List<KuwaibaClass> getKuwaibaClassList() {
          return kuwaibaClassList;
       }

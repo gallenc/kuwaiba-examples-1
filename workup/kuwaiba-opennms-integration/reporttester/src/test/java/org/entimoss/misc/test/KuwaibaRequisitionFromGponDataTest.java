@@ -32,8 +32,6 @@ import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
 import org.entimoss.kuwaiba.provisioning.KuwaibaProvisioningRequisition;
 import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
 import org.entimoss.kuwaiba.provisioning.KuwaibaConnection;
-import org.entimoss.misc.test.TestKuwaibaProvisioningRequisitionJson.GponConstants;
-import org.entimoss.misc.test.TestKuwaibaProvisioningRequisitionJson.KuwaibaGponProvisoner;
 
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -191,12 +189,12 @@ public class KuwaibaRequisitionFromGponDataTest {
                   int poleNo = uprnCount / (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO); // pole number
                   int localPolePortNo = uprnCount % (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO);
                   int poleSplitterNo = localPolePortNo / SECONDARY_SPLIT_RATIO; // splitter number on pole
-                  int poleSplitterPortNo = localPolePortNo % SECONDARY_SPLIT_RATIO; // port on splitter
+                  int poleSplitterOutPortNo = localPolePortNo % SECONDARY_SPLIT_RATIO; // port on splitter
 
                   // each cabinet splitter port associated with one poleSplitter
                   int cabinetNo = poleNo / (SPLITTERS_TO_USE_PER_POLE * SPLITTERS_TO_USE_PER_CAB);
                   int cabinetSplitterNo = (uprnCount / SECONDARY_SPLIT_RATIO) / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
-                  int cabinetSplitterPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
+                  int cabinetSplitterOutPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
 
                   // each olt has multiple shelves each with separate ports (2 x 8 port shelves = 16 possible splitters)
                   int oltShelfNo = cabinetSplitterNo / PORTS_PER_OLT_CARD;
@@ -206,9 +204,9 @@ public class KuwaibaRequisitionFromGponDataTest {
                   int oltNo = oltRangeStartNumber + cabinetNo;
 
                   LOG.debug("***********");
-                  LOG.debug("calculations:  uprnCount=" + uprnCount + ", poleNo=" + poleNo + ", poleSplitterNo=" + poleSplitterNo + ", poleSplitterPortNo=" + poleSplitterPortNo +
+                  LOG.debug("calculations:  uprnCount=" + uprnCount + ", poleNo=" + poleNo + ", poleSplitterNo=" + poleSplitterNo + ", poleSplitterOutPortNo=" + poleSplitterOutPortNo +
                            ", cabinetNo=" + cabinetNo +
-                           ", cabinetSplitterNo=" + cabinetSplitterNo + ", cabinetSplitterPortNo=" + cabinetSplitterPortNo + ", oltNo=" + oltNo + ", oltShelfNo=" + oltShelfNo +
+                           ", cabinetSplitterNo=" + cabinetSplitterNo + ", cabinetSplitterOutPortNo=" + cabinetSplitterOutPortNo + ", oltNo=" + oltNo + ", oltShelfNo=" + oltShelfNo +
                            ", oltPortNo=" + oltPortNo);
 
                   // create house UPRN , ONT if doesn't exist splice 2 fibres
@@ -336,7 +334,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String secondarySplitterComment = "";
                   String secondarySplitterSerialNumber = "";
                   String secondarySplitterAssetNumber = "";
-                  Integer secondarySplitterPortNumber = poleSplitterPortNo;
+                  String secondarySplitterOutPortName = String.format("%03d", poleSplitterOutPortNo+1)+"-OUT";
 
                   String primarySplitterName = cabinetSplitterName; //  (splitters in cabinets)
                   String primarySplitterContainerName = cabinetName;
@@ -345,7 +343,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String primarySplitterComment = "";
                   String primarySplitterSerialNumber = "";
                   String primarySplitterAssetNumber = "";
-                  Integer primarySplitterPortNumber = cabinetSplitterPortNo;
+                  String primarySplitterOutPortName = String.format("%03d", cabinetSplitterOutPortNo+1)+"-OUT";
 
                   String oltLabelName = oltName; // (ltes in cabinets)
                   String oltFexName = parentFexName;
@@ -355,8 +353,8 @@ public class KuwaibaRequisitionFromGponDataTest {
                   String oltComment = "";
                   String oltSerialNumber = "";
                   String oltAssetNumber = "";
-                  Integer oltCardNumber = oltShelfNo; // TODO
-                  Integer oltCardPortNumber = oltPortNo; // TODO
+                  String oltCardName = "card-"+String.format("%03d", oltShelfNo+1);    // TODO
+                  String oltCardPortName = "PON-"+String.format("%03d", oltPortNo+1);  // TODO
 
                   String cspLabelName = cspName;
 
@@ -370,13 +368,13 @@ public class KuwaibaRequisitionFromGponDataTest {
                            cspLabelName,
 
                            secondarySplitterName, secondarySplitterContainerName, secondarySplitterContainerLatitude, secondarySplitterContainerLongitude,
-                           secondarySplitterComment, secondarySplitterSerialNumber, secondarySplitterAssetNumber, secondarySplitterPortNumber,
+                           secondarySplitterComment, secondarySplitterSerialNumber, secondarySplitterAssetNumber, secondarySplitterOutPortName,
 
                            primarySplitterName, primarySplitterContainerName, primarySplitterContainerLatitude, primarySplitterContainerLongitude,
-                           primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber, primarySplitterPortNumber,
+                           primarySplitterComment, primarySplitterSerialNumber, primarySplitterAssetNumber, primarySplitterOutPortName,
 
                            oltLabelName, oltRackName, oltFexLatitude, oltFexLongitude, oltIpAddress, oltComment, oltSerialNumber, oltAssetNumber,
-                           oltCardNumber, oltCardPortNumber);
+                           oltCardName, oltCardPortName);
 
                   uprnCount++;
 
@@ -461,13 +459,13 @@ public class KuwaibaRequisitionFromGponDataTest {
                String cspLabelName,
 
                String secondarySplitterName, String secondarySplitterContainerName, Double secondarySplitterContainerLatitude, Double secondarySplitterContainerLongitude,
-               String secondarySplitterComment, String secondarySplitterSerialNumber, String secondarySplitterAssetNumber, Integer secondarySplitterPortNumber,
+               String secondarySplitterComment, String secondarySplitterSerialNumber, String secondarySplitterAssetNumber, String secondarySplitterOutPortName,
 
                String primarySplitterName, String primarySplitterContainerName, Double primarySplitterContainerLatitude, Double primarySplitterContainerLongitude,
-               String primarySplitterComment, String primarySplitterSerialNumber, String primarySplitterAssetNumber, Integer primarySplitterPortNumber,
+               String primarySplitterComment, String primarySplitterSerialNumber, String primarySplitterAssetNumber, String primarySplitterOutPortName,
 
                String oltLabelName, String oltFexName, Double oltFexLatitude, Double oltFexLongitude, String oltIpAddress,
-               String oltComment, String oltSerialNumber, String oltAssetNumber, Integer oltCardNumber, Integer oltCardPortNumber) {
+               String oltComment, String oltSerialNumber, String oltAssetNumber, String oltCardName, String oltCardPortName) {
 
          // Street container 
          if (!streetNames.contains(ontStreet)) {
@@ -659,8 +657,9 @@ public class KuwaibaRequisitionFromGponDataTest {
           * WiredContainer connections
           * 
           */
+         
          // csp to ont
-         // e.g "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492"
+         // e.g "BFU_1_2_CSP_200001919492_UPRN_200001919492"
          // block to isolate repeat variables
          try {
             KuwaibaConnection connection1 = new KuwaibaConnection();
@@ -682,7 +681,8 @@ public class KuwaibaRequisitionFromGponDataTest {
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_1_2");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
+            String connectionClassName = connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName();
+            connectionClass.setName(connectionClassName);
 
             connection1.setConnectionClass(connectionClass);
 
@@ -719,7 +719,8 @@ public class KuwaibaRequisitionFromGponDataTest {
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_1_2");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
+            String connectionClassName = connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName();
+            connectionClass.setName(connectionClassName);
 
             connection1.setConnectionClass(connectionClass);
 
@@ -756,7 +757,8 @@ public class KuwaibaRequisitionFromGponDataTest {
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_1_4");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
+            String connectionClassName = connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName();
+            connectionClass.setName(connectionClassName);
 
             connection1.setConnectionClass(connectionClass);
 
@@ -792,7 +794,8 @@ public class KuwaibaRequisitionFromGponDataTest {
             connectionClass.setClassName("WireContainer");
             connectionClass.setTemplateName("BFU_4_12");
 
-            connectionClass.setName(connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName());
+            String connectionClassName = connectionClass.getTemplateName() + "_" + endpointA.getName() + "_" + endpointB.getName();
+            connectionClass.setName(connectionClassName);
 
             connection1.setConnectionClass(connectionClass);
 
@@ -807,6 +810,10 @@ public class KuwaibaRequisitionFromGponDataTest {
          }
 
       }
+      
+      
+      
+      
 
       public void addStaticObjectsToProvisioningRequisition() {
 
