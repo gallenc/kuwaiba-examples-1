@@ -23,18 +23,21 @@ public class ContainerColour {
    /**
     * Used to find the fiber container colours for nested containers for a given circuit number 
     * @param circuitNo circuit 1 .. n where n max is 12*12*12*12 - 1
+    * @param depth number of layers to include in result. Null includes all layers
     * @return returns 4 segment array of colours for each nested container corresponding to a given circuit number
     */
-   public static List<String> getNestedContainerColourList(int circuitNo) {
+   public static List<String> getNestedContainerColourList(int circuitNo, Integer depth) {
       if (circuitNo < 1)
          throw new IllegalArgumentException("circuitNo must be greater than 0: " + circuitNo);
+      if (depth !=null && (depth < 1 || depth > 5) )
+         throw new IllegalArgumentException("deapth must be greater than 0 and less than 5 : " + depth);
 
       ArrayList<String> containerColourList = new ArrayList<String>();
       int radix = orderedFibreColours.size();
       
       String basen = Integer.toString(circuitNo-1,radix );
       // escape %1$4s as breaks in groovy
-      String paddedbasen = String.format("%1\0444s", basen).replace(' ', '0');
+      String paddedbasen = String.format("%1\0446s", basen).replace(' ', '0');
       
       //System.out.println(circuitNo+" basen="+basen+" paddedbasen="+paddedbasen);
       
@@ -47,11 +50,14 @@ public class ContainerColour {
          containerColourList.add(color);
       }
       
+      if(depth !=null) {
+         ArrayList<String> colList = new ArrayList<String>(containerColourList.subList(containerColourList.size() - depth, containerColourList.size()));
+         containerColourList = colList;
+      }
+      
       return  containerColourList ;
 
    }
-
-
 
    public static int getStrandForColour(String colour) {
       int no = orderedFibreColours.indexOf(colour);

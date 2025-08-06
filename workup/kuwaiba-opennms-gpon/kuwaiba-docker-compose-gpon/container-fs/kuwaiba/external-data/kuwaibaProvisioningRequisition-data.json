@@ -3968,6 +3968,98 @@
     }
   }, {
     "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_CSP_10001317283_001-front_BFU_1_2_CSP_10001317283_ONT_10001317283__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-front",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_10001317283_ONT_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_ONT_10001317283_IN-01_BFU_1_2_CSP_10001317283_ONT_10001317283__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_10001317283_ONT_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-01",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalNetworkTerminal",
+        "templateName" : null,
+        "name" : "ONT_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
       "className" : "WireContainer",
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_10001317283",
@@ -4068,6 +4160,98 @@
     }
   }, {
     "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_CSP_100060677240_001-front_BFU_1_2_CSP_100060677240_ONT_100060677240__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-front",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677240",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677240_ONT_100060677240",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_ONT_100060677240_IN-01_BFU_1_2_CSP_100060677240_ONT_100060677240__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677240_ONT_100060677240",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-01",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalNetworkTerminal",
+        "templateName" : null,
+        "name" : "ONT_100060677240",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
       "className" : "WireContainer",
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677240",
@@ -4114,6 +4298,98 @@
       "name" : "ONT_100060677241",
       "special" : false,
       "parentClasses" : [ ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_CSP_100060677241_001-front_BFU_1_2_CSP_100060677241_ONT_100060677241__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-front",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677241",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677241_ONT_100060677241",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_ONT_100060677241_IN-01_BFU_1_2_CSP_100060677241_ONT_100060677241__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677241_ONT_100060677241",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-01",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalNetworkTerminal",
+        "templateName" : null,
+        "name" : "ONT_100060677241",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     }
   }, {
@@ -4168,6 +4444,98 @@
     }
   }, {
     "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_CSP_100060677242_001-front_BFU_1_2_CSP_100060677242_ONT_100060677242__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-front",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677242",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677242_ONT_100060677242",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_ONT_100060677242_IN-01_BFU_1_2_CSP_100060677242_ONT_100060677242__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677242_ONT_100060677242",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-01",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalNetworkTerminal",
+        "templateName" : null,
+        "name" : "ONT_100060677242",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
       "className" : "WireContainer",
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677242",
@@ -4214,6 +4582,98 @@
       "name" : "ONT_100060677243",
       "special" : false,
       "parentClasses" : [ ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_CSP_100060677243_001-front_BFU_1_2_CSP_100060677243_ONT_100060677243__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-front",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677243",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677243_ONT_100060677243",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "OpticalLink_ONT_100060677243_IN-01_BFU_1_2_CSP_100060677243_ONT_100060677243__001-Blue_001-Blue",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "001-Blue",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_100060677243_ONT_100060677243",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "001-Blue",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-01",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalNetworkTerminal",
+        "templateName" : null,
+        "name" : "ONT_100060677243",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     }
   }, {

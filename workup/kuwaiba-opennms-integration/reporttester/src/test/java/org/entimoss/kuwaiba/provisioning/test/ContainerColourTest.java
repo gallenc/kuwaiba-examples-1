@@ -21,36 +21,41 @@ public class ContainerColourTest {
 
       for (circuitNo = 1; circuitNo <= 12; circuitNo++) {
          System.out.println("container colour list for circuitNo=" + circuitNo);
-         List<String> containers = ContainerColour.getNestedContainerColourList(circuitNo);
+         List<String> containers = ContainerColour.getNestedContainerColourList(circuitNo, null);
          System.out.println("  containers=" + containers);
          assertEquals(ContainerColour.getColourForStrand(circuitNo), containers.get(containers.size()-1));
       }
 
       circuitNo = 13;
       System.out.println("container colour list for circuitNo=" + circuitNo);
-      List<String> containers = ContainerColour.getNestedContainerColourList(circuitNo);
+      List<String> containers = ContainerColour.getNestedContainerColourList(circuitNo, null);
       System.out.println("  containers=" + containers);
       assertEquals(ContainerColour.getColourForStrand(1), containers.get(containers.size()-1));
       assertEquals(ContainerColour.getColourForStrand(2), containers.get(containers.size()-2));
 
       circuitNo = 14;
       System.out.println("container colour list for circuitNo=" + circuitNo);
-      containers = ContainerColour.getNestedContainerColourList(circuitNo);
+      containers = ContainerColour.getNestedContainerColourList(circuitNo, null);
       System.out.println("  containers=" + containers);
       assertEquals(ContainerColour.getColourForStrand(2), containers.get(containers.size()-1));
       assertEquals(ContainerColour.getColourForStrand(2), containers.get(containers.size()-2));
 
       circuitNo = (ContainerColour.orderedFibreColours.size() * ContainerColour.orderedFibreColours.size() * ContainerColour.orderedFibreColours.size());
       System.out.println("container colour list for circuitNo=" + circuitNo);
-      containers = ContainerColour.getNestedContainerColourList(circuitNo);
+      containers = ContainerColour.getNestedContainerColourList(circuitNo, null);
       System.out.println("  containers=" + containers);
       // assertEquals(ContainerColour.getColourForStrand(1), containers.get(0));
 
       circuitNo = (ContainerColour.orderedFibreColours.size() * ContainerColour.orderedFibreColours.size() * ContainerColour.orderedFibreColours.size()) - 1;
       System.out.println("container colour list for circuitNo=" + circuitNo);
-      containers = ContainerColour.getNestedContainerColourList(circuitNo);
+      containers = ContainerColour.getNestedContainerColourList(circuitNo, null);
       System.out.println("  containers=" + containers);
       //(ContainerColour.getColourForStrand(1), containers.get(0));
+      
+      Integer deapth = 3;
+      System.out.println("container colour list for circuitNo=" + circuitNo+" deapth="+deapth);
+      containers = ContainerColour.getNestedContainerColourList(circuitNo, deapth);
+      System.out.println("  containers=" + containers);
 
    }
 

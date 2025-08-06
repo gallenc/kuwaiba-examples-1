@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.ArrayList;
 
+import org.entimoss.kuwaiba.provisioning.ContainerColour;
 import org.entimoss.kuwaiba.provisioning.KuwaibaClass;
 import org.entimoss.kuwaiba.provisioning.KuwaibaProvisioningRequisition;
 import org.entimoss.kuwaiba.provisioning.KuwaibaTemplateDefinition;
@@ -100,6 +101,11 @@ public class KuwaibaRequisitionFromGponDataTest {
     */
    //TODO - REMOVE limit lines for full file
    Integer UPRN_limitLines = 5;
+   
+   /*
+    * set true if circuits should be generated
+    */
+   Boolean generateCircuits = true;
 
    /* lteRangeStartNumber
     * number to start range of lte in FEX (e.g one lte per region)
@@ -661,6 +667,7 @@ public class KuwaibaRequisitionFromGponDataTest {
          // csp to ont
          // e.g "BFU_1_2_CSP_200001919492_UPRN_200001919492"
          // block to isolate repeat variables
+         
          try {
             KuwaibaConnection connection1 = new KuwaibaConnection();
 
@@ -691,10 +698,75 @@ public class KuwaibaRequisitionFromGponDataTest {
                connectionNames.add(connectionClass.getName());
                pr.getKuwaibaConnectionList().add(connection1);
             }
+            
+            // if createCircuits
+            if(generateCircuits) {
+               
+               // WireContainer strand
+               KuwaibaClass endpointLinkContainerClass = new KuwaibaClass();
+               endpointLinkContainerClass.getParentClasses().add(connectionClass);
+               
+               String compoundContainerName="";
+               List<String> colourList = ContainerColour.getNestedContainerColourList(1,2);
+               Iterator<String> colListIterator = colourList.iterator();
+               while(colListIterator.hasNext()) {
+                  String color = colListIterator.next();
+                  String name = String.format("%03d", ContainerColour.getStrandForColour(color))+"-"+color;
+                  compoundContainerName = compoundContainerName+"_"+name;
+                  KuwaibaClass newContainerClass = new KuwaibaClass();
+                  if(colListIterator.hasNext()) {
+                     newContainerClass.setClassName("WireContainer");
+                     newContainerClass.setName(name);
+                     endpointLinkContainerClass.getParentClasses().add(newContainerClass);
+                  } else {
+                     endpointLinkContainerClass.setClassName("OpticalLink");
+                     endpointLinkContainerClass.setName(name);
+                  }
+               }
+
+               // csp optical terminal
+               KuwaibaClass opticalEndpointA = new KuwaibaClass();
+               opticalEndpointA.setName("001-front");
+               opticalEndpointA.setClassName("OpticalPort");
+               opticalEndpointA.getParentClasses().add(endpointA);
+               
+               KuwaibaConnection endpointLinkA = new KuwaibaConnection();
+               endpointLinkA.setEndpointA(opticalEndpointA);
+               endpointLinkA.setEndpointB(endpointLinkContainerClass);
+               
+               KuwaibaClass endpointAopticalConnectionClass = new KuwaibaClass();
+               endpointAopticalConnectionClass.setClassName("OpticalLink");
+               String endpointAopticalConnectionName = "OpticalLink" + "_"+ endpointA.getName() +"_" + opticalEndpointA.getName() + "_"+ connectionClassName +"_" + compoundContainerName;
+               endpointAopticalConnectionClass.setName(endpointAopticalConnectionName);
+               endpointLinkA.setConnectionClass(endpointAopticalConnectionClass);
+               pr.getKuwaibaConnectionList().add(endpointLinkA);
+
+               // ont optical terminal
+               KuwaibaClass opticalEndpointB = new KuwaibaClass();
+               opticalEndpointB.setName("IN-01");
+               opticalEndpointB.setClassName("OpticalPort");
+               opticalEndpointB.getParentClasses().add(endpointB);
+               
+               KuwaibaConnection endpointLinkB = new KuwaibaConnection();
+               endpointLinkB.setEndpointA(endpointLinkContainerClass);
+               endpointLinkB.setEndpointB(opticalEndpointB);
+               
+               KuwaibaClass endpointBopticalConnectionClass = new KuwaibaClass();
+               endpointBopticalConnectionClass.setClassName("OpticalLink");
+               String endpointBopticalConnectionName = "OpticalLink" + "_"+ endpointB.getName() +"_" + opticalEndpointB.getName() + "_"+ connectionClassName +"_" + compoundContainerName;
+               endpointBopticalConnectionClass.setName(endpointBopticalConnectionName);
+               endpointLinkB.setConnectionClass(endpointBopticalConnectionClass);
+               pr.getKuwaibaConnectionList().add(endpointLinkB);
+
+               
+
+
+            }
 
          } catch (Exception e) {
             e.printStackTrace();
          }
+
 
          // pole to house
          // e.g "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492"
@@ -812,9 +884,9 @@ public class KuwaibaRequisitionFromGponDataTest {
       }
       
       
-      
-      
-
+      /*
+       * STATIC PROVISIONING REQUISITIONS
+       */
       public void addStaticObjectsToProvisioningRequisition() {
 
          // create Southampton if doesn't exist

@@ -309,10 +309,11 @@ public class EntimossKuwaibaProvisioningTask2 {
 
          // find parent objects if specified
          BusinessObject parentObject = findDirectParentClass(searchClass.getParentClasses());
+         LOG.info("findObjectWithParents directParent="+ businessObjectToString(parentObject));
 
          List<BusinessObject> foundObjects;
          if (parentObject != null) {
-            foundObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), searchClass.getName(), 0, 0);
+            foundObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), 0, 0);
             for (BusinessObject child : foundObjects) {
                if (child.getName().equals(searchClass.getName())) {
                   foundObject = child;
@@ -377,7 +378,7 @@ public class EntimossKuwaibaProvisioningTask2 {
 
             if (foundObject == null)
                throw new IllegalArgumentException("cannot find parent class from listed parent " + parentClass.getClassName() +
-                        " name " + parentClass.getName() + "for kuwaiba parent object id" + parentObject.getId() +
+                        " name " + parentClass.getName() + " for kuwaiba parent object id" + parentObject.getId() +
                         " parent object class " + parentObject.getClassName());
          }
 
@@ -811,7 +812,8 @@ public class EntimossKuwaibaProvisioningTask2 {
             LOG.error("problem finding a and b end objects:", ex);
          }
          if (aObject == null || bObject == null)
-            throw new IllegalArgumentException("ends of connection cannot be null: aObject=" + aObject + "  bObject=" + bObject);
+            throw new IllegalArgumentException("ends of connection cannot be null: endpointA=" + kuwaibaConnection.getEndpointA() + " aObject=" + aObject +
+                     " endpointB=" + kuwaibaConnection.getEndpointB() + "  bObject=" + bObject);
 
          try {
             String aObjectId = aObject.getId();
@@ -983,29 +985,42 @@ public class EntimossKuwaibaProvisioningTask2 {
       /**
        * Used to find the fiber container colours for nested containers for a given circuit number 
        * @param circuitNo circuit 1 .. n where n max is 12*12*12*12 - 1
+       * @param depth number of layers to include in result. Null includes all layers
        * @return returns 4 segment array of colours for each nested container corresponding to a given circuit number
        */
-      public static List<String> getNestedContainerColourList(int circuitNo) {
+      public static List<String> getNestedContainerColourList(int circuitNo, Integer depth) {
          if (circuitNo < 1)
             throw new IllegalArgumentException("circuitNo must be greater than 0: " + circuitNo);
+         if (depth !=null && (depth < 1 || depth > 5) )
+            throw new IllegalArgumentException("deapth must be greater than 0 and less than 5 : " + depth);
 
          ArrayList<String> containerColourList = new ArrayList<String>();
          int radix = orderedFibreColours.size();
-
-         String basen = Integer.toString(circuitNo - 1, radix);
+         
+         String basen = Integer.toString(circuitNo-1,radix );
          // escape %1$4s as breaks in groovy
-         String paddedbasen = String.format("%1\0444s", basen).replace(' ', '0');
-
-         for (int i = 0; i < paddedbasen.length(); i++) {
-            String s = paddedbasen.substring(i, i + 1);
+         String paddedbasen = String.format("%1\0446s", basen).replace(' ', '0');
+         
+         //System.out.println(circuitNo+" basen="+basen+" paddedbasen="+paddedbasen);
+         
+         for(int i=0; i<paddedbasen.length(); i++) {
+            String s = paddedbasen.substring(i, i+1);
             Integer colorIndex = Integer.parseInt(s, radix);
-            String color = orderedFibreColours.get(colorIndex);
+            //System.out.println("colorIndex:"+colorIndex);
+            String color = orderedFibreColours.get( colorIndex );
+            //System.out.println("color:"+color);
             containerColourList.add(color);
          }
-
-         return containerColourList;
+         
+         if(depth !=null) {
+            ArrayList<String> colList = new ArrayList<String>(containerColourList.subList(containerColourList.size() - depth, containerColourList.size()));
+            containerColourList = colList;
+         }
+         
+         return  containerColourList ;
 
       }
+
 
       public static int getStrandForColour(String colour) {
          int no = orderedFibreColours.indexOf(colour);
