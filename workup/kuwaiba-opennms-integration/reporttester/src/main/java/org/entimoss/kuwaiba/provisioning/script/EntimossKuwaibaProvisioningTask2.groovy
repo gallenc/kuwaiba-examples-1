@@ -313,13 +313,31 @@ public class EntimossKuwaibaProvisioningTask2 {
 
          List<BusinessObject> foundObjects;
          if (parentObject != null) {
+            
+            if (searchClass.getSpecial()) {
+               List<BusinessObjectLight> foundLightObjects = bem.getSpecialChildrenOfClassLight(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), -1);
+               LOG.info("findObjectWithParents parentObject.getId()=" + parentObject.getId() + ", parentObject.getClassName()=" + parentObject.getClassName() +
+                        ", searchClass.getClassName()=" + searchClass.getClassName() + ", searchClass.getSpecial()=" + searchClass.getSpecial() + ", foundLightObjects=" + foundLightObjects);
+               for (BusinessObjectLight child : foundLightObjects) {
+                  if (child.getName().equals(searchClass.getName())) {
+                     foundObject = bem.getObject(child.getClassName(), child.getId() ) ;
+                     break;
+                  }
+               }
+
+            } else {
             foundObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), 0, 0);
+            LOG.info("findObjectWithParents parentObject.getId()="+parentObject.getId()+", parentObject.getClassName()="+parentObject.getClassName()+
+                        ", searchClass.getClassName()=" + searchClass.getClassName() + ", searchClass.getSpecial()=" + searchClass.getSpecial() + ", foundObjects=" + foundObjects);
             for (BusinessObject child : foundObjects) {
                if (child.getName().equals(searchClass.getName())) {
                   foundObject = child;
                   break;
                }
             }
+
+         }
+
          } else {
             foundObjects = bem.getObjectsWithFilter(searchClass.getClassName(), Constants.PROPERTY_NAME, searchClass.getName());
             if (!foundObjects.isEmpty()) {
@@ -328,6 +346,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             }
          }
 
+         LOG.info("findObjectWithParents found object ="+ businessObjectToString(foundObject));
          return foundObject;
 
       } catch (Exception ex) {
@@ -353,10 +372,12 @@ public class EntimossKuwaibaProvisioningTask2 {
 
          // find first object in parent list
          KuwaibaClass parentClass = parentIterator.next();
+         LOG.info("findDirectParentClass looking for first parentObject " + parentClass);
+         
          List<BusinessObject> foundObjects = bem.getObjectsWithFilter(parentClass.getClassName(), Constants.PROPERTY_NAME, parentClass.getName());
          if (!foundObjects.isEmpty()) {
             parentObject = foundObjects.get(0);
-            LOG.info("findParentClass parentObject exists " + businessObjectToString(parentObject));
+            LOG.info("findDirectParentClass first parentObject exists " + businessObjectToString(parentObject));
          } else {
             throw new IllegalArgumentException("cannot find parent class " + parentClass.getClassName() + " name " + parentClass.getName());
          }
@@ -364,6 +385,7 @@ public class EntimossKuwaibaProvisioningTask2 {
          // iterate parent list to find any children
          while (parentIterator.hasNext()) {
             parentClass = parentIterator.next();
+            LOG.info("findDirectParentClass looking for next parentObject " + parentClass);
 
             BusinessObject foundObject = null;
 
@@ -371,7 +393,7 @@ public class EntimossKuwaibaProvisioningTask2 {
             for (BusinessObject businessObject : foundObjects) {
                if (businessObject.getName().equals(parentClass.getName())) {
                   foundObject = businessObject;
-                  LOG.info("findParentClass found parent child " + businessObjectToString(foundObject));
+                  LOG.info("findDirectParentClass found parent child " + businessObjectToString(foundObject));
                   break;
                }
             }
@@ -380,6 +402,8 @@ public class EntimossKuwaibaProvisioningTask2 {
                throw new IllegalArgumentException("cannot find parent class from listed parent " + parentClass.getClassName() +
                         " name " + parentClass.getName() + " for kuwaiba parent object id" + parentObject.getId() +
                         " parent object class " + parentObject.getClassName());
+            
+            parentObject = foundObject;
          }
 
       } catch (Exception ex) {
@@ -773,7 +797,7 @@ public class EntimossKuwaibaProvisioningTask2 {
       PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem);
       // create new connections
       for (KuwaibaConnection kuwaibaConnection : containerConnectionList) {
-         LOG.info("creating connection from: " + kuwaibaConnection);
+         LOG.info("creating connection using: " + kuwaibaConnection);
 
          String name = kuwaibaConnection.getConnectionClass().getName();
          String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
@@ -812,8 +836,8 @@ public class EntimossKuwaibaProvisioningTask2 {
             LOG.error("problem finding a and b end objects:", ex);
          }
          if (aObject == null || bObject == null)
-            throw new IllegalArgumentException("ends of connection cannot be null: endpointA=" + kuwaibaConnection.getEndpointA() + " aObject=" + aObject +
-                     " endpointB=" + kuwaibaConnection.getEndpointB() + "  bObject=" + bObject);
+            throw new IllegalArgumentException("ends of connection cannot be null:  aObject=" + aObject + " from endpointA=" + kuwaibaConnection.getEndpointA() + 
+                     "  bObject=" + bObject+ " from endpointB=" + kuwaibaConnection.getEndpointB() );
 
          try {
             String aObjectId = aObject.getId();

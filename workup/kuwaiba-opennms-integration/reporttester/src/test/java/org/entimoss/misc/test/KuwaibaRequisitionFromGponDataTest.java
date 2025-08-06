@@ -699,7 +699,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                pr.getKuwaibaConnectionList().add(connection1);
             }
             
-            // if createCircuits
+            // if generateCircuits
             if(generateCircuits) {
                
                // WireContainer strand
@@ -711,7 +711,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                Iterator<String> colListIterator = colourList.iterator();
                while(colListIterator.hasNext()) {
                   String color = colListIterator.next();
-                  String name = String.format("%03d", ContainerColour.getStrandForColour(color))+"-"+color;
+                  String name = String.format("%02d", ContainerColour.getStrandForColour(color))+"-"+color;
                   compoundContainerName = compoundContainerName+"_"+name;
                   KuwaibaClass newContainerClass = new KuwaibaClass();
                   if(colListIterator.hasNext()) {
@@ -721,6 +721,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                   } else {
                      endpointLinkContainerClass.setClassName("OpticalLink");
                      endpointLinkContainerClass.setName(name);
+                     endpointLinkContainerClass.setSpecial(true);
                   }
                }
 
