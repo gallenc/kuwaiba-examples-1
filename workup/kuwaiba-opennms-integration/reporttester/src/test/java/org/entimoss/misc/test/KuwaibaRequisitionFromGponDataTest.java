@@ -455,6 +455,34 @@ public class KuwaibaRequisitionFromGponDataTest {
       public KuwaibaProvisioningRequisition finalise() {
          return pr;
       }
+      
+      public KuwaibaClass createEndpointOpticalLinkContainerClass(KuwaibaClass connectionClass, Integer circuitNo, Integer deapth) {
+         
+         KuwaibaClass endpointLinkContainerClass = new KuwaibaClass();
+         
+         endpointLinkContainerClass.getParentClasses().add(connectionClass);
+
+         List<String> colourList = ContainerColour.getNestedContainerColourList(circuitNo, deapth);
+         Iterator<String> colListIterator = colourList.iterator();
+         while (colListIterator.hasNext()) {
+            String color = colListIterator.next();
+            String name = String.format("%02d", ContainerColour.getStrandForColour(color)) + "-" + color;
+            KuwaibaClass newContainerClass = new KuwaibaClass();
+            if (colListIterator.hasNext()) {
+               newContainerClass.setClassName("WireContainer");
+               newContainerClass.setName(name);
+               newContainerClass.setSpecial(true);
+               endpointLinkContainerClass.getParentClasses().add(newContainerClass);
+            } else {
+               endpointLinkContainerClass.setClassName("OpticalLink");
+               endpointLinkContainerClass.setName(name);
+               endpointLinkContainerClass.setSpecial(true);
+            }
+         }
+         
+         return endpointLinkContainerClass;
+
+      }
 
       public void addLineToKuwaibaRequisition(
                String ontLabelName, String ontContainerName, Double ontContainerLatitude, Double ontContainerLongitude, String ontIpAddress,
@@ -664,8 +692,9 @@ public class KuwaibaRequisitionFromGponDataTest {
           * 
           */
 
+
          // csp to ont
-         // e.g "BFU_1_2_CSP_200001919492_UPRN_200001919492"
+         // e.g "BFU_1_2_CSP_200001919492_ONT_200001919492"
          // block to isolate repeat variables
 
          try {
@@ -699,77 +728,11 @@ public class KuwaibaRequisitionFromGponDataTest {
                pr.getKuwaibaConnectionList().add(connection1);
             }
 
-            //TODO REMOVE
-            //            // if generateCircuits
-            //            if(generateCircuits) {
-            //               
-            //               // WireContainer strand
-            //               KuwaibaClass endpointLinkContainerClass = new KuwaibaClass();
-            //               endpointLinkContainerClass.getParentClasses().add(connectionClass);
-            //               
-            //               String compoundContainerName="";
-            //               List<String> colourList = ContainerColour.getNestedContainerColourList(1,2);
-            //               Iterator<String> colListIterator = colourList.iterator();
-            //               while(colListIterator.hasNext()) {
-            //                  String color = colListIterator.next();
-            //                  String name = String.format("%02d", ContainerColour.getStrandForColour(color))+"-"+color;
-            //                  compoundContainerName = compoundContainerName+"_"+name;
-            //                  KuwaibaClass newContainerClass = new KuwaibaClass();
-            //                  if(colListIterator.hasNext()) {
-            //                     newContainerClass.setClassName("WireContainer");
-            //                     newContainerClass.setName(name);
-            //                     endpointLinkContainerClass.getParentClasses().add(newContainerClass);
-            //                  } else {
-            //                     endpointLinkContainerClass.setClassName("OpticalLink");
-            //                     endpointLinkContainerClass.setName(name);
-            //                     endpointLinkContainerClass.setSpecial(true);
-            //                  }
-            //               }
-            //
-            //               // csp optical terminal
-            //               KuwaibaClass opticalEndpointA = new KuwaibaClass();
-            //               opticalEndpointA.setName("001-front");
-            //               opticalEndpointA.setClassName("OpticalPort");
-            //               opticalEndpointA.getParentClasses().add(endpointA);
-            //               
-            //               KuwaibaConnection endpointLinkA = new KuwaibaConnection();
-            //               endpointLinkA.setEndpointA(opticalEndpointA);
-            //               endpointLinkA.setEndpointB(endpointLinkContainerClass);
-            //               
-            //               KuwaibaClass endpointAopticalConnectionClass = new KuwaibaClass();
-            //               endpointAopticalConnectionClass.setClassName("OpticalLink");
-            //               String endpointAopticalConnectionName = "OpticalLink" + "_"+ endpointA.getName() +"_" + opticalEndpointA.getName() + "_"+ connectionClassName +"_" + compoundContainerName;
-            //               endpointAopticalConnectionClass.setName(endpointAopticalConnectionName);
-            //               endpointLinkA.setConnectionClass(endpointAopticalConnectionClass);
-            //               pr.getKuwaibaConnectionList().add(endpointLinkA);
-            //
-            //               // ont optical terminal
-            //               KuwaibaClass opticalEndpointB = new KuwaibaClass();
-            //               opticalEndpointB.setName("IN-01");
-            //               opticalEndpointB.setClassName("OpticalPort");
-            //               opticalEndpointB.getParentClasses().add(endpointB);
-            //               
-            //               KuwaibaConnection endpointLinkB = new KuwaibaConnection();
-            //               endpointLinkB.setEndpointA(endpointLinkContainerClass);
-            //               endpointLinkB.setEndpointB(opticalEndpointB);
-            //               
-            //               KuwaibaClass endpointBopticalConnectionClass = new KuwaibaClass();
-            //               endpointBopticalConnectionClass.setClassName("OpticalLink");
-            //               String endpointBopticalConnectionName = "OpticalLink" + "_"+ endpointB.getName() +"_" + opticalEndpointB.getName() + "_"+ connectionClassName +"_" + compoundContainerName;
-            //               endpointBopticalConnectionClass.setName(endpointBopticalConnectionName);
-            //               endpointLinkB.setConnectionClass(endpointBopticalConnectionClass);
-            //               pr.getKuwaibaConnectionList().add(endpointLinkB);
-            //
-            //               
-            //
-            //
-            //            }
-
             if (generateCircuits) {
 
                KuwaibaConnection endpointLink1 = new KuwaibaConnection();
 
-               // csp optical terminal
+               // csp front optical terminal
                KuwaibaClass opticalEndpointA = new KuwaibaClass();
                opticalEndpointA.setName("001-front");
                opticalEndpointA.setClassName("OpticalPort");
@@ -783,31 +746,32 @@ public class KuwaibaRequisitionFromGponDataTest {
                opticalEndpointB.getParentClasses().add(endpointB);
                endpointLink1.setEndpointB(opticalEndpointB);
 
-               // WireContainer strand
-               KuwaibaClass endpointLinkContainerClass = new KuwaibaClass();
-               endpointLinkContainerClass.getParentClasses().add(connectionClass);
-               
+               // containerClass - WireContainer strand
+               Integer circuitNo = 1;
+               Integer deapth = 2;
+               KuwaibaClass endpointLinkContainerClass = createEndpointOpticalLinkContainerClass(connectionClass, circuitNo, deapth);
                endpointLink1.setConnectionClass(endpointLinkContainerClass);
 
-               String compoundContainerName = "";
-               List<String> colourList = ContainerColour.getNestedContainerColourList(1, 2);
-               Iterator<String> colListIterator = colourList.iterator();
-               while (colListIterator.hasNext()) {
-                  String color = colListIterator.next();
-                  String name = String.format("%02d", ContainerColour.getStrandForColour(color)) + "-" + color;
-                  compoundContainerName = compoundContainerName + "_" + name;
-                  KuwaibaClass newContainerClass = new KuwaibaClass();
-                  if (colListIterator.hasNext()) {
-                     newContainerClass.setClassName("WireContainer");
-                     newContainerClass.setName(name);
-                     newContainerClass.setSpecial(true);
-                     endpointLinkContainerClass.getParentClasses().add(newContainerClass);
-                  } else {
-                     endpointLinkContainerClass.setClassName("OpticalLink");
-                     endpointLinkContainerClass.setName(name);
-                     endpointLinkContainerClass.setSpecial(true);
-                  }
-               }
+               //TODO REMOVE
+               //KuwaibaClass endpointLinkContainerClass = new KuwaibaClass();
+               //endpointLinkContainerClass.getParentClasses().add(connectionClass);
+//               List<String> colourList = ContainerColour.getNestedContainerColourList(1, 2);
+//               Iterator<String> colListIterator = colourList.iterator();
+//               while (colListIterator.hasNext()) {
+//                  String color = colListIterator.next();
+//                  String name = String.format("%02d", ContainerColour.getStrandForColour(color)) + "-" + color;
+//                  KuwaibaClass newContainerClass = new KuwaibaClass();
+//                  if (colListIterator.hasNext()) {
+//                     newContainerClass.setClassName("WireContainer");
+//                     newContainerClass.setName(name);
+//                     newContainerClass.setSpecial(true);
+//                     endpointLinkContainerClass.getParentClasses().add(newContainerClass);
+//                  } else {
+//                     endpointLinkContainerClass.setClassName("OpticalLink");
+//                     endpointLinkContainerClass.setName(name);
+//                     endpointLinkContainerClass.setSpecial(true);
+//                  }
+//               }
 
                pr.getKuwaibaConnectionList().add(endpointLink1);
 
@@ -823,7 +787,7 @@ public class KuwaibaRequisitionFromGponDataTest {
          try {
             KuwaibaConnection connection1 = new KuwaibaConnection();
 
-            // pole
+            // pole 
             KuwaibaClass endpointA = new KuwaibaClass();
             endpointA.setName(secondarySplitterContainerName);
             endpointA.setClassName(GponConstants.SECONDARY_SPLITTER_CONTAINER_CLASS_NAME);
@@ -850,6 +814,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                connectionNames.add(connectionClass.getName());
                pr.getKuwaibaConnectionList().add(connection1);
             }
+            
 
          } catch (Exception e) {
             e.printStackTrace();
