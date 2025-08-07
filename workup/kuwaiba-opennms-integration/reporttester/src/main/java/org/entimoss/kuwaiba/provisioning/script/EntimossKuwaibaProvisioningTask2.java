@@ -314,14 +314,14 @@ public class EntimossKuwaibaProvisioningTask2 {
          List<BusinessObject> foundObjects;
 
          if (parentObject != null) {
-            
+
             if (searchClass.getSpecial()) {
                List<BusinessObjectLight> foundLightObjects = bem.getSpecialChildrenOfClassLight(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), -1);
                LOG.info("findObjectWithParents parentObject.getId()=" + parentObject.getId() + ", parentObject.getClassName()=" + parentObject.getClassName() +
                         ", searchClass.getClassName()=" + searchClass.getClassName() + ", searchClass.getSpecial()=" + searchClass.getSpecial() + ", foundLightObjects=" + foundLightObjects);
                for (BusinessObjectLight child : foundLightObjects) {
                   if (child.getName().equals(searchClass.getName())) {
-                     foundObject = bem.getObject(child.getClassName(), child.getId() ) ;
+                     foundObject = bem.getObject(child.getClassName(), child.getId());
                      break;
                   }
                }
@@ -370,12 +370,11 @@ public class EntimossKuwaibaProvisioningTask2 {
       try {
 
          Iterator<KuwaibaClass> parentIterator = parentClasses.iterator();
-         
 
          // find first object in parent list
          KuwaibaClass parentClass = parentIterator.next();
          LOG.info("findDirectParentClass looking for first parentObject " + parentClass);
-         
+
          List<BusinessObject> foundObjects = bem.getObjectsWithFilter(parentClass.getClassName(), Constants.PROPERTY_NAME, parentClass.getName());
          if (!foundObjects.isEmpty()) {
             parentObject = foundObjects.get(0);
@@ -404,7 +403,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                throw new IllegalArgumentException("cannot find parent class from listed parent " + parentClass.getClassName() +
                         " name " + parentClass.getName() + " for kuwaiba parent object id" + parentObject.getId() +
                         " parent object class " + parentObject.getClassName());
-            
+
             parentObject = foundObject;
          }
 
@@ -799,28 +798,9 @@ public class EntimossKuwaibaProvisioningTask2 {
          LOG.info("creating connection using: " + kuwaibaConnection);
 
          String name = kuwaibaConnection.getConnectionClass().getName();
-         String connectionClass = kuwaibaConnection.getConnectionClass().getClassName();
+         String connectionClassName = kuwaibaConnection.getConnectionClass().getClassName();
          String connectionTemplateName = kuwaibaConnection.getConnectionClass().getTemplateName();
-
-         //         String aObjectClass = kuwaibaConnection.getEndpointA().getClassName();
-         //         String aObjectName = kuwaibaConnection.getEndpointA().getName();
-         //
-         //         String bObjectClass = kuwaibaConnection.getEndpointB().getClassName();
-         //         String bObjectName = kuwaibaConnection.getEndpointB().getName();
-
-         // check if container already exists
-         try {
-            // see if there is an object with the same name
-            List<BusinessObject> foundObjects = bem.getObjectsWithFilter(connectionClass, Constants.PROPERTY_NAME, name);
-            if (!foundObjects.isEmpty()) {
-               BusinessObject createdObject = foundObjects.get(0);
-               LOG.info("createConnections - CONNECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
-               kuwaibaClassesExisting++;
-               continue; // go to next connection
-            }
-         } catch (Exception ex) {
-            throw new RuntimeException("problem finding existing container:", ex);
-         }
+         List<KuwaibaClass> connectionParentClasses = kuwaibaConnection.getConnectionClass().getParentClasses();
 
          // check if a and and b objects exist
          BusinessObject aObject = null;
@@ -834,43 +814,88 @@ public class EntimossKuwaibaProvisioningTask2 {
          } catch (Exception ex) {
             LOG.error("problem finding a and b end objects:", ex);
          }
+
          if (aObject == null || bObject == null)
-            throw new IllegalArgumentException("ends of connection cannot be null:  aObject=" + aObject + " from endpointA=" + kuwaibaConnection.getEndpointA() + 
-                     "  bObject=" + bObject+ " from endpointB=" + kuwaibaConnection.getEndpointB() );
+            throw new IllegalArgumentException("ends of connection cannot be null:  aObject=" + aObject + " from endpointA=" + kuwaibaConnection.getEndpointA() +
+                     "  bObject=" + bObject + " from endpointB=" + kuwaibaConnection.getEndpointB());
 
-         try {
-            String aObjectId = aObject.getId();
-            String bObjectId = bObject.getId();
+         
+         if (connectionParentClasses != null && !connectionParentClasses.isEmpty()) {
+            // if there are parent objects, then associate the found container/link with the A and B endpoints.
 
-            // find template if exists
-            String templateId = null;
-            if (connectionTemplateName != null && !connectionTemplateName.isEmpty()) {
-               List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(connectionClass);
-               for (TemplateObjectLight tmplate : foundTemplates) {
-                  if (connectionTemplateName.equals(tmplate.getName())) {
-                     templateId = tmplate.getId();
-                     LOG.info("creating connection " + connectionClass + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
-                     break;
-                  }
-               }
+            // associate end objects with containment object if set
+            
+            try {
+
+               // check if containment object exists
+               BusinessObject physicalConnectionObject = findObjectWithParents(kuwaibaConnection.getConnectionClass());
+               if (physicalConnectionObject==null) throw new IllegalArgumentException("cannot find "+kuwaibaConnection.getConnectionClass());
+               
+               LOG.info("found physicalConnectionObject "+this.businessObjectToString(physicalConnectionObject)
+                        + "for connection class definition "+kuwaibaConnection.getConnectionClass());
+
+               // from EditConnectionsVisualAction.java
+               // bem.createSpecialRelationship(selectedPhysicalConnection.getClassName(), selectedPhysicalConnection.getId(),
+               //        selectedEndPointA.getClassName(), selectedEndPointA.getId(), endpointAName, true);
+               String endpointAName = "endpointA", endpointBName = "endpointB";
+
+               bem.createSpecialRelationship(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(),
+                        aObject.getClassName(), aObject.getId(), endpointAName, true);
+
+               bem.createSpecialRelationship(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(),
+                        bObject.getClassName(), bObject.getId(), endpointBName, true);
+
+            } catch (Exception ex) {
+               throw new IllegalArgumentException("problem associating containment objects:", ex);
             }
 
-            String userName = "admin";
+         } else {
 
-            LOG.info("creating connection name " + name + " connectionClass" + connectionClass + " template " +
-                     templateId + " to end objects aObject=" + businessObjectToString(aObject) + "bObject=" + businessObjectToString(bObject));
+            // if no parent classes then create a simple physical container with unique name (i.e. a named cable)
 
-            physicalConnectionService.createPhysicalConnection(aObject.getClassName(), aObjectId, bObject.getClassName(), bObjectId, name, connectionClass, templateId, userName);
-            
-            // from EditConnectionsVisualAction.java
-//            String endpointAName = "endpointA", endpointBName = "endpointB";
-//            
-//            bem.createSpecialRelationship(selectedPhysicalConnection.getClassName(), selectedPhysicalConnection.getId(), selectedEndPointA.getClassName(), selectedEndPointA.getId(), endpointAName, true);
-//            
-//            bem.createSpecialRelationship(selectedPhysicalConnection.getClassName(), selectedPhysicalConnection.getId(), selectedEndPointB.getClassName(), selectedEndPointB.getId(), endpointBName, true);
-            
-         } catch (Exception ex) {
-            throw new IllegalArgumentException("problem creating physical connection:", ex);
+            // check if container already exists
+            try {
+               // see if there is an object with the same name
+
+               List<BusinessObject> foundObjects = bem.getObjectsWithFilter(connectionClassName, Constants.PROPERTY_NAME, name);
+               if (!foundObjects.isEmpty()) {
+                  BusinessObject createdObject = foundObjects.get(0);
+                  LOG.info("createConnections - CONNECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
+                  kuwaibaClassesExisting++;
+                  continue; // go to next connection
+               }
+            } catch (Exception ex) {
+               throw new RuntimeException("problem finding existing container:", ex);
+            }
+
+            try {
+               String aObjectId = aObject.getId();
+               String bObjectId = bObject.getId();
+
+               // find template if exists
+               String templateId = null;
+               if (connectionTemplateName != null && !connectionTemplateName.isEmpty()) {
+                  List<TemplateObjectLight> foundTemplates = aem.getTemplatesForClass(connectionClassName);
+                  for (TemplateObjectLight tmplate : foundTemplates) {
+                     if (connectionTemplateName.equals(tmplate.getName())) {
+                        templateId = tmplate.getId();
+                        LOG.info("creating connection " + connectionClassName + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
+                        break;
+                     }
+                  }
+               }
+
+               String userName = "admin";
+
+               LOG.info("creating connection name=" + name + " connectionClass=" + connectionClassName + " template=" +
+                        templateId + " to end objects aObject=" + businessObjectToString(aObject) + " bObject=" + businessObjectToString(bObject));
+
+               physicalConnectionService.createPhysicalConnection(aObject.getClassName(), aObjectId, bObject.getClassName(), bObjectId, name, connectionClassName, templateId, userName);
+
+            } catch (Exception ex) {
+               throw new IllegalArgumentException("problem creating physical connection:", ex);
+            }
+
          }
 
       }
