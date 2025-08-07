@@ -806,17 +806,8 @@ public class KuwaibaRequisitionFromGponDataTest {
                      endpointLinkContainerClass.setClassName("OpticalLink");
                      endpointLinkContainerClass.setName(name);
                      endpointLinkContainerClass.setSpecial(true);
-                     //                     newContainerClass.setClassName("OpticalLink");
-                     //                     newContainerClass.setName(name);
-                     //                     newContainerClass.setSpecial(true);
-                     //                     endpointLinkContainerClass.getParentClasses().add(newContainerClass);
                   }
                }
-
-             //  String opticalConnectionClassName = "OpticalLink" + "_"+ connectionClassName + "_" + compoundContainerName + "_" + endpointA.getName() + "_" + opticalEndpointA.getName() + "_" + endpointB.getName() + "_" + opticalEndpointB.getName();
-               
-            //   endpointLinkContainerClass.setClassName("OpticalLink");
-            //   endpointLinkContainerClass.setName(opticalConnectionClassName);
 
                pr.getKuwaibaConnectionList().add(endpointLink1);
 

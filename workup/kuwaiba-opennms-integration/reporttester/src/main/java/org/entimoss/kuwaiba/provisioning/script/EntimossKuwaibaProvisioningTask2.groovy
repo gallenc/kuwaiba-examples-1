@@ -826,29 +826,58 @@ public class EntimossKuwaibaProvisioningTask2 {
 
             // associate end objects with containment object if set
             
-         try {
+            try {
 
                // check if containment object exists
                BusinessObject physicalConnectionObject = findObjectWithParents(kuwaibaConnection.getConnectionClass());
-               if (physicalConnectionObject==null) throw new IllegalArgumentException("cannot find "+kuwaibaConnection.getConnectionClass());
-               
-               LOG.info("found physicalConnectionObject "+this.businessObjectToString(physicalConnectionObject)
-                        + "for connection class definition "+kuwaibaConnection.getConnectionClass());
+               if (physicalConnectionObject == null)
+                  throw new IllegalArgumentException("cannot find " + kuwaibaConnection.getConnectionClass());
 
-               // from EditConnectionsVisualAction.java
-               // bem.createSpecialRelationship(selectedPhysicalConnection.getClassName(), selectedPhysicalConnection.getId(),
-               //        selectedEndPointA.getClassName(), selectedEndPointA.getId(), endpointAName, true);
-               String endpointAName = "endpointA", endpointBName = "endpointB";
+               LOG.info("found physicalConnectionObject " + this.businessObjectToString(physicalConnectionObject)
+                        + "for connection class definition " + kuwaibaConnection.getConnectionClass());
 
-               bem.createSpecialRelationship(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(),
-                        aObject.getClassName(), aObject.getId(), endpointAName, true);
+               // check if endpoints are connected
+               Map<String, List<BusinessObjectLight>> attrs = bem.getSpecialAttributes(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(), "endpointA", "endpointB");
 
-               bem.createSpecialRelationship(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(),
-                        bObject.getClassName(), bObject.getId(), endpointBName, true);
+               BusinessObjectLight currentEndpointA = null;
+               BusinessObjectLight currentEndpointB = null;
+
+               if (attrs.containsKey("endpointA"))
+                  currentEndpointA = (BusinessObjectLight) attrs.get("endpointA").get(0);
+
+               if (attrs.containsKey("endpointB"))
+                  currentEndpointB = (BusinessObjectLight) attrs.get("endpointB").get(0);
+
+               if (currentEndpointA == null && currentEndpointB == null) {
+
+                  // from EditConnectionsVisualAction.java
+                  // bem.createSpecialRelationship(selectedPhysicalConnection.getClassName(), selectedPhysicalConnection.getId(),
+                  //        selectedEndPointA.getClassName(), selectedEndPointA.getId(), endpointAName, true);
+                  String endpointAName = "endpointA", endpointBName = "endpointB";
+
+                  bem.createSpecialRelationship(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(),
+                           aObject.getClassName(), aObject.getId(), endpointAName, true);
+
+                  bem.createSpecialRelationship(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(),
+                           bObject.getClassName(), bObject.getId(), endpointBName, true);
+                  
+                  LOG.info("Created new end point connections for connection definition="+kuwaibaConnection);
+
+               } else {
+                  // check if already created or if endpoints are associated to different ports
+                  if(currentEndpointA!=null && ! currentEndpointA.getId().equals(aObject.getId()) && ! currentEndpointA.getClassName().equals(aObject.getClassName() )) {
+                     throw new IllegalArgumentException(" connection definition="+kuwaibaConnection+" link endpointA already associated with a differnt endpoint="+currentEndpointA.getId());
+                  }
+                  if(currentEndpointB!=null && ! currentEndpointB.getId().equals(bObject.getId()) && ! currentEndpointB.getClassName().equals(bObject.getClassName() )) {
+                     throw new IllegalArgumentException(" connection definition="+kuwaibaConnection+" link endpointB already associated with a differnt endpoint="+currentEndpointB.getId());
+                  }
+                  LOG.info("CONNECTION ALREADY EXISTS for connection definition="+kuwaibaConnection);
+               }
 
             } catch (Exception ex) {
-               throw new IllegalArgumentException("problem associating containment objects:", ex);
+               throw new IllegalArgumentException("problem associating containment objects for connection definition="+kuwaibaConnection, ex);
             }
+
 
          } else {
 
