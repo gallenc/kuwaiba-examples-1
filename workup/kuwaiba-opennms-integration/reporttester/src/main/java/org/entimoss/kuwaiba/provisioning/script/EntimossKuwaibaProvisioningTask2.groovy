@@ -823,7 +823,6 @@ public class EntimossKuwaibaProvisioningTask2 {
          
          if (connectionParentClasses != null && !connectionParentClasses.isEmpty()) {
             // if there are parent objects, then associate the found container/link with the A and B endpoints.
-
             // associate end objects with containment object if set
             
             try {
