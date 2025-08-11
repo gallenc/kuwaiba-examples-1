@@ -3968,59 +3968,6 @@
     }
   }, {
     "connectionClass" : {
-      "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
-      "special" : true,
-      "parentClasses" : [ {
-        "className" : "WireContainer",
-        "templateName" : "BFU_1_2",
-        "name" : "BFU_1_2_CSP_10001317283_ONT_10001317283",
-        "special" : false,
-        "parentClasses" : [ ],
-        "attributes" : { }
-      }, {
-        "className" : "WireContainer",
-        "templateName" : null,
-        "name" : "01-Blue",
-        "special" : true,
-        "parentClasses" : [ ],
-        "attributes" : { }
-      } ],
-      "attributes" : { }
-    },
-    "endpointA" : {
-      "className" : "OpticalPort",
-      "templateName" : null,
-      "name" : "001-front",
-      "special" : false,
-      "parentClasses" : [ {
-        "className" : "SpliceBox",
-        "templateName" : null,
-        "name" : "CSP_10001317283",
-        "special" : false,
-        "parentClasses" : [ ],
-        "attributes" : { }
-      } ],
-      "attributes" : { }
-    },
-    "endpointB" : {
-      "className" : "OpticalPort",
-      "templateName" : null,
-      "name" : "IN-01",
-      "special" : false,
-      "parentClasses" : [ {
-        "className" : "OpticalNetworkTerminal",
-        "templateName" : null,
-        "name" : "ONT_10001317283",
-        "special" : false,
-        "parentClasses" : [ ],
-        "attributes" : { }
-      } ],
-      "attributes" : { }
-    }
-  }, {
-    "connectionClass" : {
       "className" : "WireContainer",
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_10001317283",
@@ -4096,6 +4043,225 @@
     }
   }, {
     "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_CSP_10001317283_ONT_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-front",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-01",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalNetworkTerminal",
+        "templateName" : null,
+        "name" : "ONT_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-OUT",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-back",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_10001317283",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_4",
+        "name" : "BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-OUT",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_4_12",
+        "name" : "BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "PON-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalLineTerminal",
+        "templateName" : null,
+        "name" : "SOTN001_OLT_0100",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "OLTBoard",
+        "templateName" : null,
+        "name" : "card-001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
       "className" : "WireContainer",
       "templateName" : "BFU_1_2",
       "name" : "BFU_1_2_CSP_100060677240_ONT_100060677240",
@@ -4115,6 +4281,31 @@
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677240",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "WireContainer",
+      "templateName" : "BFU_1_2",
+      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677240",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677240",
       "special" : false,
       "parentClasses" : [ ],
       "attributes" : { }
@@ -4174,27 +4365,168 @@
     }
   }, {
     "connectionClass" : {
-      "className" : "WireContainer",
-      "templateName" : "BFU_1_2",
-      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677240",
-      "special" : false,
-      "parentClasses" : [ ],
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677240",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointA" : {
-      "className" : "Pole",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "SO18BPK1_POLE_0001",
+      "name" : "002-OUT",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointB" : {
-      "className" : "House",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "UPRN_100060677240",
+      "name" : "001-back",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677240",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_4",
+        "name" : "BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-OUT",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_4_12",
+        "name" : "BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "PON-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalLineTerminal",
+        "templateName" : null,
+        "name" : "SOTN001_OLT_0100",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "OLTBoard",
+        "templateName" : null,
+        "name" : "card-001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     }
   }, {
@@ -4218,6 +4550,31 @@
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677241",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "WireContainer",
+      "templateName" : "BFU_1_2",
+      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677241",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677241",
       "special" : false,
       "parentClasses" : [ ],
       "attributes" : { }
@@ -4277,27 +4634,168 @@
     }
   }, {
     "connectionClass" : {
-      "className" : "WireContainer",
-      "templateName" : "BFU_1_2",
-      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677241",
-      "special" : false,
-      "parentClasses" : [ ],
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677241",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointA" : {
-      "className" : "Pole",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "SO18BPK1_POLE_0001",
+      "name" : "003-OUT",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointB" : {
-      "className" : "House",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "UPRN_100060677241",
+      "name" : "001-back",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677241",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_4",
+        "name" : "BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-OUT",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_4_12",
+        "name" : "BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "PON-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalLineTerminal",
+        "templateName" : null,
+        "name" : "SOTN001_OLT_0100",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "OLTBoard",
+        "templateName" : null,
+        "name" : "card-001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     }
   }, {
@@ -4321,6 +4819,31 @@
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677242",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "WireContainer",
+      "templateName" : "BFU_1_2",
+      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677242",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677242",
       "special" : false,
       "parentClasses" : [ ],
       "attributes" : { }
@@ -4380,27 +4903,168 @@
     }
   }, {
     "connectionClass" : {
-      "className" : "WireContainer",
-      "templateName" : "BFU_1_2",
-      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677242",
-      "special" : false,
-      "parentClasses" : [ ],
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677242",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointA" : {
-      "className" : "Pole",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "SO18BPK1_POLE_0001",
+      "name" : "004-OUT",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointB" : {
-      "className" : "House",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "UPRN_100060677242",
+      "name" : "001-back",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677242",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_4",
+        "name" : "BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-OUT",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_4_12",
+        "name" : "BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "PON-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalLineTerminal",
+        "templateName" : null,
+        "name" : "SOTN001_OLT_0100",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "OLTBoard",
+        "templateName" : null,
+        "name" : "card-001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     }
   }, {
@@ -4424,6 +5088,31 @@
       "className" : "OpticalNetworkTerminal",
       "templateName" : null,
       "name" : "ONT_100060677243",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "WireContainer",
+      "templateName" : "BFU_1_2",
+      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677243",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_0001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_100060677243",
       "special" : false,
       "parentClasses" : [ ],
       "attributes" : { }
@@ -4483,27 +5172,168 @@
     }
   }, {
     "connectionClass" : {
-      "className" : "WireContainer",
-      "templateName" : "BFU_1_2",
-      "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677243",
-      "special" : false,
-      "parentClasses" : [ ],
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_2",
+        "name" : "BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677243",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointA" : {
-      "className" : "Pole",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "SO18BPK1_POLE_0001",
+      "name" : "005-OUT",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     },
     "endpointB" : {
-      "className" : "House",
+      "className" : "OpticalPort",
       "templateName" : null,
-      "name" : "UPRN_100060677243",
+      "name" : "001-back",
       "special" : false,
-      "parentClasses" : [ ],
+      "parentClasses" : [ {
+        "className" : "SpliceBox",
+        "templateName" : null,
+        "name" : "CSP_100060677243",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_1_4",
+        "name" : "BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "001-OUT",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_POLE_0001_SPL16_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    }
+  }, {
+    "connectionClass" : {
+      "className" : "OpticalLink",
+      "templateName" : null,
+      "name" : "01-Blue",
+      "special" : true,
+      "parentClasses" : [ {
+        "className" : "WireContainer",
+        "templateName" : "BFU_4_12",
+        "name" : "BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "WireContainer",
+        "templateName" : null,
+        "name" : "01-Blue",
+        "special" : true,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "PON-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "OpticalLineTerminal",
+        "templateName" : null,
+        "name" : "SOTN001_OLT_0100",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      }, {
+        "className" : "OLTBoard",
+        "templateName" : null,
+        "name" : "card-001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "OpticalPort",
+      "templateName" : null,
+      "name" : "IN-001",
+      "special" : false,
+      "parentClasses" : [ {
+        "className" : "FiberSplitter",
+        "templateName" : null,
+        "name" : "SO18BPK1_CAB_0001_SPL8_0001",
+        "special" : false,
+        "parentClasses" : [ ],
+        "attributes" : { }
+      } ],
       "attributes" : { }
     }
   } ]
