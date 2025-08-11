@@ -4044,8 +4044,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_CSP_10001317283_ONT_10001317283",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4097,8 +4097,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_SO18BPK1_POLE_0001_UPRN_10001317283",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4150,8 +4150,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4203,8 +4203,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4313,8 +4313,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_CSP_100060677240_ONT_100060677240",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4366,8 +4366,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677240",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4419,8 +4419,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4472,8 +4472,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4582,8 +4582,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_CSP_100060677241_ONT_100060677241",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4635,8 +4635,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677241",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4688,8 +4688,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4741,8 +4741,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4851,8 +4851,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_CSP_100060677242_ONT_100060677242",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4904,8 +4904,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677242",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -4957,8 +4957,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -5010,8 +5010,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -5120,8 +5120,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_CSP_100060677243_ONT_100060677243",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -5173,8 +5173,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_2_SO18BPK1_POLE_0001_UPRN_100060677243",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -5226,8 +5226,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_1_4_SO18BPK1_CAB_0001_SO18BPK1_POLE_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",
@@ -5279,8 +5279,8 @@
   }, {
     "connectionClass" : {
       "className" : "OpticalLink",
-      "templateName" : null,
-      "name" : "01-Blue",
+      "templateName" : "01-Blue",
+      "name" : "01-Blue_01-Blue_BFU_4_12_SOTN001_RACK001_SO18BPK1_CAB_0001",
       "special" : true,
       "parentClasses" : [ {
         "className" : "WireContainer",

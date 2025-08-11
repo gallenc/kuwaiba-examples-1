@@ -476,6 +476,7 @@ public class KuwaibaRequisitionFromGponDataTest {
 
          endpointLinkContainerClass.getParentClasses().add(connectionClass);
 
+         String compoundContainerName="";
          List<String> colourList = ContainerColour.getNestedContainerColourList(circuitNo, deapth);
          Iterator<String> colListIterator = colourList.iterator();
          while (colListIterator.hasNext()) {
@@ -487,13 +488,18 @@ public class KuwaibaRequisitionFromGponDataTest {
                newContainerClass.setName(name);
                newContainerClass.setSpecial(true);
                endpointLinkContainerClass.getParentClasses().add(newContainerClass);
+               compoundContainerName=compoundContainerName+name+"_";
             } else {
                endpointLinkContainerClass.setClassName("OpticalLink");
-               endpointLinkContainerClass.setName(name);
+               endpointLinkContainerClass.setTemplateName(name);
                endpointLinkContainerClass.setSpecial(true);
+               compoundContainerName=compoundContainerName+name;
             }
          }
 
+         String opticalConnectionName = compoundContainerName+"_"+connectionClass.getName() ;
+         endpointLinkContainerClass.setName(opticalConnectionName);
+         
          return endpointLinkContainerClass;
 
       }

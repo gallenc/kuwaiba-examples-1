@@ -318,6 +318,8 @@ public class EntimossKuwaibaProvisioningTask2 {
                List<BusinessObjectLight> foundLightObjects = bem.getSpecialChildrenOfClassLight(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), -1);
                LOG.info("findObjectWithParents parentObject.getId()=" + parentObject.getId() + ", parentObject.getClassName()=" + parentObject.getClassName() +
                         ", searchClass.getClassName()=" + searchClass.getClassName() + ", searchClass.getSpecial()=" + searchClass.getSpecial() + ", foundLightObjects=" + foundLightObjects);
+
+               // try to find by full name
                for (BusinessObjectLight child : foundLightObjects) {
                   if (child.getName().equals(searchClass.getName())) {
                      foundObject = bem.getObject(child.getClassName(), child.getId() ) ;
@@ -325,16 +327,37 @@ public class EntimossKuwaibaProvisioningTask2 {
                   }
                }
 
+               // alternatively try to find find by template name if defined
+               if (searchClass.getTemplateName() != null && !searchClass.getTemplateName().isEmpty()) {
+                  for (BusinessObjectLight child : foundLightObjects) {
+                     if (child.getName().equals(searchClass.getTemplateName())) {
+                        foundObject = bem.getObject(child.getClassName(), child.getId());
+                        break;
+                     }
+                  }
+               }
+
             } else {
             foundObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), 0, 0);
             LOG.info("findObjectWithParents parentObject.getId()="+parentObject.getId()+", parentObject.getClassName()="+parentObject.getClassName()+
                         ", searchClass.getClassName()=" + searchClass.getClassName() + ", searchClass.getSpecial()=" + searchClass.getSpecial() + ", foundObjects=" + foundObjects);
+               // try to find by full name
             for (BusinessObject child : foundObjects) {
                if (child.getName().equals(searchClass.getName())) {
                   foundObject = child;
                   break;
                }
             }
+
+               // alternatively try to find find by template name if defined
+               if (searchClass.getTemplateName() != null && !searchClass.getTemplateName().isEmpty()) {
+                  for (BusinessObject child : foundObjects) {
+                     if (child.getName().equals(searchClass.getTemplateName())) {
+                        foundObject = bem.getObject(child.getClassName(), child.getId());
+                        break;
+                     }
+                  }
+               }
 
          }
 
@@ -860,6 +883,14 @@ public class EntimossKuwaibaProvisioningTask2 {
                   bem.createSpecialRelationship(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(),
                            bObject.getClassName(), bObject.getId(), endpointBName, true);
                   
+                  // change name of connection from template name to new defined name
+                  if (physicalConnectionObject.getName().equals(connectionTemplateName)) {
+                     HashMap<String, String> newAttributes = new HashMap<String, String>();
+                     newAttributes.put(Constants.PROPERTY_NAME, kuwaibaConnection.getConnectionClass().getName());
+                     ChangeDescriptor changeDescriptor = bem.updateObject(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(), newAttributes);
+                     LOG.info("changed name of connection from "+connectionTemplateName+" to "+kuwaibaConnection.getConnectionClass().getName());
+                  }
+
                   LOG.info("Created new end point connections for connection definition="+kuwaibaConnection);
 
                } else {
