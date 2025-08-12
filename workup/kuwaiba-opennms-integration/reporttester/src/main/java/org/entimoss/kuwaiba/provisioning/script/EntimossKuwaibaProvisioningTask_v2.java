@@ -44,12 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.netty.util.Constant;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -64,11 +59,11 @@ import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
 // note use COMMIT ON EXECUTE
 // uncomment in groovy script
-//EntimossKuwaibaProvisioningTask2 kuwaibaImport = new EntimossKuwaibaProvisioningTask2(bem, aem, mem, scriptParameters, connectionHandler);
+//EntimossKuwaibaProvisioningTask_v2 kuwaibaImport = new EntimossKuwaibaProvisioningTask_v2(bem, aem, mem, scriptParameters, connectionHandler);
 //return kuwaibaImport.runTask();
 
-public class EntimossKuwaibaProvisioningTask2 {
-   static Logger LOG = LoggerFactory.getLogger(EntimossKuwaibaProvisioningTask2.class);
+public class EntimossKuwaibaProvisioningTask_v2 {
+   static Logger LOG = LoggerFactory.getLogger(EntimossKuwaibaProvisioningTask_v2.class);
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
@@ -81,7 +76,7 @@ public class EntimossKuwaibaProvisioningTask2 {
    int kuwaibaClassesExisting = 0;
    int kuwaibaClassesNew = 0;
 
-   public EntimossKuwaibaProvisioningTask2(BusinessEntityManager bem, ApplicationEntityManager aem, MetadataEntityManager mem, Map<String, String> scriptParameters, GraphDatabaseService connectionHandler) {
+   public EntimossKuwaibaProvisioningTask_v2(BusinessEntityManager bem, ApplicationEntityManager aem, MetadataEntityManager mem, Map<String, String> scriptParameters, GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
       this.aem = aem;
@@ -95,9 +90,9 @@ public class EntimossKuwaibaProvisioningTask2 {
       TaskResult taskResult = new TaskResult();
 
       taskResult.getMessages().add(TaskResult.createInformationMessage(
-               String.format("running Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters)));
+               String.format("running Script " + EntimossKuwaibaProvisioningTask_v2.class.getName() + " with parameters:" + parameters)));
 
-      LOG.info("STARTING RUNNING SCRIPT " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters);
+      LOG.info("STARTING RUNNING SCRIPT " + EntimossKuwaibaProvisioningTask_v2.class.getName() + " with parameters:" + parameters);
 
       /*
        * kuwaibaProvisioningRequisitionFileName
@@ -157,7 +152,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                   String.format("error running task " + ex)));
       }
 
-      String msg = "End of task Script " + EntimossKuwaibaProvisioningTask2.class.getName() + " used existing templates: " + kuwaibaTemplatesExisting +
+      String msg = "End of task Script " + EntimossKuwaibaProvisioningTask_v2.class.getName() + " used existing templates: " + kuwaibaTemplatesExisting +
                " newTemplates: " + kuwaibaTemplatesNew + " existingClasses: " + kuwaibaClassesExisting + " new Classes:" + kuwaibaClassesNew;
 
       taskResult.getMessages().add(TaskResult.createInformationMessage(msg));
