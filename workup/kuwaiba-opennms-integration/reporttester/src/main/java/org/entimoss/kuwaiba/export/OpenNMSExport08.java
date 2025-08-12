@@ -640,19 +640,108 @@ public class OpenNMSExport08 {
       public static final String ASSET_CIRCUITID = "Asset_circuitId";
       public static final String ASSET_DESCRIPTION = "Asset_description";
 
+      public static final String ASSET_MANUFACTURER = "Asset_manufacturer";
+      public static final String ASSET_VENDOR = "Asset_vendor";
+      public static final String ASSET_MODELNUMBER = "Asset_modelnumber";
+      public static final String ASSET_OPERATINGSYSTEM = "Asset_operatingsystem";
+      public static final String ASSET_RACK = "Asset_rack";
+      public static final String ASSET_SLOT = "Asset_slot";
+      public static final String ASSET_PORT = "Asset_port";
+      public static final String ASSET_DIVISION = "Asset_division";
+      public static final String ASSET_DEPARTMENT = "Asset_department";
+      public static final String ASSET_ADDRESS1 = "Asset_address1";
+      public static final String ASSET_ADDRESS2 = "Asset_address2";
+      public static final String ASSET_CITY = "Asset_city";
+      public static final String ASSET_STATE = "Asset_state";
+      public static final String ASSET_ZIP = "Asset_zip";
+      public static final String ASSET_BUILDING = "Asset_building";
+      public static final String ASSET_FLOOR = "Asset_floor";
+      public static final String ASSET_ROOM = "Asset_room";
+      public static final String ASSET_VENDORPHONE = "Asset_vendorphone";
+      public static final String ASSET_VENDORFAX = "Asset_vendorfax";
+      public static final String ASSET_VENDORASSETNUMBER = "Asset_vendorassetnumber";
+      public static final String ASSET_USERLASTMODIFIED = "Asset_userlastmodified";
+      public static final String ASSET_LASTMODIFIEDDATE = "Asset_lastmodifieddate";
+      public static final String ASSET_DATEINSTALLED = "Asset_dateinstalled";
+      public static final String ASSET_LEASE = "Asset_lease";
+      public static final String ASSET_LEASEEXPIRES = "Asset_leaseexpires";
+      public static final String ASSET_SUPPORTPHONE = "Asset_supportphone";
+      public static final String ASSET_MAINTCONTRACT = "Asset_maintcontract";
+      public static final String ASSET_MAINTCONTRACTEXPIRES = "Asset_maintcontractexpires";
+      public static final String ASSET_COMMENT = "Asset_comment";
+      public static final String ASSET_USERNAME = "Asset_username";
+      public static final String ASSET_PASSWORD = "Asset_password";
+      public static final String ASSET_ENABLE = "Asset_enable";
+      public static final String ASSET_AUTOENABLE = "Asset_autoenable";
+      public static final String ASSET_CONNECTION = "Asset_connection";
+      public static final String ASSET_CPU = "Asset_cpu";
+      public static final String ASSET_RAM = "Asset_ram";
+      public static final String ASSET_STORAGECTRL = "Asset_storagectrl";
+      public static final String ASSET_HDD1 = "Asset_hdd1";
+      public static final String ASSET_HDD2 = "Asset_hdd2";
+      public static final String ASSET_HDD3 = "Asset_hdd3";
+      public static final String ASSET_HDD4 = "Asset_hdd4";
+      public static final String ASSET_HDD5 = "Asset_hdd5";
+      public static final String ASSET_HDD6 = "Asset_hdd6";
+      public static final String ASSET_NUMPOWERSUPPLIES = "Asset_numpowersupplies";
+      public static final String ASSET_INPUTPOWER = "Asset_inputpower";
+      public static final String ASSET_ADDITIONALHARDWARE = "Asset_additionalhardware";
+      public static final String ASSET_ADMIN = "Asset_admin";
+      public static final String ASSET_SNMPCOMMUNITY = "Asset_snmpcommunity";
+      public static final String ASSET_RACKUNITHEIGHT = "Asset_rackunitheight";
+      public static final String ASSET_COUNTRY = "Asset_country";
+
       public static final String METADATA_SERVICE_ID = "MetaData_requisition:serviceId";
       public static final String METADATA_SERVICE_NAME = "MetaData_requisition:serviceName";
       public static final String METADATA_CUSTOMER_ID = "MetaData_requisition:customerId";
       public static final String METADATA_CUSTOMER_NAME = "MetaData_requisition:customerName";
 
-      // this is same order as in csv header line
+      // this is same order as in csv header line (note additional fields but preserve the order of original files)
       public static final List<String> OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID,
                PARENT_FOREIGN_SOURCE, IP_MANAGEMENT, MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY, ASSET_REGION, ASSET_SERIALNUMBER,
-               ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY,
-               ASSET_NOTIFYCATEGORY, ASSET_POLLERCATEGORY, ASSET_DISPLAYCATEGORY, ASSET_MANAGEDOBJECTTYPE, ASSET_MANAGEDOBJECTINSTANCE, ASSET_CIRCUITID,
-               ASSET_DESCRIPTION, METADATA_SERVICE_ID, METADATA_SERVICE_NAME, METADATA_CUSTOMER_ID, METADATA_CUSTOMER_NAME);
+               ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY, ASSET_NOTIFYCATEGORY, ASSET_POLLERCATEGORY, ASSET_DISPLAYCATEGORY,
+               ASSET_MANAGEDOBJECTTYPE, ASSET_MANAGEDOBJECTINSTANCE,
+               ASSET_CIRCUITID, ASSET_DESCRIPTION,
+
+               // additional metadata
+               METADATA_SERVICE_ID, METADATA_SERVICE_NAME, METADATA_CUSTOMER_ID, METADATA_CUSTOMER_NAME,
+
+               ASSET_COMMENT,
+
+               // location values
+               ASSET_BUILDING, ASSET_FLOOR, ASSET_ROOM, ASSET_RACK, ASSET_RACKUNITHEIGHT, ASSET_SLOT, ASSET_PORT, ASSET_REGION, ASSET_DIVISION, ASSET_DEPARTMENT,
+               ASSET_ADDRESS1, ASSET_ADDRESS2, ASSET_CITY, ASSET_STATE, ASSET_ZIP, ASSET_COUNTRY,
+
+               // equipment description
+               ASSET_MODELNUMBER,
+               ASSET_MANUFACTURER, ASSET_VENDOR, ASSET_VENDORPHONE, ASSET_VENDORFAX,
+
+               // lease contacts
+               ASSET_USERLASTMODIFIED, ASSET_LASTMODIFIEDDATE, ASSET_DATEINSTALLED, ASSET_LEASE, ASSET_LEASEEXPIRES, ASSET_SUPPORTPHONE, ASSET_MAINTCONTRACT, ASSET_MAINTCONTRACTEXPIRES,
+
+               // misccredentials
+               ASSET_USERNAME, ASSET_PASSWORD, ASSET_ENABLE, ASSET_AUTOENABLE, ASSET_CONNECTION,
+
+               // misc data fields
+               ASSET_OPERATINGSYSTEM, ASSET_CPU, ASSET_RAM, ASSET_STORAGECTRL, ASSET_HDD1, ASSET_HDD2, ASSET_HDD3, ASSET_HDD4, ASSET_HDD5, ASSET_HDD6,
+               ASSET_NUMPOWERSUPPLIES, ASSET_INPUTPOWER, ASSET_ADDITIONALHARDWARE, ASSET_ADMIN, ASSET_SNMPCOMMUNITY
+
+      );
+
+      // this is same order as in csv header line
+      public static final List<String> ORIGINAL_OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID,
+               PARENT_FOREIGN_SOURCE, IP_MANAGEMENT, MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY, ASSET_REGION, ASSET_SERIALNUMBER,
+               ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY, ASSET_NOTIFYCATEGORY, ASSET_POLLERCATEGORY, ASSET_DISPLAYCATEGORY,
+               ASSET_MANAGEDOBJECTTYPE, ASSET_MANAGEDOBJECTINSTANCE,
+               ASSET_CIRCUITID, ASSET_DESCRIPTION,
+               METADATA_SERVICE_ID, METADATA_SERVICE_NAME, METADATA_CUSTOMER_ID, METADATA_CUSTOMER_NAME);
 
       public static final String DEFAULT_MINION_LOCATION = "Default"; // used when OpenNMS core is the poller.
+
+      // These service names should match the service definitions in poller-configuration.xml (if used)
+      public static final String SERVICE_PASSIVE_SECONDARY_SPLITTER = "passive-secondary-node";
+      public static final String SERVICE_PASSIVE_PRIMARY_SPLITTER = "passive-primary-node";
+      public static final String SERVICE_PASSIVE_NODE_UP_SERVICE = "passive-node-up-service";
 
    }
 
