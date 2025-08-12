@@ -53,6 +53,7 @@
 
 package org.entimoss.kuwaiba.export; // package omitted from groovy
 
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.InventoryObjectPool;
 import org.neotropic.kuwaiba.core.apis.persistence.application.reporting.InventoryReport;
@@ -63,12 +64,15 @@ import org.neotropic.kuwaiba.core.apis.persistence.exceptions.ApplicationObjectN
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.BusinessObjectNotFoundException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.InvalidArgumentException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.MetadataObjectNotFoundException;
+import org.neotropic.kuwaiba.core.apis.persistence.metadata.ClassMetadataLight;
+import org.neotropic.kuwaiba.core.apis.persistence.metadata.MetadataEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 import org.neotropic.kuwaiba.modules.optional.reports.defaults.RawReport;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -81,7 +85,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 // uncomment in groovy script
-//OpenNMSExport08 opennmsExport = new OpenNMSExport08(bem, aem, parameters);
+//OpenNMSExport08 opennmsExport = new OpenNMSExport08(bem, aem,  mem,  parameters, connectionHandler);
 //return opennmsExport.returnReport();
 
 public class OpenNMSExport08 {
@@ -89,7 +93,9 @@ public class OpenNMSExport08 {
 
    BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
-   Map<String, String> parameters = new HashMap<>();
+   MetadataEntityManager mem = null; // injected in groovy
+   Map<String, String> parameters = new HashMap<>(); // injected in groovy
+   GraphDatabaseService connectionHandler = null; //injected in groovy
 
    IPLocationDAO ipLocationDAO = null;
 
@@ -100,19 +106,22 @@ public class OpenNMSExport08 {
    public OpenNMSExport08() {
    };
 
-   public OpenNMSExport08(BusinessEntityManager bem, ApplicationEntityManager aem, Map<String, String> parameters) {
+   public OpenNMSExport08(BusinessEntityManager bem, ApplicationEntityManager aem, MetadataEntityManager mem, Map<String, String> parameters, GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
       this.aem = aem;
-      this.parameters = parameters;
+      this.mem = mem;
+      this.parameters = (parameters == null) ? new HashMap<String, String>() : parameters;
+      this.connectionHandler = connectionHandler;
 
       // first we get all ip addresses, folders and subnets names from ipam
       ipLocationDAO = new IPLocationDAO(bem);
       try {
          ipLocationDAO.init();
       } catch (Exception ex) {
-         throw new RuntimeException("problem initialising ipLocationDao ",ex);
+         throw new RuntimeException("problem initialising ipLocationDao ", ex);
       }
+
    }
 
    // main report function
@@ -208,7 +217,7 @@ public class OpenNMSExport08 {
          for (int i = 0; i < OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.size(); i++)
             requisitionLine.add("");
 
-         // populate csv values in line if they exist
+         // populate csv header values in line if they exist
          for (String key : OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS) {
             if (singleCsvlineData.containsKey(key)) {
                requisitionLine.set(OnmsRequisitionConstants.OPENNMS_REQUISITION_HEADERS.indexOf(key), singleCsvlineData.get(key));
@@ -470,23 +479,56 @@ public class OpenNMSExport08 {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION, location);
                   } else {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
-               }
+                  }
+                  
+                  // find managed object type in kuwaiba heirarchy
+                  String managedObjectType = getDataModelClassPath(device.getClassName());
+                  line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTTYPE, managedObjectType);
+                  
+                  // use kuwaiba managed object instance
+                  line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
-               // only create a line if useAllPortAddresses is true or if isManagement is true for the port
-               if (useAllPortAddresses) {
-                  csvLineData.add(line);
-               } else if (isManagement) {
-                  csvLineData.add(line);
-               }
+                  // only create a line if useAllPortAddresses is true or if isManagement is true for the port
+                  if (useAllPortAddresses) {
+                     csvLineData.add(line);
+                  } else if (isManagement) {
+                     csvLineData.add(line);
+                  }
                }
             }
-            
+
          }
       } catch (MetadataObjectNotFoundException | InvalidArgumentException | BusinessObjectNotFoundException | ApplicationObjectNotFoundException e) {
          throw new RuntimeException(e);
       }
 
       return csvLineData;
+   }
+
+   /**
+    * returns the data model classPath for the given class name
+    * the class path begins with root of hierarchy and ends with given class name
+    * @param className  name of the class as defined in kuwaiba data model manager
+    * @return String hierarchy of class separated by /
+    */
+   public String getDataModelClassPath(String className) {
+      StringBuffer sb = new StringBuffer();
+      try {
+         ArrayList<ClassMetadataLight> classMetadataList = new ArrayList<ClassMetadataLight>(mem.getSuperClassesLight(className, true));
+         // reverse order of list
+         Collections.reverse(classMetadataList);
+         
+         Iterator<ClassMetadataLight> classMetadataListIterator = classMetadataList.iterator();
+         while (classMetadataListIterator.hasNext()) {
+            ClassMetadataLight classMetadata = classMetadataListIterator.next();
+            sb.append(classMetadata.getName());
+            if (classMetadataListIterator.hasNext())
+               sb.append("/");
+         }
+         return sb.toString();
+      } catch (MetadataObjectNotFoundException e) {
+         throw new IllegalArgumentException("cant find className=" + className, e);
+      }
    }
 
    /**
@@ -745,7 +787,6 @@ public class OpenNMSExport08 {
 
    }
 
-   
    /**
     * Class to decode IP V4 Address with or without a cidr address prefix
     */
