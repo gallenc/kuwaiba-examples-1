@@ -1,7 +1,7 @@
 /**
  * Exports inventory of nodes and interface IP addresses as OpenNMS PRIS CSV format.
  * (see https://docs.opennms.com/pris/latest/ )
- * Entimoss Ltd - version 0.4
+ * Entimoss Ltd - version 0.4 (Apache Licensed)
  * Parameters:
  *    useNodeLabelAsForeignId
  *    If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)

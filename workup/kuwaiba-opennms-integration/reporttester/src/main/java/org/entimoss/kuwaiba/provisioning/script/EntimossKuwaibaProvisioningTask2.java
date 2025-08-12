@@ -1,3 +1,28 @@
+/**
+ * This Task script imports a Kuwaiba inventory from json files
+ * Entimoss Ltd. -  (Apache Licensed)
+ * Version 2.0
+ * 
+ * Parameters:
+ *   
+ *    String kuwaibaProvisioningRequisitionFileName File name and location directory of kuwaibaProvisioningRequisition. 
+ *           Defaults to /external-data/kuwaibaProvisioningRequisition-data.json
+ *    
+ *    boolean createNewTemplates  if true (default) creates new template definitions if defined in provisioning file.
+ *    
+ *    boolean createNewObjects    if true (default) creates new object definitions if defined in provisioning file.
+ *        
+ *    boolean createNewConnectionOjects if true (default) creates new connection object definitions if defined in provisioning file.
+ *
+ * Applies to: Kuwaiba Task Script
+ * 
+ * Notes -  use COMMIT ON EXECUTE if running as a task
+ * 
+ * TODO LOG.warn should be LOG.debug if debugging can be enabled
+ *      Need to count created objects correctly
+ * 
+ */
+
 package org.entimoss.kuwaiba.provisioning.script;
 
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -37,14 +62,6 @@ import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObject;
 import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight;
 import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
-/**
- * provisioning task to read provisioning file in order.
- * if multipleNewLineObjects is set true, each non blank line is read as a separate json object.
- * THis is to allow very large files which are not stored in memory.
- * (This will not work if the Json is pretty printed)
- * if multipleNewLineObjects is set false, only one json object is read which can contain multiple objects
- */
-
 // note use COMMIT ON EXECUTE
 // uncomment in groovy script
 //EntimossKuwaibaProvisioningTask2 kuwaibaImport = new EntimossKuwaibaProvisioningTask2(bem, aem, mem, scriptParameters, connectionHandler);
@@ -83,10 +100,17 @@ public class EntimossKuwaibaProvisioningTask2 {
       LOG.info("STARTING RUNNING SCRIPT " + EntimossKuwaibaProvisioningTask2.class.getName() + " with parameters:" + parameters);
 
       /*
-       * file name and location of kuwaibaProvisioningRequisition
-       * Defaults to
+       * kuwaibaProvisioningRequisitionFileName
+       *    File name and location directory of kuwaibaProvisioningRequisition
+       *    Defaults to /external-data/kuwaibaProvisioningRequisition-data.json
        */
       String kuwaibaProvisioningRequisitionFileName = parameters.getOrDefault("kuwaibaProvisioningRequisitionFileName", "/external-data/kuwaibaProvisioningRequisition-data.json");
+
+      boolean createNewTemplates = Boolean.parseBoolean(parameters.getOrDefault("createNewTemplates", "true"));
+
+      boolean createNewObjects = Boolean.parseBoolean(parameters.getOrDefault("createNewObjects", "true"));
+
+      boolean createNewConnectionOjects = Boolean.parseBoolean(parameters.getOrDefault("createNewConnectionOjects", "true"));
 
       try {
 
@@ -104,19 +128,28 @@ public class EntimossKuwaibaProvisioningTask2 {
                   " templates and" + kuwaibaProvisioningRequisition.getKuwaibaClassList().size() + " classes");
 
          //create new templates
-         LOG.info("STARTING CREATING TEMPLATES");
-         createTemplates(kuwaibaProvisioningRequisition.getKuwaibaTemplateList());
-         LOG.info("FINISHED CREATING TEMPLATES");
+         if (createNewTemplates) {
+            LOG.info("STARTING CREATING TEMPLATES");
+            createTemplates(kuwaibaProvisioningRequisition.getKuwaibaTemplateList());
+            LOG.info("FINISHED CREATING TEMPLATES");
+         } else
+            LOG.info("CREATING TEMPLATES DISABLED");
 
          // create new objects
-         LOG.info("STARTING CREATING NEW OBJECT CLASSES");
-         createObjects(kuwaibaProvisioningRequisition.getKuwaibaClassList());
-         LOG.info("FINISHED CREATING NEW OBJECT CLASSES");
+         if (createNewObjects) {
+            LOG.info("STARTING CREATING NEW OBJECT CLASSES");
+            createObjects(kuwaibaProvisioningRequisition.getKuwaibaClassList());
+            LOG.info("FINISHED CREATING NEW OBJECT CLASSES");
+         } else
+            LOG.info("CREATING OBJECTS DISABLED");
 
-         // create new connection objects
-         LOG.info("STARTING CREATING CONNECTION OBJECTS");
-         createConnections(kuwaibaProvisioningRequisition.getKuwaibaConnectionList());
-         LOG.info("FINISHED CREATING CONNECTION OBJECTS");
+      // create new connection objects
+         if (createNewConnectionOjects) {
+            LOG.info("STARTING CREATING CONNECTION OBJECTS");
+            createConnections(kuwaibaProvisioningRequisition.getKuwaibaConnectionList());
+            LOG.info("FINISHED CREATING CONNECTION OBJECTS");
+         } else
+            LOG.info("CREATING CONNECTION OBJECTS DISABLED");
 
       } catch (Exception ex) {
          LOG.error("problem running task", ex);
@@ -886,7 +919,7 @@ public class EntimossKuwaibaProvisioningTask2 {
                      HashMap<String, String> newAttributes = new HashMap<String, String>();
                      newAttributes.put(Constants.PROPERTY_NAME, kuwaibaConnection.getConnectionClass().getName());
                      ChangeDescriptor changeDescriptor = bem.updateObject(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(), newAttributes);
-                     LOG.info("changed name of connection from "+connectionTemplateName+" to "+kuwaibaConnection.getConnectionClass().getName());
+                     LOG.info("changed name of connection from " + connectionTemplateName + " to " + kuwaibaConnection.getConnectionClass().getName());
                   }
 
                   LOG.info("Created new end point connections for connection definition=" + kuwaibaConnection);
