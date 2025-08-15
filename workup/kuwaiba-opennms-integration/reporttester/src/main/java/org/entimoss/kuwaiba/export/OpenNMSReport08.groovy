@@ -280,7 +280,9 @@ public class OpenNMSExport08 {
 
          printPhysicalTreeResult(physicalTreeResult, searchClassNames);
 
+         LOG.info("************ starting downstream mapping");
          downstreamUpsteamMapping = traverseTree(physicalTreeResult, searchClassNames);
+         LOG.info("************ END OF downstream mapping");
 
          printDownstreamUpsteamMapping(downstreamUpsteamMapping);
 
@@ -343,6 +345,7 @@ public class OpenNMSExport08 {
 
          // traverse tree to find actual links
          for (BusinessObjectLight connection : physicalTreeResult.keySet()) {
+            LOG.info("************ starting downstream mapping for connection port "+businessObjectToString(connection));
 
             BusinessObjectLight connectionPort = connection;
             List<BusinessObjectLight> downstreamPorts = physicalTreeResult.get(connection);
@@ -355,6 +358,7 @@ public class OpenNMSExport08 {
                      connectionPortToParentDeviceMap,
                      physicalTreeResult, 0);
 
+            LOG.info("************ finished downstream mapping for connection port "+businessObjectToString(connection));
          }
 
       } catch (Exception ex) {
@@ -423,6 +427,8 @@ public class OpenNMSExport08 {
     */
    public void printChildParentMap(SortedMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> childParentMaps) {
 
+      LOG.info("*************** printChildParentMap");
+      
       for (String className : childParentMaps.keySet()) {
          LinkedHashMap<BusinessObjectLight, BusinessObjectLight> childParentMap = childParentMaps.get(className);
          LOG.info(" child parent map for className: " + className + " size=" + childParentMap.size());
@@ -433,6 +439,7 @@ public class OpenNMSExport08 {
             LOG.info("       child: " + businessObjectToString(child));
          }
       }
+      LOG.info("*************** END printChildParentMap");
    }
 
    /**
@@ -440,6 +447,7 @@ public class OpenNMSExport08 {
     * @param childParentMaps
     */
    public void printDownstreamUpsteamMapping(Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping) {
+      LOG.info("*************** printDownstreamUpsteamMapping");
 
       for (String classType : downstreamUpsteamMapping.keySet()) {
          LOG.info(" down stream upstream mapping for : " + classType + " size=" + downstreamUpsteamMapping.get(classType).size());
@@ -450,6 +458,7 @@ public class OpenNMSExport08 {
          }
 
       }
+      LOG.info("*************** END printDownstreamUpsteamMapping");
    }
 
 
