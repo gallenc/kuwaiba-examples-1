@@ -53,7 +53,13 @@
 
 package org.entimoss.kuwaiba.export; // package omitted from groovy
 
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.helpers.collection.Iterators;
+import org.neotropic.kuwaiba.core.apis.persistence.application.ActivityLogEntry;
 import org.neotropic.kuwaiba.core.apis.persistence.application.ApplicationEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.application.InventoryObjectPool;
 import org.neotropic.kuwaiba.core.apis.persistence.application.reporting.InventoryReport;
@@ -63,10 +69,14 @@ import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.ApplicationObjectNotFoundException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.BusinessObjectNotFoundException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.InvalidArgumentException;
+import org.neotropic.kuwaiba.core.apis.persistence.exceptions.InventoryException;
 import org.neotropic.kuwaiba.core.apis.persistence.exceptions.MetadataObjectNotFoundException;
+import org.neotropic.kuwaiba.core.apis.persistence.exceptions.OperationNotPermittedException;
 import org.neotropic.kuwaiba.core.apis.persistence.metadata.ClassMetadataLight;
 import org.neotropic.kuwaiba.core.apis.persistence.metadata.MetadataEntityManager;
 import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
+import org.neotropic.kuwaiba.core.persistence.PersistenceService.EXECUTION_STATE;
+import org.neotropic.kuwaiba.core.persistence.reference.neo4j.RelTypes;
 import org.neotropic.kuwaiba.modules.optional.reports.defaults.RawReport;
 
 import java.net.InetAddress;
@@ -75,9 +85,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -240,8 +252,313 @@ public class OpenNMSExport08 {
 
       LOG.info("End of " + title);
 
+      LOG.info("GETTING OLTS " + title);
+
+      // TODO REMOVE
+      String objectClass = "OpticalPort";
+      String objectId = "c9a5bfde-3d6e-4fc7-bcc0-f86d7b1083a8";
+
+      gettingPaths(objectClass, objectId);
+
+      LOG.info("END OF GETTING OLTS " + title);
+
       return report;
 
+   }
+
+   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> gettingPaths(String objectClass, String objectId) {
+
+      Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping = null;
+
+      // create the connection manager
+      PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem, connectionHandler);
+      try {
+
+         List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
+
+         HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult = physicalConnectionService.getPhysicalTree(objectClass, objectId);
+
+         printPhysicalTreeResult(physicalTreeResult, searchClassNames);
+
+         downstreamUpsteamMapping = traverseTree(physicalTreeResult, searchClassNames);
+
+         printDownstreamUpsteamMapping(downstreamUpsteamMapping);
+
+      } catch (Exception ex) {
+         LOG.error("problem getting tree for olt ", ex);
+      }
+
+      return downstreamUpsteamMapping;
+   }
+
+   /**
+    * Search a tree of links between optical ports to find upstream devices which contain the ports.
+    * 
+    * Each port has a containing device which it belongs to. 
+    * Only the containing devices which have class names corresponding to searchClassNames are considered
+    * @param physicalTreeResult  
+   
+    * @param searchClassNames list of classnames to include in the search
+    * 
+    *                                 (className             downstream            upstream
+    * @return Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>
+    * returns a map of device maps with keys matching the classNames in parameter searchClassNames
+    * each device map contains an entry for a business object with a reference to its upstream object
+    */
+   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> traverseTree(HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult, List<String> searchClassNames) {
+
+      // create data structures
+
+      // structure to hold mapping of objects to upstream parents
+      //   className              downstream,          upstream (each downstream can have only one upstream)
+      Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping = new HashMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>();
+      for (String name : searchClassNames) {
+         downstreamUpsteamMapping.put(name, new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>());
+      }
+
+      HashMap<BusinessObjectLight, BusinessObjectLight> connectionPortToParentDeviceMap = new HashMap<BusinessObjectLight, BusinessObjectLight>();
+
+      try {
+
+         // create portToMap mapping for all ports in mapping
+         for (BusinessObjectLight connectnPort : physicalTreeResult.keySet()) {
+            // getParentsUntilFirstOfClass(String objectClass, String oid, String... objectToMatchClassNames)
+            List<BusinessObjectLight> containingDeviceList = bem.getParentsUntilFirstOfClass(connectnPort.getClassName(), connectnPort.getId(), (String[]) searchClassNames.toArray());
+            for (BusinessObjectLight containingDevice : containingDeviceList) {
+               if (searchClassNames.contains(containingDevice.getClassName())) {
+                  if (!connectionPortToParentDeviceMap.containsKey(connectnPort)) {
+                     connectionPortToParentDeviceMap.put(connectnPort, containingDevice);
+                  } else {
+                     if (!connectionPortToParentDeviceMap.get(connectnPort).equals(containingDevice)) {
+                        throw new IllegalArgumentException("Trying to redefine parent of " + businessObjectToString(connectnPort)
+                                 + " from " + businessObjectToString(connectionPortToParentDeviceMap.get(connectnPort)) + " to " + businessObjectToString(containingDevice));
+                     }
+                  }
+                  break;
+               }
+            }
+         }
+
+         BusinessObjectLight upstreamFoundClass = null;
+
+         // traverse tree to find actual links
+         for (BusinessObjectLight connection : physicalTreeResult.keySet()) {
+
+            BusinessObjectLight connectionPort = connection;
+            List<BusinessObjectLight> downstreamPorts = physicalTreeResult.get(connection);
+
+            traverse(connectionPort,
+                     downstreamPorts,
+                     upstreamFoundClass,
+                     searchClassNames,
+                     downstreamUpsteamMapping,
+                     connectionPortToParentDeviceMap,
+                     physicalTreeResult, 0);
+
+         }
+
+      } catch (Exception ex) {
+         LOG.error("problem getting tree for olt ", ex);
+      }
+
+      return downstreamUpsteamMapping;
+   }
+
+   /**
+    * 
+    * @param connectionPort
+    * @param downstreamPorts
+    * @param upstreamFoundhClass
+    * @param searchClassNames
+    * @param childParentMapping
+    * @param portToParentMap
+    * @param physicalTreeResult
+    * @param traverseDeapth
+    */
+   private void traverse(BusinessObjectLight connectionPort,
+            List<BusinessObjectLight> downstreamPorts,
+            BusinessObjectLight upstreamFoundClass,
+            List<String> searchClassNames,
+            Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> childParentMapping,
+            HashMap<BusinessObjectLight, BusinessObjectLight> portToParentMap,
+            HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult,
+            Integer traverseDeapth) {
+
+      int MAX_TRAVERSE_DEAPTH = 20;
+      traverseDeapth++;
+      if (traverseDeapth > MAX_TRAVERSE_DEAPTH)
+         throw new IllegalArgumentException("traverse deapth " + traverseDeapth + " > " + MAX_TRAVERSE_DEAPTH);
+
+      // traverse to bottom of path 
+      if (!downstreamPorts.isEmpty()) {
+         
+         
+         StringBuffer sb = new StringBuffer();
+         for (int i = 0; i <= traverseDeapth; i++)
+            sb.append(" ");
+         LOG.info(sb.toString() + "traversing path depth=" + traverseDeapth + " for connectionPort: " +
+                  businessObjectToString(connectionPort) + " parent: " + businessObjectToString(portToParentMap.get(connectionPort)));
+         
+         for (BusinessObjectLight downStreamPort : downstreamPorts) {
+
+            traverse(connectionPort,
+                     physicalTreeResult.get(downStreamPort),
+                     upstreamFoundClass,
+                     searchClassNames,
+                     childParentMapping,
+                     portToParentMap,
+                     physicalTreeResult,
+                     traverseDeapth);
+
+         }
+      }
+      
+      // add child to parent
+
+   }
+
+   /**
+    * utility method for printing out debugging info
+    * @param childParentMaps
+    */
+   public void printChildParentMap(SortedMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> childParentMaps) {
+
+      for (String className : childParentMaps.keySet()) {
+         LinkedHashMap<BusinessObjectLight, BusinessObjectLight> childParentMap = childParentMaps.get(className);
+         LOG.info(" child parent map for className: " + className + " size=" + childParentMap.size());
+
+         for (BusinessObjectLight child : childParentMap.keySet()) {
+            BusinessObjectLight parent = childParentMap.get(child);
+            LOG.info("    parent:" + businessObjectToString(parent));
+            LOG.info("       child: " + businessObjectToString(child));
+         }
+      }
+   }
+
+   /**
+    * utility method for printing out debugging info
+    * @param childParentMaps
+    */
+   public void printDownstreamUpsteamMapping(Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping) {
+
+      for (String classType : downstreamUpsteamMapping.keySet()) {
+         LOG.info(" down stream upstream mapping for : " + classType + " size=" + downstreamUpsteamMapping.get(classType).size());
+         for (BusinessObjectLight downstream : downstreamUpsteamMapping.get(classType).keySet()) {
+            BusinessObjectLight upstream = downstreamUpsteamMapping.get(classType).get(downstream);
+            LOG.info("    upstream     : " + businessObjectToString(upstream));
+            LOG.info("       downstream: " + businessObjectToString(downstream));
+         }
+
+      }
+   }
+
+   //   public LinkedHashMap<BusinessObjectLight, BusinessObjectLight> gettingPaths(String objectClass, String objectId) {
+   //
+   //      // child, parent (each child can have only one parent)
+   //      LinkedHashMap<BusinessObjectLight, BusinessObjectLight> childParentMap = new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>();
+   //
+   //      // create the connection manager
+   //      PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem, connectionHandler);
+   //      try {
+   //
+   //         List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
+   //
+   //         HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult = physicalConnectionService.getPhysicalTree(objectClass, objectId);
+   //
+   //         printPhysicalTreeResult(physicalTreeResult, searchClassNames);
+   //
+   //         BusinessObjectLight upstreamContainingDevice = null;
+   //
+   //         for (BusinessObjectLight connection : physicalTreeResult.keySet()) {
+   //            LOG.info("     connection: " + businessObjectToString(connection));
+   //
+   //            if ("OpticalPort".equals(connection.getClassName())) {
+   //
+   //               // getParentsUntilFirstOfClass(String objectClass, String oid, String... objectToMatchClassNames)
+   //               List<BusinessObjectLight> containingDeviceList = bem.getParentsUntilFirstOfClass(connection.getClassName(), connection.getId(), (String[]) searchClassNames.toArray());
+   //
+   //               for (BusinessObjectLight containingDevice : containingDeviceList) {
+   //                  if (searchClassNames.contains(containingDevice.getClassName())) {
+   //
+   //                     LOG.info("     connection containingDevice=" + businessObjectToString(containingDevice));
+   //                     LOG.info("        upstreamContainingDevice=" + businessObjectToString(upstreamContainingDevice));
+   //
+   //                     if (!childParentMap.containsKey(containingDevice)) {
+   //                        childParentMap.put(containingDevice, upstreamContainingDevice);
+   //                        upstreamContainingDevice = containingDevice;
+   //                     }
+   //
+   //                     break;
+   //                  }
+   //               }
+   //
+   //            }
+   //            //            LOG.info("           downstream size: " + physicalTreeResult.get(connection).size());
+   //            //            for (BusinessObjectLight downstream : physicalTreeResult.get(connection)) {
+   //            //               LOG.info("           downstream:" + businessObjectToString(downstream));
+   //            //               List<BusinessObjectLight> parents = bem.getParentsUntilFirstOfClass(connection.getClassName(), connection.getId(), (String[]) searchClassNames.toArray() );
+   //            //               for(BusinessObjectLight parent : parents) {
+   //            //                  if(searchClassNames.contains(parent.getClassName())) {
+   //            //                     LOG.info("                         downstream parent="+businessObjectToString(parent));
+   //            //                     break;
+   //            //                  }
+   //            //               }
+   //            //            }
+   //
+   //         }
+   //
+   //         LOG.info("child parent map :");
+   //         for (BusinessObjectLight child : childParentMap.keySet()) {
+   //            BusinessObjectLight parent = childParentMap.get(child);
+   //            LOG.info("    parent:" + businessObjectToString(parent));
+   //            LOG.info("       child: " + businessObjectToString(child));
+   //         }
+   //
+   //      } catch (Exception ex) {
+   //         LOG.error("problem getting tree for olt ", ex);
+   //      }
+   //
+   //      return childParentMap;
+   //
+   //   }
+
+   /**
+    * used for debugging physicalTreeResult
+    * @param physicalTreeResult
+    */
+   public void printPhysicalTreeResult(HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult, List<String> searchClassNames) {
+      LOG.info("*************** physicalTreeResult");
+
+      try {
+         for (BusinessObjectLight connection : physicalTreeResult.keySet()) {
+            LOG.info("     connection: " + businessObjectToString(connection));
+            List<BusinessObjectLight> connectionParents = bem.getParentsUntilFirstOfClass(connection.getClassName(), connection.getId(), (String[]) searchClassNames.toArray());
+            for (BusinessObjectLight parent : connectionParents) {
+               if (searchClassNames.contains(parent.getClassName())) {
+                  LOG.info("     connection parent=" + businessObjectToString(parent));
+                  break;
+               }
+            }
+
+            LOG.info("           downstream size: " + physicalTreeResult.get(connection).size());
+            for (BusinessObjectLight downstream : physicalTreeResult.get(connection)) {
+               LOG.info("           downstream:" + businessObjectToString(downstream));
+               List<BusinessObjectLight> downstreamParents = bem.getParentsUntilFirstOfClass(downstream.getClassName(), downstream.getId(), (String[]) searchClassNames.toArray());
+               for (BusinessObjectLight downstreamParent : downstreamParents) {
+                  if (searchClassNames.contains(downstreamParent.getClassName())) {
+                     LOG.info("                         downstream parent=" + businessObjectToString(downstreamParent));
+                     break;
+                  }
+               }
+            }
+
+         }
+
+      } catch (Exception ex) {
+         LOG.error("problem printing PhysicalTreeResult ", ex);
+      }
+
+      LOG.info("*************** END OF physicalTreeResult");
    }
 
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
@@ -480,11 +797,11 @@ public class OpenNMSExport08 {
                   } else {
                      line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
                   }
-                  
+
                   // find managed object type in kuwaiba heirarchy
                   String managedObjectType = getDataModelClassPath(device.getClassName());
                   line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTTYPE, managedObjectType);
-                  
+
                   // use kuwaiba managed object instance
                   line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
@@ -517,7 +834,7 @@ public class OpenNMSExport08 {
          ArrayList<ClassMetadataLight> classMetadataList = new ArrayList<ClassMetadataLight>(mem.getSuperClassesLight(className, true));
          // reverse order of list
          Collections.reverse(classMetadataList);
-         
+
          Iterator<ClassMetadataLight> classMetadataListIterator = classMetadataList.iterator();
          while (classMetadataListIterator.hasNext()) {
             ClassMetadataLight classMetadata = classMetadataListIterator.next();
@@ -529,6 +846,19 @@ public class OpenNMSExport08 {
       } catch (MetadataObjectNotFoundException e) {
          throw new IllegalArgumentException("cant find className=" + className, e);
       }
+   }
+
+   // overloaded toString methods for BusinessObjects
+   String businessObjectToString(BusinessObject bo) {
+      return (bo == null) ? "BusinessObject[ null ]"
+               : "BusinessObject[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + " getAttributes()=" + bo.getAttributes() + "]";
+   }
+
+   String businessObjectToString(BusinessObjectLight bo) {
+      return (bo == null) ? "BusinessObjectLight[ null ]"
+               : "BusinessObjectLight[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + "]";
    }
 
    /**
@@ -652,6 +982,99 @@ public class OpenNMSExport08 {
 
    }
 
+   // TODO - allow service access from script in kuwaiba
+   // this is a clone of methods in the internal PhysicalConnectionsService because the service is not accessible from a script
+   public static class PhysicalConnectionsServiceProxy {
+
+      private ApplicationEntityManager aem;
+
+      private BusinessEntityManager bem;
+
+      private MetadataEntityManager mem;
+
+      private GraphDatabaseService connectionHandler;
+
+      public PhysicalConnectionsServiceProxy(ApplicationEntityManager aem, BusinessEntityManager bem, MetadataEntityManager mem, GraphDatabaseService connectionHandler) {
+         super();
+         this.aem = aem;
+         this.bem = bem;
+         this.mem = mem;
+         this.connectionHandler = connectionHandler;
+      }
+
+      // taken from ogmService ObjectGraphMappingService - ONLY USED MINIMAL METHOD to get a BusinessObjectLight with no validators
+      public BusinessObjectLight createObjectLightFromNode(Node instance) {
+         Node classNode = instance.getSingleRelationship(RelTypes.INSTANCE_OF, Direction.OUTGOING).getEndNode();
+         String className = (String) classNode.getProperty(Constants.PROPERTY_NAME);
+
+         //First, we create the naked business object, without validators
+         BusinessObjectLight res = new BusinessObjectLight(className, (String) instance.getProperty(Constants.PROPERTY_UUID),
+                  (String) instance.getProperty(Constants.PROPERTY_NAME), (String) classNode.getProperty(Constants.PROPERTY_DISPLAY_NAME, null));
+         return res;
+      }
+
+      /**
+       * Gets A tree representation of all physical paths as a hash map.
+       * @param objectClass The source port class name.
+       * @param objectId The source port id.
+       * @return A tree representation of all physical paths as a hash map.
+       * @throws BusinessObjectNotFoundException If any of the objects involved in the path cannot be found
+       * @throws MetadataObjectNotFoundException If any of the object classes involved in the path cannot be found
+       * @throws ApplicationObjectNotFoundException If any of the objects involved in the path has a malformed list type attribute
+       * @throws InvalidArgumentException If any of the objects involved in the path has an invalid objectId or className
+       */
+      public HashMap<BusinessObjectLight, List<BusinessObjectLight>> getPhysicalTree(String objectClass, String objectId)
+               throws IllegalStateException, BusinessObjectNotFoundException, MetadataObjectNotFoundException,
+               ApplicationObjectNotFoundException, InvalidArgumentException {
+
+         //          if (persistenceService.getState() == EXECUTION_STATE.STOPPED)
+         //              throw new IllegalStateException(ts.getTranslatedString("module.general.messages.cant-reach-backend"));
+
+         HashMap<BusinessObjectLight, List<BusinessObjectLight>> tree = new LinkedHashMap();
+         // If the port is a logical port (virtual port, Pseudowire or service instance, we look for the first physical parent port)
+         //try (Transaction tx = connectionManager.getConnectionHandler().beginTx()) {
+         Transaction tx = null;
+         try {
+            tx = connectionHandler.beginTx();
+            //The first part of the query will return many paths, that we build as a tree
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append(String.format("MATCH paths = (o)-[r:%s*]-(c) ", RelTypes.RELATED_TO_SPECIAL));
+            queryBuilder.append(String.format("WHERE o._uuid = '%s' AND all(rel in r where rel.name IN "
+                     + "['mirror','mirrorMultiple'] or rel.name = 'endpointA' or rel.name = 'endpointB') ", objectId));
+            queryBuilder.append("WITH nodes(paths) as path ");
+            queryBuilder.append("RETURN path ORDER BY length(path) DESC");
+
+            //Result result = connectionManager.getConnectionHandler().execute(queryBuilder.toString());
+            Result result = connectionHandler.execute(queryBuilder.toString());
+            Iterator<List<Node>> column = result.columnAs("path"); //NOI18N
+
+            for (List<Node> listOfNodes : Iterators.asIterable(column)) {
+               for (int i = 0; i < listOfNodes.size(); i++) {
+                  //BusinessObjectLight object = ogmService.createObjectLightFromNode(listOfNodes.get(i)); // CHANGED
+                  BusinessObjectLight object = createObjectLightFromNode(listOfNodes.get(i));
+
+                  if (!tree.containsKey(object))
+                     tree.put(object, new ArrayList());
+
+                  if (i < listOfNodes.size() - 1) {
+                     //BusinessObjectLight nextObject = ogmService.createObjectLightFromNode(listOfNodes.get(i + 1)); // CHANGED
+                     BusinessObjectLight nextObject = createObjectLightFromNode(listOfNodes.get(i + 1));
+
+                     if (!tree.get(object).contains(nextObject))
+                        tree.get(object).add(nextObject);
+                  }
+               }
+            }
+            tx.success();
+         } catch (Exception ex) {
+            throw new IllegalArgumentException("problem finding node tree", ex);
+         }
+
+         return tree;
+      }
+
+   }
+
    /**
     * Class which sets requisition values at top of csv file
     */
@@ -770,7 +1193,7 @@ public class OpenNMSExport08 {
 
       );
 
-      // this is same order as in csv header line
+      // this is same order as in csv header line  TODO REMOVE
       public static final List<String> ORIGINAL_OPENNMS_REQUISITION_HEADERS = Arrays.asList(NODE_LABEL, ID_, MINION_LOCATION, PARENT_FOREIGN_ID,
                PARENT_FOREIGN_SOURCE, IP_MANAGEMENT, MGMTTYPE_, SVC_FORCED, CAT_, ASSET_CATEGORY, ASSET_REGION, ASSET_SERIALNUMBER,
                ASSET_ASSETNUMBER, ASSET_LATITUDE, ASSET_LONGITUDE, ASSET_THRESHOLDCATEGORY, ASSET_NOTIFYCATEGORY, ASSET_POLLERCATEGORY, ASSET_DISPLAYCATEGORY,

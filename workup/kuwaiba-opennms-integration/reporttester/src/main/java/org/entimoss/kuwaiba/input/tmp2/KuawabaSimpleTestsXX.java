@@ -277,7 +277,7 @@ public class KuawabaSimpleTestsXX {
    }
 
    String businessObjectToString(BusinessObjectLight bo) {
-      return (bo == null) ? "BusinessObject[ null ]"
+      return (bo == null) ? "BusinessObjectLight[ null ]"
                : "BusinessObjectLight[ getId()=" + bo.getId() + ", getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
                         bo.getClassDisplayName() + "]";
    }
