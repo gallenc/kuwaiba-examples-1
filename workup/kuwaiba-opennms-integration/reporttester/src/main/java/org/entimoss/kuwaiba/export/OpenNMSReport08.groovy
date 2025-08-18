@@ -255,10 +255,13 @@ public class OpenNMSExport08 {
       LOG.info("GETTING OLTS " + title);
       
       // TODO REMOVE
+      // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846 PON-001
       String objectClass = "OpticalPort";
       String objectId = "c9a5bfde-3d6e-4fc7-bcc0-f86d7b1083a8";
+      List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
+      String terminatingClassName = "OpticalNetworkTerminal";
       
-      gettingPaths(objectClass, objectId);
+      gettingPaths(objectClass, objectId, searchClassNames, terminatingClassName);
 
       LOG.info("END OF GETTING OLTS " + title);
 
@@ -266,7 +269,15 @@ public class OpenNMSExport08 {
 
    }
    
-   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> gettingPaths(String objectClass, String objectId) {
+   /**
+    * gets devices in paths for a upstream parent port defined by String objectClass, String objectId
+    * @param objectClass
+    * @param objectId
+    * @param searchClassNames  The device types to include in search
+    * @param terminatingClassName The device type to define bottom of tree (ends search)
+    * @return
+    */
+   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> gettingPaths(String objectClass, String objectId, List<String> searchClassNames, String terminatingClassName) {
 
       Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping = null;
 
@@ -274,17 +285,19 @@ public class OpenNMSExport08 {
       PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem, connectionHandler);
       try {
 
-         List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
-
          HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult = physicalConnectionService.getPhysicalTree(objectClass, objectId);
 
+         LOG.info("************ print physical tree results for port objectClass" + objectClass + " objectId" + objectId);
          printPhysicalTreeResult(physicalTreeResult, searchClassNames);
+         LOG.info("************ END OF print physical tree results");
 
-         LOG.info("************ starting downstream mapping");
-         downstreamUpsteamMapping = traverseTree(physicalTreeResult, searchClassNames);
+         LOG.info("************ starting downstream mapping searchClassNames: "+searchClassNames + "terminatingClassName" +terminatingClassName);
+         downstreamUpsteamMapping = traverseTree(physicalTreeResult, searchClassNames, terminatingClassName);
          LOG.info("************ END OF downstream mapping");
 
+         LOG.info("************ Print down stream up stream mapping");
          printDownstreamUpsteamMapping(downstreamUpsteamMapping);
+         LOG.info("************ END OF Print down stream up stream mapping");
 
       } catch (Exception ex) {
          LOG.error("problem getting tree for olt ", ex);
@@ -307,17 +320,20 @@ public class OpenNMSExport08 {
     * returns a map of device maps with keys matching the classNames in parameter searchClassNames
     * each device map contains an entry for a business object with a reference to its upstream object
     */
-   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> traverseTree(HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult, List<String> searchClassNames) {
+   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> traverseTree(HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult,
+            List<String> searchClassNames,
+            String terminatingClassName) {
 
       // create data structures
 
       // structure to hold mapping of objects to upstream parents
       //   className              downstream,          upstream (each downstream can have only one upstream)
-      Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping = new HashMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>();
+      Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMappings = new HashMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>();
       for (String name : searchClassNames) {
-         downstreamUpsteamMapping.put(name, new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>());
+         downstreamUpsteamMappings.put(name, new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>());
       }
 
+      // structure to hold mapping of port to parent device
       HashMap<BusinessObjectLight, BusinessObjectLight> connectionPortToParentDeviceMap = new HashMap<BusinessObjectLight, BusinessObjectLight>();
 
       try {
@@ -332,6 +348,7 @@ public class OpenNMSExport08 {
                      connectionPortToParentDeviceMap.put(connectnPort, containingDevice);
                   } else {
                      if (!connectionPortToParentDeviceMap.get(connectnPort).equals(containingDevice)) {
+                        // should not happen
                         throw new IllegalArgumentException("Trying to redefine parent of " + businessObjectToString(connectnPort)
                                  + " from " + businessObjectToString(connectionPortToParentDeviceMap.get(connectnPort)) + " to " + businessObjectToString(containingDevice));
                      }
@@ -341,31 +358,46 @@ public class OpenNMSExport08 {
             }
          }
 
-         BusinessObjectLight upstreamFoundClass = null;
+         LOG.info("************ Print connectionPortToParentDeviceMap");
+         for (  BusinessObjectLight bo : connectionPortToParentDeviceMap.keySet()) {
+            LOG.info("connectionPort: "+businessObjectToString(bo));
+            LOG.info("        device: "+businessObjectToString(connectionPortToParentDeviceMap.get(bo)));
+         }
+         LOG.info("************ END OF Print connectionPortToParentDeviceMap");
+
 
          // traverse tree to find actual links
-         for (BusinessObjectLight connection : physicalTreeResult.keySet()) {
-            LOG.info("************ starting downstream mapping for connection port "+businessObjectToString(connection));
+         
+         BusinessObjectLight upstreamFoundClass = null;
 
-            BusinessObjectLight connectionPort = connection;
-            List<BusinessObjectLight> downstreamPorts = physicalTreeResult.get(connection);
+         for (BusinessObjectLight connectionPort : physicalTreeResult.keySet()) {
+
+            if(!"OpticalPort".equals(connectionPort.getClassName())) {
+               LOG.info("************ ignoring downstream mapping for " + businessObjectToString(connectionPort));
+               continue;
+            }
+            
+            LOG.info("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
+
+            List<BusinessObjectLight> downstreamPorts = physicalTreeResult.get(connectionPort);
 
             traverse(connectionPort,
                      downstreamPorts,
                      upstreamFoundClass,
                      searchClassNames,
-                     downstreamUpsteamMapping,
+                     terminatingClassName,
+                     downstreamUpsteamMappings,
                      connectionPortToParentDeviceMap,
                      physicalTreeResult, 0);
 
-            LOG.info("************ finished downstream mapping for connection port "+businessObjectToString(connection));
+            LOG.info("************ finished downstream mapping for connection port " + businessObjectToString(connectionPort));
          }
 
       } catch (Exception ex) {
          LOG.error("problem getting tree for olt ", ex);
       }
 
-      return downstreamUpsteamMapping;
+      return downstreamUpsteamMappings;
    }
 
    /**
@@ -374,50 +406,105 @@ public class OpenNMSExport08 {
     * @param downstreamPorts
     * @param upstreamFoundhClass
     * @param searchClassNames
-    * @param childParentMapping
+    * @param downstreamUpsteamMappings
     * @param portToParentMap
     * @param physicalTreeResult
     * @param traverseDeapth
     */
-   private void traverse(BusinessObjectLight connectionPort,
+   private boolean traverse(BusinessObjectLight connectionPort,
             List<BusinessObjectLight> downstreamPorts,
             BusinessObjectLight upstreamFoundClass,
             List<String> searchClassNames,
-            Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> childParentMapping,
-            HashMap<BusinessObjectLight, BusinessObjectLight> portToParentMap,
+            String terminatingClassName,
+            Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMappings,
+            HashMap<BusinessObjectLight, BusinessObjectLight> connectionPortToParentDeviceMap,
             HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult,
             Integer traverseDeapth) {
 
       int MAX_TRAVERSE_DEAPTH = 20;
       traverseDeapth++;
       if (traverseDeapth > MAX_TRAVERSE_DEAPTH)
-         throw new IllegalArgumentException("traverse deapth " + traverseDeapth + " > " + MAX_TRAVERSE_DEAPTH);
+         throw new IllegalArgumentException("Number of links too large to traverse. Traverse deapth " + traverseDeapth + " > " + MAX_TRAVERSE_DEAPTH);
 
-      // traverse to bottom of path 
-      if (!downstreamPorts.isEmpty()) {
-         
-         
-         StringBuffer sb = new StringBuffer();
-         for (int i = 0; i <= traverseDeapth; i++)
-            sb.append(" ");
-         LOG.info(sb.toString() + "traversing path depth=" + traverseDeapth + " for connectionPort: " +
-                  businessObjectToString(connectionPort) + " parent: " + businessObjectToString(portToParentMap.get(connectionPort)));
-         
-         for (BusinessObjectLight downStreamPort : downstreamPorts) {
+      StringBuffer sb = new StringBuffer();
+      for (int i = 0; i <= traverseDeapth; i++)
+         sb.append(" ");
 
-            traverse(connectionPort,
-                     physicalTreeResult.get(downStreamPort),
-                     upstreamFoundClass,
-                     searchClassNames,
-                     childParentMapping,
-                     portToParentMap,
-                     physicalTreeResult,
-                     traverseDeapth);
+      BusinessObjectLight parentDeviceOfCurrentPort = connectionPortToParentDeviceMap.get(connectionPort);
+
+      LOG.info(sb.toString() + "traversing path depth=" + traverseDeapth + " for connectionPort: " +
+               businessObjectToString(connectionPort) + " parent: " + businessObjectToString(parentDeviceOfCurrentPort));
+
+      boolean treeContainsTerminatingObject = false;
+
+      // dont continue below terminating class type even if sublist exists
+      if (parentDeviceOfCurrentPort != null && terminatingClassName.equals(parentDeviceOfCurrentPort.getClassName())) {
+         
+         treeContainsTerminatingObject = true;
+         LOG.info(sb.toString()+"found terminating class: "+businessObjectToString(parentDeviceOfCurrentPort)+" for port "+businessObjectToString(connectionPort));
+         
+      } else {
+
+         // traverse to bottom of path 
+         if (!downstreamPorts.isEmpty()) {
+
+            // traverse downstream ports
+            for (BusinessObjectLight downStreamPort : downstreamPorts) {
+
+               if (parentDeviceOfCurrentPort != null && searchClassNames.contains(parentDeviceOfCurrentPort.getClassName())) {
+                  upstreamFoundClass = parentDeviceOfCurrentPort;
+               }
+
+               Boolean terminatingObjectInTree = traverse(downStreamPort,
+                        physicalTreeResult.get(downStreamPort),
+                        upstreamFoundClass,
+                        searchClassNames,
+                        terminatingClassName,
+                        downstreamUpsteamMappings,
+                        connectionPortToParentDeviceMap,
+                        physicalTreeResult,
+                        traverseDeapth);
+
+               if (terminatingObjectInTree) {
+                  treeContainsTerminatingObject = true;
+               }
+
+            }
+         }
+
+      }
+
+      if (treeContainsTerminatingObject) {
+
+         // ignore device types not wanted in tree
+         if (parentDeviceOfCurrentPort != null && searchClassNames.contains(parentDeviceOfCurrentPort.getClassName())) {
+
+            LinkedHashMap<BusinessObjectLight, BusinessObjectLight> childParentMapping = downstreamUpsteamMappings.get(parentDeviceOfCurrentPort.getClassName());
+
+            // add upstream device to current device
+            // if upstream device is same as this device then we are inside splitter or a splice so do not assign
+            if (upstreamFoundClass != null && upstreamFoundClass != parentDeviceOfCurrentPort) {
+               if (!childParentMapping.keySet().contains(parentDeviceOfCurrentPort)) {
+                  childParentMapping.put(parentDeviceOfCurrentPort, upstreamFoundClass );
+                  LOG.info(sb.toString()+"assigning upstream device for "+businessObjectToString(parentDeviceOfCurrentPort) +
+                              " to "+businessObjectToString(upstreamFoundClass));
+               } else {
+                  // check you aren't reassigning upstream device (should not happen)
+                  if (!childParentMapping.get(parentDeviceOfCurrentPort).equals(upstreamFoundClass)) {
+                     throw new IllegalArgumentException("should not be reassigning upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
+                              " from "+businessObjectToString(childParentMapping.get(parentDeviceOfCurrentPort))+
+                              " to "+businessObjectToString(upstreamFoundClass) );
+                  }
+                  LOG.info(sb.toString()+" already assigned upstream device for "+businessObjectToString(parentDeviceOfCurrentPort) +
+                           " to "+businessObjectToString(upstreamFoundClass));
+               }
+            }
 
          }
+
       }
-      
-      // add child to parent
+
+      return treeContainsTerminatingObject;
 
    }
 
@@ -460,77 +547,6 @@ public class OpenNMSExport08 {
       }
       LOG.info("*************** END printDownstreamUpsteamMapping");
    }
-
-
-   //   public LinkedHashMap<BusinessObjectLight, BusinessObjectLight> gettingPaths(String objectClass, String objectId) {
-   //
-   //      // child, parent (each child can have only one parent)
-   //      LinkedHashMap<BusinessObjectLight, BusinessObjectLight> childParentMap = new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>();
-   //
-   //      // create the connection manager
-   //      PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem, connectionHandler);
-   //      try {
-   //
-   //         List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
-   //
-   //         HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult = physicalConnectionService.getPhysicalTree(objectClass, objectId);
-   //
-   //         printPhysicalTreeResult(physicalTreeResult, searchClassNames);
-   //
-   //         BusinessObjectLight upstreamContainingDevice = null;
-   //
-   //         for (BusinessObjectLight connection : physicalTreeResult.keySet()) {
-   //            LOG.info("     connection: " + businessObjectToString(connection));
-   //
-   //            if ("OpticalPort".equals(connection.getClassName())) {
-   //
-   //               // getParentsUntilFirstOfClass(String objectClass, String oid, String... objectToMatchClassNames)
-   //               List<BusinessObjectLight> containingDeviceList = bem.getParentsUntilFirstOfClass(connection.getClassName(), connection.getId(), (String[]) searchClassNames.toArray());
-   //
-   //               for (BusinessObjectLight containingDevice : containingDeviceList) {
-   //                  if (searchClassNames.contains(containingDevice.getClassName())) {
-   //
-   //                     LOG.info("     connection containingDevice=" + businessObjectToString(containingDevice));
-   //                     LOG.info("        upstreamContainingDevice=" + businessObjectToString(upstreamContainingDevice));
-   //
-   //                     if (!childParentMap.containsKey(containingDevice)) {
-   //                        childParentMap.put(containingDevice, upstreamContainingDevice);
-   //                        upstreamContainingDevice = containingDevice;
-   //                     }
-   //
-   //                     break;
-   //                  }
-   //               }
-   //
-   //            }
-   //            //            LOG.info("           downstream size: " + physicalTreeResult.get(connection).size());
-   //            //            for (BusinessObjectLight downstream : physicalTreeResult.get(connection)) {
-   //            //               LOG.info("           downstream:" + businessObjectToString(downstream));
-   //            //               List<BusinessObjectLight> parents = bem.getParentsUntilFirstOfClass(connection.getClassName(), connection.getId(), (String[]) searchClassNames.toArray() );
-   //            //               for(BusinessObjectLight parent : parents) {
-   //            //                  if(searchClassNames.contains(parent.getClassName())) {
-   //            //                     LOG.info("                         downstream parent="+businessObjectToString(parent));
-   //            //                     break;
-   //            //                  }
-   //            //               }
-   //            //            }
-   //
-   //         }
-   //
-   //         LOG.info("child parent map :");
-   //         for (BusinessObjectLight child : childParentMap.keySet()) {
-   //            BusinessObjectLight parent = childParentMap.get(child);
-   //            LOG.info("    parent:" + businessObjectToString(parent));
-   //            LOG.info("       child: " + businessObjectToString(child));
-   //         }
-   //
-   //      } catch (Exception ex) {
-   //         LOG.error("problem getting tree for olt ", ex);
-   //      }
-   //
-   //      return childParentMap;
-   //
-   //   }
 
    /**
     * used for debugging physicalTreeResult
