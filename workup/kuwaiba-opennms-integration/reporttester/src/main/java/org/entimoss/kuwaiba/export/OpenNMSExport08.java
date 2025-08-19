@@ -268,14 +268,14 @@ public class OpenNMSExport08 {
          LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
 
          // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846
-//         BusinessObject olt = bem.getObject("OpticalLineTerminal", "0f484445-44fd-426a-9a37-d73c609cf846");
-//         LOG.info("finding ports for " + businessObjectToString(olt));
-//
-//         oltSet.add(olt);
-         
+         //         BusinessObject olt = bem.getObject("OpticalLineTerminal", "0f484445-44fd-426a-9a37-d73c609cf846");
+         //         LOG.info("finding ports for " + businessObjectToString(olt));
+         //
+         //         oltSet.add(olt);
+
          List<BusinessObject> devices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
-         LOG.info("added devices:"+devices);
-         
+         LOG.info("added devices:" + devices);
+
          oltSet.addAll(devices);
 
          Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstream = gettingDownstreamObjectsForOLTs(oltSet, searchClassNames, terminatingClassName);
@@ -717,6 +717,14 @@ public class OpenNMSExport08 {
     * METHODS FOR TRAVERSING PATHS AND FINDING PASSIVE SPLITTERS
     */
 
+   /**
+    * Search each device in the oltSet for PON optical ports. 
+    * PON ports are identified as not isManagement and name starts with "PON"
+    * @param oltSet set of OLT devices
+    * @param searchClassNames set of passive nad active devices ot include in downstream list
+    * @param terminatingClassName  should be an ONT identifier i.e. bottom of the tree with an ONT attached
+    * @return
+    */
    public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> gettingDownstreamObjectsForOLTs(LinkedHashSet<BusinessObjectLight> oltSet, List<String> searchClassNames, String terminatingClassName) {
 
       // structure to hold mapping of objects to upstream parents
@@ -733,8 +741,15 @@ public class OpenNMSExport08 {
             // getChildrenOfClassLightRecursive(String parentOid, String parentClass, String classToFilter, HashMap <String, String> attributesToFilters, int page, int limit) 
             List<BusinessObjectLight> oltPorts = bem.getChildrenOfClassLightRecursive(parentOid, parentClass, "OpticalPort", null, -1, -1);
             for (BusinessObjectLight port : oltPorts) {
-               Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamMapping = gettingDownstreamObjectsForPort(port.getClassName(), port.getId(), searchClassNames, terminatingClassName);
-               addDownstreamMapping(downstreamUpsteamMappings, downstreamMapping);
+
+               // if isManagement attribute set this is NOT a PON port. Also check if  port name starts with PON-
+               String isManagementStr = bem.getAttributeValueAsString(port.getClassName(), port.getId(), "isManagement");
+               boolean isManagement = Boolean.valueOf(isManagementStr);
+
+               if (!isManagement && port.getName().startsWith("PON")) {
+                  Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamMapping = gettingDownstreamObjectsForPort(port.getClassName(), port.getId(), searchClassNames, terminatingClassName);
+                  addDownstreamMapping(downstreamUpsteamMappings, downstreamMapping);
+               }
             }
          } catch (Exception ex) {
             throw new IllegalArgumentException("problem mapping ports for olt: " + businessObjectToString(olt), ex);
