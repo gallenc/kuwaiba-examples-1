@@ -334,7 +334,7 @@ public class OpenNMSExport08 {
       }
 
       // structure to hold mapping of port to parent device
-      HashMap<BusinessObjectLight, BusinessObjectLight> connectionPortToParentDeviceMap = new HashMap<BusinessObjectLight, BusinessObjectLight>();
+      LinkedHashMap<BusinessObjectLight, BusinessObjectLight> connectionPortToParentDeviceMap = new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>();
 
       try {
 
@@ -379,10 +379,8 @@ public class OpenNMSExport08 {
             
             LOG.info("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
 
-            List<BusinessObjectLight> downstreamPorts = physicalTreeResult.get(connectionPort);
 
             traverse(connectionPort,
-                     downstreamPorts,
                      upstreamFoundClass,
                      searchClassNames,
                      terminatingClassName,
@@ -403,7 +401,6 @@ public class OpenNMSExport08 {
    /**
     * 
     * @param connectionPort
-    * @param downstreamPorts
     * @param upstreamFoundhClass
     * @param searchClassNames
     * @param downstreamUpsteamMappings
@@ -412,7 +409,6 @@ public class OpenNMSExport08 {
     * @param traverseDeapth
     */
    private boolean traverse(BusinessObjectLight connectionPort,
-            List<BusinessObjectLight> downstreamPorts,
             BusinessObjectLight upstreamFoundClass,
             List<String> searchClassNames,
             String terminatingClassName,
@@ -445,19 +441,22 @@ public class OpenNMSExport08 {
          
       } else {
 
+         List<BusinessObjectLight> downstreamPorts = physicalTreeResult.get(connectionPort);
+
          // traverse to bottom of path 
          if (!downstreamPorts.isEmpty()) {
 
             // traverse downstream ports
             for (BusinessObjectLight downStreamPort : downstreamPorts) {
 
+               BusinessObjectLight newUpstreamFoundClass = upstreamFoundClass;
+               
                if (parentDeviceOfCurrentPort != null && searchClassNames.contains(parentDeviceOfCurrentPort.getClassName())) {
-                  upstreamFoundClass = parentDeviceOfCurrentPort;
+                  newUpstreamFoundClass = parentDeviceOfCurrentPort;
                }
 
                Boolean terminatingObjectInTree = traverse(downStreamPort,
-                        physicalTreeResult.get(downStreamPort),
-                        upstreamFoundClass,
+                        newUpstreamFoundClass,
                         searchClassNames,
                         terminatingClassName,
                         downstreamUpsteamMappings,
