@@ -43,8 +43,12 @@
  *    The rangeParentValue can be the name property of the object or the kuwaiba objectID of the object.
  *    If the rangeParentValue is not set or is empty, all devices will be included in the tree.
  *    If the rangeParentValue is not found, an exception will be thrown and the report will not complete.
+ *
+ *    generatePassivePon
+ *    If true, the exporter searches for OpticalLineTerminals and searches for trees of provisioned PON devices describing circuits from OLTs to ONT's
+ *    Each device in the tree is provisioned with an upstream device so that alarm downstream and upstream correlation can be performed.      
  * 
- * Applies to: TBD
+ * Applies to: All classes as a generic report
  * 
  * Notes - todo
  * LOG.warn should be LOG.debug if debugging is enabled
@@ -204,6 +208,14 @@ public class OpenNMSExport08 {
        */
       String rangeParentValue = parameters.getOrDefault("rangeParentValue", "");
 
+      /*
+       * generatePassivePon
+       * If true, the exporter searches for OpticalLineTerminals and searches for trees of provisioned PON devices describing circuits from OLTs to ONT's
+       * Each device in the tree is provisioned with an upstream device so that alarm downstream and upstream correlation can be performed.        
+      */
+      String generatePassivePonStr = parameters.getOrDefault("generatePassivePon", "true");
+      boolean generatePassivePon = Boolean.parseBoolean(generatePassivePonStr);
+
       StringBuffer textBuffer = new StringBuffer();
 
       // create CSV headerline
@@ -252,41 +264,43 @@ public class OpenNMSExport08 {
 
       LOG.info("End of " + title);
 
-      LOG.info("GETTING OLTS " + title);
+      if (generatePassivePon) {
+         LOG.info("GETTING OLTS " + title);
 
-      // TODO REMOVE
-      // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846 PON-001
-      //String objectClass = "OpticalPort";
-      //String objectId = "c9a5bfde-3d6e-4fc7-bcc0-f86d7b1083a8";
+         // TODO REMOVE
+         // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846 PON-001
+         //String objectClass = "OpticalPort";
+         //String objectId = "c9a5bfde-3d6e-4fc7-bcc0-f86d7b1083a8";
 
-      List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
-      String terminatingClassName = "OpticalNetworkTerminal";
+         List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
+         String terminatingClassName = "OpticalNetworkTerminal";
 
-      //gettingDownstreamObjectsForPort(objectClass, objectId, searchClassNames, terminatingClassName);
+         //gettingDownstreamObjectsForPort(objectClass, objectId, searchClassNames, terminatingClassName);
 
-      try {
-         LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
+         try {
+            LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
 
-         // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846
-         //         BusinessObject olt = bem.getObject("OpticalLineTerminal", "0f484445-44fd-426a-9a37-d73c609cf846");
-         //         LOG.info("finding ports for " + businessObjectToString(olt));
-         //
-         //         oltSet.add(olt);
+            // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846
+            //         BusinessObject olt = bem.getObject("OpticalLineTerminal", "0f484445-44fd-426a-9a37-d73c609cf846");
+            //         LOG.info("finding ports for " + businessObjectToString(olt));
+            //
+            //         oltSet.add(olt);
 
-         List<BusinessObject> devices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
-         LOG.info("added devices:" + devices);
+            List<BusinessObject> devices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
+            LOG.info("added devices:" + devices);
 
-         oltSet.addAll(devices);
+            oltSet.addAll(devices);
 
-         Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstream = gettingDownstreamObjectsForOLTs(oltSet, searchClassNames, terminatingClassName);
+            Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstream = gettingDownstreamObjectsForOLTs(oltSet, searchClassNames, terminatingClassName);
 
-         printChildParentMap(downstream);
+            printChildParentMap(downstream);
 
-      } catch (Exception ex) {
-         LOG.info("problem getting OLTS ", ex);
+         } catch (Exception ex) {
+            LOG.info("problem getting OLTS ", ex);
+         }
+
+         LOG.info("END OF GETTING OLTS " + title);
       }
-
-      LOG.info("END OF GETTING OLTS " + title);
 
       return report;
 
