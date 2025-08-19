@@ -6,27 +6,27 @@
  *    useNodeLabelAsForeignId
  *    If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
  *    If true the report uses the generated object label as node foreignId in the requisition.
- *
+ *    
  *    useAbsoluteNames
- *    If blank or false, the report uses parent location and rack to generate each node name.
+ *    If blank or false, the report uses parent location and rack to generate each node name. 
  *    if true it uses only the name of the node given in the model
- *
+ *    
  *    useAllPortAddresses
  *    If blank or false, the report only uses ports designated as isManagement. (default)
  *    If true it uses all port addresses assigned to a device and designates the interface snmp-primary P (primary snmp) if isManagment is true
  *    or N (Not managed) if isManagment is false
- *
+ *    
  *    defaultAssetCategory
  *    AssetCategory is populated from device EquipmentModel displayName
  *    if the displayName is not set then the AssetCategory is set to the defaultAssetCategory or blank if the defaultAssetCategory is not set
  *    (this can be used in grafana to determine which display template to use)
- *
+ *    
  *    defaultAssetDisplayCategory
  *    AssetDisplayCategory is populated from the customer name associated with a service attached to a device or a parent rack in the model.
  *    if AssetDisplayCategory is not populated from the model, a default value can be used.
  *    AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set
  *    (this can be used in OpenNMS to determine which users can view an object)
- *
+ *    
  *    subnetNetSubstitutionFilter
  *    Substitutes the network portion of the inputIpv4Address for the network portion of the substitute address
  *    if the address being filtered is within the within subnet range.
@@ -36,7 +36,7 @@
  *       String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24"
  *       if the input inputIpv4AddressStr = "172.16.105.20"
  *       the substitute is  substituteAddressStr= "192.168.105.20
- * 
+ *
  *    rangeParentValue
  *    rangeParentValue is used to find the parent visible object of the devices to include in the device list.
  *    If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.
@@ -45,7 +45,7 @@
  *    If the rangeParentValue is not found, an exception will be thrown and the report will not complete.
  * 
  * Applies to: TBD
- *
+ * 
  * Notes - todo
  * LOG.warn should be LOG.debug if debugging is enabled
  * 
@@ -86,39 +86,38 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.SortedMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-//uncomment in groovy script
+// TODO uncomment in groovy script
 OpenNMSExport08 opennmsExport = new OpenNMSExport08(bem, aem,  mem,  parameters, connectionHandler);
 return opennmsExport.returnReport();
 
 public class OpenNMSExport08 {
-   static Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport");  // remove static in groovy
-   
-   BusinessEntityManager    bem = null; // injected in groovy
+   static Logger LOG = LoggerFactory.getLogger("OpenNMSInventoryExport"); // remove static in groovy
+
+   BusinessEntityManager bem = null; // injected in groovy
    ApplicationEntityManager aem = null; // injected in groovy
    MetadataEntityManager mem = null; // injected in groovy
    Map<String, String> parameters = new HashMap<>(); // injected in groovy
    GraphDatabaseService connectionHandler = null; //injected in groovy
-   
+
    IPLocationDAO ipLocationDAO = null;
 
    String title = "OpenNMSInventoryExport";
    String version = "0.8";
    String author = "Craig Gallen";
-   
+
    public OpenNMSExport08() {
    };
 
-   
    public OpenNMSExport08(BusinessEntityManager bem, ApplicationEntityManager aem, MetadataEntityManager mem, Map<String, String> parameters, GraphDatabaseService connectionHandler) {
       super();
       this.bem = bem;
@@ -132,33 +131,34 @@ public class OpenNMSExport08 {
       try {
          ipLocationDAO.init();
       } catch (Exception ex) {
-         throw new RuntimeException("problem initialising ipLocationDao ",ex);
+         throw new RuntimeException("problem initialising ipLocationDao ", ex);
       }
+
    }
 
    // main report function
    InventoryReport returnReport() {
-      LOG.info("Start of "+title+" Version "+version+" Author "+author);
+      LOG.info("Start of " + title + " Version " + version + " Author " + author);
 
       LOG.info("opennms export report parameters :");
-      for(Entry<String, String> entry : parameters.entrySet()){
-         LOG.info("   key: "+entry.getKey()+" value: "+entry.getValue());
+      for (Entry<String, String> entry : parameters.entrySet()) {
+         LOG.info("   key: " + entry.getKey() + " value: " + entry.getValue());
       }
-      
+
       /*
        * useNodeLabelAsForeignId
        * If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
        * If true the report uses the generated object label as node foreignId in the requisition.
        */
       Boolean useNodeLabelAsForeignId = Boolean.valueOf(parameters.getOrDefault("useNodeLabelAsForeignId", "false"));
-      
+
       /*
        * useAbsoluteNames
        * If blank or false, the report uses parent location and rack to generate each node name. 
        * if true it uses only the name of the node given in the model
        */
       Boolean useAbsoluteNames = Boolean.valueOf(parameters.getOrDefault("useAbsoluteNames", "false"));
-      
+
       /*
        * useAllPortAddresses
        * If blank or false, the report only uses ports designated as isManagement. (default)
@@ -166,14 +166,14 @@ public class OpenNMSExport08 {
        * or N (Not managed) if isManagment is false
        */
       Boolean useAllPortAddresses = Boolean.valueOf(parameters.getOrDefault("useAllPortAddresses", "false"));
-      
+
       /*
        * defaultAssetCategory
        * AssetCategory is populated from device EquipmentModel displayName
        * if the displayName is not set then the AssetCategory is set to the defaultAssetCategory or blank if the defaultAssetCategory is not set
        * (this can be used in grafana to determine which display template to use)
        */
-      String defaultAssetCategory= parameters.getOrDefault("defaultAssetCategory", "");
+      String defaultAssetCategory = parameters.getOrDefault("defaultAssetCategory", "");
 
       /*
        * defaultAssetDisplayCategory
@@ -181,8 +181,8 @@ public class OpenNMSExport08 {
        * AssetDisplayCategory is set to the defaultAssetDisplayCategory or blank if the defaultAssetDisplauCategory is not set
        * (this can be used in OpenNMS to determine which users can view an object)
        */
-      String defaultAssetDisplayCategory= parameters.getOrDefault("defaultAssetDisplayCategory", "");
-      
+      String defaultAssetDisplayCategory = parameters.getOrDefault("defaultAssetDisplayCategory", "");
+
       /*
        * subnetNetSubstitutionFilterStr
        * substitutes the network portion of the inputIpv4Address for the network portion of the substitute address
@@ -191,8 +191,8 @@ public class OpenNMSExport08 {
        *  String subnetNetSubstitutionStr = "172.16.0.0/22=192.168.105.0/24";
        *  String inputIpv4AddressStr = "172.16.105.20";
        *  String substituteAddressStr= "192.168.105.20
-       */ 
-      String subnetNetSubstitutionFilter= parameters.getOrDefault("subnetNetSubstitutionFilter", "");
+       */
+      String subnetNetSubstitutionFilter = parameters.getOrDefault("subnetNetSubstitutionFilter", "");
 
       /*
        * rangeParentValue
@@ -250,34 +250,553 @@ public class OpenNMSExport08 {
       // return a RawReport containing csv
       InventoryReport report = new RawReport(title, author, version, textBuffer.toString());
 
-      LOG.info("End of "+title);
- 
+      LOG.info("End of " + title);
+
       LOG.info("GETTING OLTS " + title);
-      
+
       // TODO REMOVE
       // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846 PON-001
-      String objectClass = "OpticalPort";
-      String objectId = "c9a5bfde-3d6e-4fc7-bcc0-f86d7b1083a8";
+      //String objectClass = "OpticalPort";
+      //String objectId = "c9a5bfde-3d6e-4fc7-bcc0-f86d7b1083a8";
+      
       List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
       String terminatingClassName = "OpticalNetworkTerminal";
+
+      //gettingDownstreamObjectsForPort(objectClass, objectId, searchClassNames, terminatingClassName);
       
-      gettingPaths(objectClass, objectId, searchClassNames, terminatingClassName);
+   
+      try {
+      LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
+
+         // SOTN001_OLT_0100 0f484445-44fd-426a-9a37-d73c609cf846
+//         BusinessObject olt = bem.getObject("OpticalLineTerminal", "0f484445-44fd-426a-9a37-d73c609cf846");
+//         LOG.info("finding ports for " + businessObjectToString(olt));
+//
+//         oltSet.add(olt);
+         
+         List<BusinessObject> devices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
+         LOG.info("added devices:"+devices);
+         
+         oltSet.addAll(devices);
+         
+        Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstream = gettingDownstreamObjectsForOLTs(oltSet, searchClassNames,  terminatingClassName);
+        printChildParentMap(downstream);
+         
+      } catch (Exception ex) {
+         LOG.info("problem getting OLTS ", ex);
+      }
+      
+
 
       LOG.info("END OF GETTING OLTS " + title);
 
       return report;
 
    }
-   
+
+   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
+            Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory,
+            String subnetNetSubstitutionFilter, String rangeParentValue) {
+
+      ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
+      List<BusinessObject> devices;
+
+      try {
+
+         // tries to find parent object of all devices to include in range
+         // parent must be a viewable object which can have a generic communications element as a child 
+         // range parent value can be an absolute object id or an object name
+         BusinessObjectLight rangeParent = null;
+         String rangeParentClassName = null;
+         String rangeParentId = null;
+
+         String searchErrorMsg = null;
+         if (rangeParentValue != null && !rangeParentValue.isEmpty()) {
+            try {
+               // see if there is an object with the same name
+               List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(Constants.CLASS_VIEWABLEOBJECT, Constants.PROPERTY_NAME, rangeParentValue);
+               if (!rangeParents.isEmpty())
+                  rangeParent = rangeParents.get(0);
+            } catch (Exception ex) {
+               searchErrorMsg = ex.getMessage();
+            }
+            if (rangeParent == null)
+               // else see if there is an object with the object id = viewable object
+               try {
+                  // see if there is an object with the same id
+                  List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(Constants.CLASS_VIEWABLEOBJECT, Constants.PROPERTY_UUID, rangeParentValue);
+                  if (!rangeParents.isEmpty())
+                     rangeParent = rangeParents.get(0);
+               } catch (Exception ex) {
+                  searchErrorMsg = ex.getMessage();
+               }
+            if (rangeParent == null) {
+               throw new IllegalArgumentException("cannot find parent wiewable object with rangeParentValue=" + rangeParentValue + " search error:" + searchErrorMsg);
+            }
+            rangeParentClassName = rangeParent.getClassName();
+            rangeParentId = rangeParent.getId();
+            LOG.warn("finding devices with parent object rangeParentClassName=" + rangeParentClassName + " rangeParentId=" + rangeParentId + " " + rangeParent);
+         }
+
+         // Next we get all active network devices
+         devices = bem.getObjectsOfClass(Constants.CLASS_GENERICCOMMUNICATIONSELEMENT, -1);
+
+         for (BusinessObject device : devices) {
+
+            String name = device.getName().strip().replace(" ", "_");
+            String deviceId = device.getId();
+
+            String latitude = "";
+            String longitude = "";
+            String locationName = "";
+            String rackName = "";
+            String deviceEquipmentDisplayName = "";
+            String customerName = "NOT_ASSIGNED";
+            String customerId = "";
+            String serviceName = "NOT_ASSIGNED";
+            String serviceId = "";
+
+            try {
+
+               LOG.warn("************ processing device with attributes :" + device.getAttributes());
+
+               // if rangeParent is set do not proceed if device is not a child of rangeParent
+               // TODO this is correct method but doesn't work because transaction is not closed in BusinessEntityManagerImpl.isParent (no txSuccess())
+               //if (rangeParentId != null) {
+               //   if (! bem.isParent(rangeParentClassName, rangeParentId, device.getClassName(), device.getId())) {
+               //      break;
+               //   }
+               //}
+               // TODO work around
+               if (rangeParentId != null) {
+                  List<BusinessObjectLight> parents = bem.getParents(device.getClassName(), device.getId());
+
+                  LOG.warn("parents of device name: " + device.getClassName() + " Id: " + device.getId() + " : " + parents);
+
+                  boolean isParent = false;
+                  for (BusinessObjectLight parent : parents) {
+                     if (parent.getId().equals(rangeParentId)) {
+                        isParent = true;
+                        break;
+                     }
+                  }
+                  // if parent doesn't match process next device
+                  if (!isParent) {
+                     continue;
+                  }
+               }
+
+               String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
+               if (equipmentModelId != null) {
+                  BusinessObject equipmentModel = aem.getListTypeItem(Constants.CLASS_EQUIPMENTMODEL, equipmentModelId);
+                  deviceEquipmentDisplayName = (String) equipmentModel.getAttributes().get(Constants.PROPERTY_DISPLAY_NAME);
+               }
+
+               // get the first parent location of each device for latitude/longitude
+               BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
+               if (location != null && location.getName() != null) {
+                  locationName = location.getName().strip().replace(" ", "_");
+                  latitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "latitude");
+                  longitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "longitude");
+               }
+
+               // get any service / customer associated with the device
+               List<BusinessObjectLight> associatedServices = bem.getSpecialAttribute(device.getClassName(), device.getId(), "uses");
+               if (associatedServices != null) {
+                  // only take first associated service even if there are more
+                  for (BusinessObjectLight associatedSvc : associatedServices) {
+                     serviceName = associatedSvc.getName();
+                     serviceId = associatedSvc.getId();
+                     BusinessObject customer = bem.getFirstParentOfClass(associatedSvc.getClassName(), associatedSvc.getId(), "GenericCustomer");
+                     if (customer != null) {
+                        customerName = customer.getName();
+                        customerId = customer.getId();
+                        break;
+                     }
+                  }
+               }
+
+               // get the first rack containing each device for rackName
+               BusinessObject rack = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "Rack");
+               if (rack != null && rack.getName() != null) {
+                  rackName = rack.getName().strip().replace(" ", "_");
+
+                  // if there is no service with customer name associated with the device then try to use the service associated with the parent rack
+                  if ("NOT_ASSIGNED".equals(serviceName)) {
+                     // get any service / customer associated with the parent rack
+                     associatedServices = bem.getSpecialAttribute(rack.getClassName(), rack.getId(), "uses");
+                     if (associatedServices != null) {
+                        // only take first associated service even if there are more
+                        for (BusinessObjectLight associatedSvc : associatedServices) {
+                           serviceName = associatedSvc.getName();
+                           serviceId = associatedSvc.getId();
+                           BusinessObject customer = bem.getFirstParentOfClass(associatedSvc.getClassName(), associatedSvc.getId(), "GenericCustomer");
+                           if (customer != null) {
+                              customerName = customer.getName();
+                              customerId = customer.getId();
+                              break;
+                           }
+                        }
+                        LOG.warn("assocaitedService assigned from rack " + rack.getName() + " serviceName:" + serviceName + " serviceId:" + serviceId + " customerName: " + customerName +
+                                 " customerId " + customerId);
+                     }
+                  }
+               }
+               LOG.warn("assocaitedService serviceName:" + serviceName + " serviceId:" + serviceId + " customerName: " + customerName + " customerId " + customerId);
+
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+
+            // then we get comms ports (interfaces) on each device
+            List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(device.getId(), device.getClassName(), "GenericCommunicationsPort", null, -1, -1);
+
+            for (BusinessObjectLight aPort : commPorts) {
+
+               // TODO not used
+               String portStatus = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "state");
+
+               String isManagementStr = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "isManagement");
+               boolean isManagement = Boolean.valueOf(isManagementStr);
+
+               // We check if there's an IP address associated to the port.
+               List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(aPort.getClassName(), aPort.getId(), "ipamHasIpAddress");
+
+               Iterator<BusinessObjectLight> ipAddressesInPortIterator = ipAddressesInPort.iterator();
+               while (ipAddressesInPortIterator.hasNext()) {
+                  BusinessObjectLight ipAddress = ipAddressesInPortIterator.next();
+
+                  // need to know the subnet of the ip address to get the location
+                  List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
+                  LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
+
+                  HashMap<String, String> line = new HashMap<String, String>();
+
+                  // use node name derived from containment hierarchy OR use the given node name
+                  String nodename = locationName + "_" + rackName + "_" + name;
+                  if (useAbsoluteNames) {
+                     nodename = name;
+                  }
+                  line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
+
+                  // sets the foreignId 
+                  if (useNodeLabelAsForeignId) {
+                     line.put(OnmsRequisitionConstants.ID_, nodename);
+                  } else {
+                     line.put(OnmsRequisitionConstants.ID_, deviceId);
+                  }
+
+                  // sets asset category which determines which panel is displayed in grafana
+                  if (deviceEquipmentDisplayName == null || deviceEquipmentDisplayName.isEmpty()) {
+                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, defaultAssetCategory);
+                  } else {
+                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, deviceEquipmentDisplayName);
+                  }
+
+                  // sets display category which indicates customer
+                  String cName = "NOT_ASSIGNED".equals(customerName) ? defaultAssetDisplayCategory : customerName;
+                  cName = cName.replace(" ", "_");
+                  line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, cName);
+
+                  line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_ID, customerId.replace(" ", "_"));
+                  line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_NAME, customerName.replace(" ", "_"));
+                  line.put(OnmsRequisitionConstants.METADATA_SERVICE_ID, serviceId.replace(" ", "_"));
+                  line.put(OnmsRequisitionConstants.METADATA_SERVICE_NAME, serviceName.replace(" ", "_"));
+
+                  // sets the management address of the device
+                  // this can be a derived address to emulate multiple address spaces
+                  String ipManagement = ipAddress.getName();
+                  if (subnetNetSubstitutionFilter != null && !subnetNetSubstitutionFilter.isEmpty()) {
+                     ipManagement = IpV4Cidr.subnetIpv4Substitution(subnetNetSubstitutionFilter, ipAddress.getName());
+                  }
+                  line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipManagement);
+
+                  // if port set as isManagement then set as Primary (P) snmp interface else (N) - not management
+                  line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isManagement ? "P" : "N"));
+
+                  if (latitude != null && !latitude.isEmpty()) {
+                     line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude);
+                  }
+                  if (longitude != null && !longitude.isEmpty()) {
+                     line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude);
+                  }
+
+                  // set the location of the minion monitoring this interface based on the 'folder' containing this address
+
+                  String location = ipLocationDAO.getLocationForIpAddress(ipAddress.getName());
+
+                  if (location != null) {
+                     line.put(OnmsRequisitionConstants.MINION_LOCATION, location);
+                  } else {
+                     line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
+                  }
+
+                  // find managed object type in kuwaiba heirarchy
+                  String managedObjectType = getDataModelClassPath(device.getClassName());
+                  line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTTYPE, managedObjectType);
+
+                  // use kuwaiba managed object instance
+                  line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
+
+                  // only create a line if useAllPortAddresses is true or if isManagement is true for the port
+                  if (useAllPortAddresses) {
+                     csvLineData.add(line);
+                  } else if (isManagement) {
+                     csvLineData.add(line);
+                  }
+               }
+            }
+
+         }
+      } catch (MetadataObjectNotFoundException | InvalidArgumentException | BusinessObjectNotFoundException | ApplicationObjectNotFoundException e) {
+         throw new RuntimeException(e);
+      }
+
+      return csvLineData;
+   }
+
+   /**
+    * returns the data model classPath for the given class name
+    * the class path begins with root of hierarchy and ends with given class name
+    * @param className  name of the class as defined in kuwaiba data model manager
+    * @return String hierarchy of class separated by /
+    */
+   public String getDataModelClassPath(String className) {
+      StringBuffer sb = new StringBuffer();
+      try {
+         ArrayList<ClassMetadataLight> classMetadataList = new ArrayList<ClassMetadataLight>(mem.getSuperClassesLight(className, true));
+         // reverse order of list
+         Collections.reverse(classMetadataList);
+
+         Iterator<ClassMetadataLight> classMetadataListIterator = classMetadataList.iterator();
+         while (classMetadataListIterator.hasNext()) {
+            ClassMetadataLight classMetadata = classMetadataListIterator.next();
+            sb.append(classMetadata.getName());
+            if (classMetadataListIterator.hasNext())
+               sb.append("/");
+         }
+         return sb.toString();
+      } catch (MetadataObjectNotFoundException e) {
+         throw new IllegalArgumentException("cant find className=" + className, e);
+      }
+   }
+
+   // overloaded toString methods for BusinessObjects
+   String businessObjectToString(BusinessObject bo) {
+      return (bo == null) ? "BusinessObject[ null ]"
+               : "BusinessObject[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + " getAttributes()=" + bo.getAttributes() + "]";
+   }
+
+   String businessObjectToString(BusinessObjectLight bo) {
+      return (bo == null) ? "BusinessObjectLight[ null ]"
+               : "BusinessObjectLight[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
+                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + "]";
+   }
+
+   /**
+    * class which looks up which minion location ip addresses are in are in based on the parent folder name
+    */
+   public class IPLocationDAO {
+      Logger LOG = LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
+
+      BusinessEntityManager bem;
+
+      HashMap<String, String> addresslookup = new HashMap<String, String>();
+
+      IPLocationDAO(BusinessEntityManager bem) {
+         this.bem = bem;
+      }
+
+      public void init() throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
+
+         // first we get all ip addresses, folders and subnets names from ipam
+
+         // find ipv4 root pools - currently only one root but could be more
+         List<InventoryObjectPool> ipv4RootPools;
+
+         ipv4RootPools = bem.getRootPools(Constants.CLASS_SUBNET_IPV4, ApplicationEntityManager.POOL_TYPE_MODULE_ROOT, false);
+
+         HashMap<String, ArrayList<String>> folderAddresses = new HashMap<String, ArrayList<String>>();
+
+         poolLookup(ipv4RootPools, bem, Constants.CLASS_SUBNET_IPV4, folderAddresses);
+         printFolderAddresses(folderAddresses);
+
+         for (String folderName : folderAddresses.keySet()) {
+            ArrayList<String> addresses = folderAddresses.get(folderName);
+            for (String address : addresses) {
+               addresslookup.put(address, folderName);
+            }
+         }
+         LOG.warn("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
+
+      }
+
+      void poolLookup(List<InventoryObjectPool> topFolderPoolList, BusinessEntityManager bem, String ipType, HashMap<String, ArrayList<String>> folderAddresses)
+               throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
+
+         for (InventoryObjectPool topFolderPool : topFolderPoolList) {
+            LOG.warn("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
+
+            // Look up subnets
+            List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
+
+            ArrayList<String> addresses = new ArrayList<String>();
+            folderAddresses.put(topFolderPool.getName().strip().replace(" ", "_"), addresses);
+
+            subnetLookup(subnetsInfolder, bem, ipType, addresses);
+
+            // Look up Individual ip addresses in folder
+            List<BusinessObjectLight> ipaddressesInFolder = bem.getPoolItemsByClassName(topFolderPool.getId(), Constants.CLASS_IP_ADDRESS, 0, 50);
+            LOG.warn("individual ipaddressesInFolder " + ipaddressesInFolder);
+
+            for (BusinessObjectLight ip : ipaddressesInFolder) {
+               addresses.add(ip.getName());
+            }
+
+            List<InventoryObjectPool> foldersInPool = bem.getPoolsInPool(topFolderPool.getId(), Constants.CLASS_GENERICADDRESS);
+
+            // recurse through sub folders
+            poolLookup(foldersInPool, bem, ipType, folderAddresses);
+
+         }
+
+      }
+
+      void subnetLookup(List<BusinessObjectLight> subnetsList, BusinessEntityManager bem, String ipType, ArrayList<String> addresses) throws ApplicationObjectNotFoundException,
+               InvalidArgumentException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
+
+         LOG.warn("subnetLookup subnetsList " + subnetsList);
+
+         for (BusinessObjectLight subnet : subnetsList) {
+
+            List<BusinessObjectLight> children = bem.getObjectSpecialChildrenWithFilters(ipType, subnet.getId(), new ArrayList<>(Arrays.asList(ipType)), 0, 50);
+            List<BusinessObjectLight> subnets = new ArrayList<>();
+            for (BusinessObjectLight child : children) {
+               if (child.getClassName().equals(Constants.CLASS_SUBNET_IPV4) ||
+                        child.getClassName().equals(Constants.CLASS_SUBNET_IPV6))
+                  subnets.add(child);
+            }
+
+            // recursively look up subnets
+            subnetLookup(subnets, bem, ipType, addresses);
+
+            //addresses in subnets
+
+            List<BusinessObjectLight> usedIpsInSubnet = bem.getObjectSpecialChildrenWithFilters(ipType, subnet.getId(),
+                     new ArrayList<>(Arrays.asList(Constants.CLASS_IP_ADDRESS)), 0, 50);
+            for (BusinessObjectLight ip : usedIpsInSubnet) {
+               addresses.add(ip.getName());
+            }
+
+            LOG.warn("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
+         }
+
+      }
+
+      public void printFolderAddresses(HashMap<String, ArrayList<String>> folderAddresses) {
+
+         for (String folderName : folderAddresses.keySet()) {
+            ArrayList<String> addresses = folderAddresses.get(folderName);
+            for (String address : addresses) {
+               LOG.warn("Folder: '" + folderName + "' Address: '" + address + "'");
+            }
+         }
+      }
+
+      /**
+       * returns the containing folder name as the location if the address is in a folder or null if address is not in a folder
+       * @param ipAddressString
+       * @return location name which contains this address
+       */
+      public String getLocationForIpAddress(String ipAddressString) {
+         return addresslookup.get(ipAddressString);
+      }
+
+   }
+
+   /*
+    * METHODS FOR TRAVERSING PATHS AND FINDING PASSIVE SPLITTERS
+    */
+
+   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> gettingDownstreamObjectsForOLTs(LinkedHashSet<BusinessObjectLight> oltSet, List<String> searchClassNames, String terminatingClassName) {
+
+      // structure to hold mapping of objects to upstream parents
+      //   className              downstream,          upstream (each downstream can have only one upstream)
+      Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMappings = new LinkedHashMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>();
+      for (String name : searchClassNames) {
+         downstreamUpsteamMappings.put(name, new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>());
+      }
+
+      for (BusinessObjectLight olt : oltSet) {
+         try {
+            String parentOid = olt.getId();
+            String parentClass = olt.getClassName();
+            // getChildrenOfClassLightRecursive(String parentOid, String parentClass, String classToFilter, HashMap <String, String> attributesToFilters, int page, int limit) 
+            List<BusinessObjectLight> oltPorts = bem.getChildrenOfClassLightRecursive(parentOid, parentClass, "OpticalPort", null, -1, -1);
+            for (BusinessObjectLight port : oltPorts) {
+               Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamMapping = gettingDownstreamObjectsForPort(port.getClassName(), port.getId(), searchClassNames, terminatingClassName);
+               addDownstreamMapping(downstreamUpsteamMappings, downstreamMapping);
+            }
+         } catch (Exception ex) {
+            throw new IllegalArgumentException("problem mapping ports for olt: " + businessObjectToString(olt), ex);
+         }
+      }
+
+      return downstreamUpsteamMappings;
+   }
+
+   /**
+    * Adds the contents of the addtionalMapping to the currentMapping. If contents of oth maps are identical for a given key, no change is made. 
+    * If the additional mapping tries to redfine an upstream mapping in the currentMapping an exception is thrown
+    * @param currentMapping
+    * @param additionalMapping
+    * @return currentMapping with additional objects
+    * @Throws IllegalArgumentException if additionalMapping tries to redefine an upstream mpping in the current mapping (shouldnt happen)
+    */
+   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> addDownstreamMapping(Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> currentMapping,
+            Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> additionalMapping) {
+
+      // check maps have same structure
+      for (String key : currentMapping.keySet()) {
+         if (!additionalMapping.containsKey(key))
+            throw new IllegalArgumentException("mapping keys are different additionalMapping does not contain currentMapping key: " + key);
+      }
+      for (String key : additionalMapping.keySet()) {
+         if (!currentMapping.containsKey(key))
+            throw new IllegalArgumentException("mapping keys are different currentMapping does not contain additionalMapping key: " + key);
+      }
+
+      for (String key : currentMapping.keySet()) {
+         LinkedHashMap<BusinessObjectLight, BusinessObjectLight> currentObjectMapping = currentMapping.get(key);
+         LinkedHashMap<BusinessObjectLight, BusinessObjectLight> additionalObjectMapping = additionalMapping.get(key);
+
+         for (BusinessObjectLight additionalBusinessObjectKey : additionalObjectMapping.keySet()) {
+            if (!currentObjectMapping.containsKey(additionalBusinessObjectKey)) {
+               currentObjectMapping.put(additionalBusinessObjectKey, additionalObjectMapping.get(additionalBusinessObjectKey));
+            } else {
+               if (additionalObjectMapping.get(additionalBusinessObjectKey) != currentObjectMapping.get(additionalBusinessObjectKey)) {
+                  throw new IllegalArgumentException("addDownstreamMapping is trying to redefine parent of " +
+                           businessObjectToString(additionalBusinessObjectKey) + " from " + businessObjectToString(currentObjectMapping.get(additionalBusinessObjectKey)) +
+                           " to " + additionalObjectMapping.get(additionalBusinessObjectKey));
+               }
+            }
+
+         }
+      }
+
+      return currentMapping;
+   }
+
    /**
     * gets devices in paths for a upstream parent port defined by String objectClass, String objectId
-    * @param objectClass
-    * @param objectId
+    * @param portObjectClass
+    * @param portObjectId
     * @param searchClassNames  The device types to include in search
     * @param terminatingClassName The device type to define bottom of tree (ends search)
     * @return
     */
-   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> gettingPaths(String objectClass, String objectId, List<String> searchClassNames, String terminatingClassName) {
+   public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> gettingDownstreamObjectsForPort(String portObjectClass, String portObjectId, List<String> searchClassNames, String terminatingClassName) {
 
       Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping = null;
 
@@ -285,13 +804,13 @@ public class OpenNMSExport08 {
       PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem, connectionHandler);
       try {
 
-         HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult = physicalConnectionService.getPhysicalTree(objectClass, objectId);
+         HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult = physicalConnectionService.getPhysicalTree(portObjectClass, portObjectId);
 
-         LOG.info("************ print physical tree results for port objectClass" + objectClass + " objectId" + objectId);
+         LOG.info("************ print physical tree results for port objectClass" + portObjectClass + " objectId" + portObjectId);
          printPhysicalTreeResult(physicalTreeResult, searchClassNames);
          LOG.info("************ END OF print physical tree results");
 
-         LOG.info("************ starting downstream mapping searchClassNames: "+searchClassNames + "terminatingClassName" +terminatingClassName);
+         LOG.info("************ starting downstream mapping searchClassNames: " + searchClassNames + "terminatingClassName" + terminatingClassName);
          downstreamUpsteamMapping = traverseTree(physicalTreeResult, searchClassNames, terminatingClassName);
          LOG.info("************ END OF downstream mapping");
 
@@ -337,11 +856,12 @@ public class OpenNMSExport08 {
       LinkedHashMap<BusinessObjectLight, BusinessObjectLight> connectionPortToParentDeviceMap = new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>();
 
       try {
-
          // create portToMap mapping for all ports in mapping
          for (BusinessObjectLight connectnPort : physicalTreeResult.keySet()) {
-            // getParentsUntilFirstOfClass(String objectClass, String oid, String... objectToMatchClassNames)
+
+            //                                                   getParentsUntilFirstOfClass(String objectClass,          String oid,            String... objectToMatchClassNames)
             List<BusinessObjectLight> containingDeviceList = bem.getParentsUntilFirstOfClass(connectnPort.getClassName(), connectnPort.getId(), (String[]) searchClassNames.toArray());
+
             for (BusinessObjectLight containingDevice : containingDeviceList) {
                if (searchClassNames.contains(containingDevice.getClassName())) {
                   if (!connectionPortToParentDeviceMap.containsKey(connectnPort)) {
@@ -359,26 +879,24 @@ public class OpenNMSExport08 {
          }
 
          LOG.info("************ Print connectionPortToParentDeviceMap");
-         for (  BusinessObjectLight bo : connectionPortToParentDeviceMap.keySet()) {
-            LOG.info("connectionPort: "+businessObjectToString(bo));
-            LOG.info("        device: "+businessObjectToString(connectionPortToParentDeviceMap.get(bo)));
+         for (BusinessObjectLight bo : connectionPortToParentDeviceMap.keySet()) {
+            LOG.info("connectionPort: " + businessObjectToString(bo));
+            LOG.info("        device: " + businessObjectToString(connectionPortToParentDeviceMap.get(bo)));
          }
          LOG.info("************ END OF Print connectionPortToParentDeviceMap");
 
-
          // traverse tree to find actual links
-         
+
          BusinessObjectLight upstreamFoundClass = null;
 
          for (BusinessObjectLight connectionPort : physicalTreeResult.keySet()) {
 
-            if(!"OpticalPort".equals(connectionPort.getClassName())) {
+            if (!"OpticalPort".equals(connectionPort.getClassName())) {
                LOG.info("************ ignoring downstream mapping for " + businessObjectToString(connectionPort));
                continue;
             }
-            
-            LOG.info("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
 
+            LOG.info("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
 
             traverse(connectionPort,
                      upstreamFoundClass,
@@ -435,10 +953,9 @@ public class OpenNMSExport08 {
 
       // dont continue below terminating class type even if sublist exists
       if (parentDeviceOfCurrentPort != null && terminatingClassName.equals(parentDeviceOfCurrentPort.getClassName())) {
-         
          treeContainsTerminatingObject = true;
-         LOG.info(sb.toString()+"found terminating class: "+businessObjectToString(parentDeviceOfCurrentPort)+" for port "+businessObjectToString(connectionPort));
-         
+         LOG.info(sb.toString() + "found terminating class: " + businessObjectToString(parentDeviceOfCurrentPort) + " for port " + businessObjectToString(connectionPort));
+
       } else {
 
          List<BusinessObjectLight> downstreamPorts = physicalTreeResult.get(connectionPort);
@@ -450,7 +967,7 @@ public class OpenNMSExport08 {
             for (BusinessObjectLight downStreamPort : downstreamPorts) {
 
                BusinessObjectLight newUpstreamFoundClass = upstreamFoundClass;
-               
+
                if (parentDeviceOfCurrentPort != null && searchClassNames.contains(parentDeviceOfCurrentPort.getClassName())) {
                   newUpstreamFoundClass = parentDeviceOfCurrentPort;
                }
@@ -484,18 +1001,18 @@ public class OpenNMSExport08 {
             // if upstream device is same as this device then we are inside splitter or a splice so do not assign
             if (upstreamFoundClass != null && upstreamFoundClass != parentDeviceOfCurrentPort) {
                if (!childParentMapping.keySet().contains(parentDeviceOfCurrentPort)) {
-                  childParentMapping.put(parentDeviceOfCurrentPort, upstreamFoundClass );
-                  LOG.info(sb.toString()+"assigning upstream device for "+businessObjectToString(parentDeviceOfCurrentPort) +
-                              " to "+businessObjectToString(upstreamFoundClass));
+                  childParentMapping.put(parentDeviceOfCurrentPort, upstreamFoundClass);
+                  LOG.info(sb.toString() + "assigning upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
+                           " to " + businessObjectToString(upstreamFoundClass));
                } else {
                   // check you aren't reassigning upstream device (should not happen)
                   if (!childParentMapping.get(parentDeviceOfCurrentPort).equals(upstreamFoundClass)) {
                      throw new IllegalArgumentException("should not be reassigning upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
-                              " from "+businessObjectToString(childParentMapping.get(parentDeviceOfCurrentPort))+
-                              " to "+businessObjectToString(upstreamFoundClass) );
+                              " from " + businessObjectToString(childParentMapping.get(parentDeviceOfCurrentPort)) +
+                              " to " + businessObjectToString(upstreamFoundClass));
                   }
-                  LOG.info(sb.toString()+" already assigned upstream device for "+businessObjectToString(parentDeviceOfCurrentPort) +
-                           " to "+businessObjectToString(upstreamFoundClass));
+                  LOG.info(sb.toString() + " already assigned upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
+                           " to " + businessObjectToString(upstreamFoundClass));
                }
             }
 
@@ -511,10 +1028,10 @@ public class OpenNMSExport08 {
     * utility method for printing out debugging info
     * @param childParentMaps
     */
-   public void printChildParentMap(SortedMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> childParentMaps) {
+   public void printChildParentMap(Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> childParentMaps) {
 
       LOG.info("*************** printChildParentMap");
-      
+
       for (String className : childParentMaps.keySet()) {
          LinkedHashMap<BusinessObjectLight, BusinessObjectLight> childParentMap = childParentMaps.get(className);
          LOG.info(" child parent map for className: " + className + " size=" + childParentMap.size());
@@ -583,438 +1100,17 @@ public class OpenNMSExport08 {
          LOG.error("problem printing PhysicalTreeResult ", ex);
       }
 
-
       LOG.info("*************** END OF physicalTreeResult");
    }
 
-
-
-   public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
-            Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory,
-            String subnetNetSubstitutionFilter, String rangeParentValue) {
-      
-      ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
-      List<BusinessObject> devices;
-
-      try {
-
-         // tries to find parent object of all devices to include in range
-         // parent must be a viewable object which can have a generic communications element as a child 
-         // range parent value can be an absolute object id or an object name
-         BusinessObjectLight rangeParent = null;
-         String rangeParentClassName = null;
-         String rangeParentId = null;
-         
-         String searchErrorMsg=null;
-         if (rangeParentValue != null && !rangeParentValue.isEmpty()) {
-            try {
-               // see if there is an object with the same name
-               List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(Constants.CLASS_VIEWABLEOBJECT, Constants.PROPERTY_NAME, rangeParentValue);
-               if (!rangeParents.isEmpty())
-                  rangeParent = rangeParents.get(0);
-            } catch (Exception ex) {
-               searchErrorMsg=ex.getMessage();
-            }
-            if (rangeParent == null)
-               // else see if there is an object with the object id = viewable object
-               try {
-                  // see if there is an object with the same id
-                  List<BusinessObjectLight> rangeParents = bem.getObjectsWithFilterLight(Constants.CLASS_VIEWABLEOBJECT, Constants.PROPERTY_UUID, rangeParentValue);
-                  if (!rangeParents.isEmpty())
-                     rangeParent = rangeParents.get(0);
-               } catch (Exception ex) {
-                   searchErrorMsg=ex.getMessage();
-               }
-            if(rangeParent ==null) {
-               throw new IllegalArgumentException("cannot find parent wiewable object with rangeParentValue="+rangeParentValue+ " search error:"+searchErrorMsg );
-            }
-            rangeParentClassName = rangeParent.getClassName();
-            rangeParentId = rangeParent.getId();
-            LOG.warn("finding devices with parent object rangeParentClassName="+rangeParentClassName + " rangeParentId="+rangeParentId +" "+rangeParent);
-         }
-
-         // Next we get all active network devices
-         devices = bem.getObjectsOfClass(Constants.CLASS_GENERICCOMMUNICATIONSELEMENT, -1);
-
-         for (BusinessObject device : devices) {
-
-            String name = device.getName().strip().replace(" ", "_");
-            String deviceId = device.getId();
-
-            String latitude = "";
-            String longitude = "";
-            String locationName="";
-            String rackName="";
-            String deviceEquipmentDisplayName="";
-            String customerName = "NOT_ASSIGNED";
-            String customerId="";
-            String serviceName = "NOT_ASSIGNED";
-            String serviceId="";
-
-            try {
-               
-               LOG.warn("************ processing device with attributes :"+device.getAttributes());
-
-               // if rangeParent is set do not proceed if device is not a child of rangeParent
-
-               // TODO this is correct method but doesn't work because transaction is not closed in BusinessEntityManagerImpl.isParent (no txSuccess())
-               //if (rangeParentId != null) {
-               //   if (! bem.isParent(rangeParentClassName, rangeParentId, device.getClassName(), device.getId())) {
-               //      break;
-               //   }
-               //}
-               // TODO work around
-               if (rangeParentId != null) {
-                  List<BusinessObjectLight> parents = bem.getParents(device.getClassName(), device.getId());
-                  
-                  LOG.warn("parents of device name: "+device.getClassName()+" Id: "+ device.getId()+" : "+ parents);
-                  
-                  boolean isParent=false;
-                  for(BusinessObjectLight parent : parents) {
-                     if (parent.getId().equals(rangeParentId)) {
-                        isParent=true;
-                        break;
-                     }
-                  }
-                  // if parent doesn't match process next device
-                  if(! isParent) {
-                     continue;
-                  }
-               }
-
-               
-               String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
-               if(equipmentModelId!=null) {
-                   BusinessObject equipmentModel = aem.getListTypeItem(Constants.CLASS_EQUIPMENTMODEL, equipmentModelId);
-                   deviceEquipmentDisplayName = (String) equipmentModel.getAttributes().get(Constants.PROPERTY_DISPLAY_NAME);
-               }
-               
-               // get the first parent location of each device for latitude/longitude
-               BusinessObject location = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "GenericLocation");
-               if (location!=null && location.getName()!=null) { 
-                  locationName = location.getName().strip().replace(" ", "_");
-                  latitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "latitude");
-                  longitude = bem.getAttributeValueAsString(location.getClassName(), location.getId(), "longitude");
-               }
-               
-               // get any service / customer associated with the device
-               List<BusinessObjectLight> associatedServices = bem.getSpecialAttribute(device.getClassName(), device.getId(), "uses");
-               if (associatedServices != null) {
-                  // only take first associated service even if there are more
-                  for (BusinessObjectLight associatedSvc : associatedServices) {
-                     serviceName = associatedSvc.getName();
-                     serviceId= associatedSvc.getId();
-                     BusinessObject customer = bem.getFirstParentOfClass(associatedSvc.getClassName(), associatedSvc.getId(), "GenericCustomer");
-                     if (customer != null) {
-                        customerName = customer.getName();
-                        customerId=customer.getId();
-                        break;
-                     }
-                  }
-               }
-
-               // get the first rack containing each device for rackName
-               BusinessObject rack = bem.getFirstParentOfClass(device.getClassName(), device.getId(), "Rack");
-               if(rack!=null && rack.getName()!=null) {
-                  rackName = rack.getName().strip().replace(" ", "_");
-
-                  // if there is no service with customer name associated with the device then try to use the service associated with the parent rack
-                  if ("NOT_ASSIGNED".equals(serviceName)) {
-                     // get any service / customer associated with the parent rack
-                     associatedServices = bem.getSpecialAttribute(rack.getClassName(), rack.getId(), "uses");
-                     if (associatedServices != null) {
-                        // only take first associated service even if there are more
-                        for (BusinessObjectLight associatedSvc : associatedServices) {
-                           serviceName = associatedSvc.getName();
-                           serviceId= associatedSvc.getId();
-                           BusinessObject customer = bem.getFirstParentOfClass(associatedSvc.getClassName(), associatedSvc.getId(), "GenericCustomer");
-                           if (customer != null) {
-                              customerName = customer.getName();
-                              customerId=customer.getId();
-                              break;
-                           }
-                        }
-                        LOG.warn("assocaitedService assigned from rack "+rack.getName()+" serviceName:"+serviceName+ " serviceId:"+serviceId+ " customerName: "+customerName+ 
-                                 " customerId "+customerId);
-                     }
-                  }
-               }
-               LOG.warn("assocaitedService serviceName:"+serviceName+ " serviceId:"+serviceId+ " customerName: "+customerName+ " customerId "+customerId);
-               
-            } catch (Exception ex) {
-               ex.printStackTrace();
-            }
-
-            // then we get comms ports (interfaces) on each device
-            List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(device.getId(), device.getClassName(), "GenericCommunicationsPort", null, -1, -1);
-
-            for (BusinessObjectLight aPort : commPorts) {
-
-               // TODO not used
-               String portStatus = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "state");
-               
-               String isManagementStr = bem.getAttributeValueAsString(aPort.getClassName(), aPort.getId(), "isManagement");
-               boolean isManagement =  Boolean.valueOf(isManagementStr);
-
-               // We check if there's an IP address associated to the port.
-               List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(aPort.getClassName(), aPort.getId(), "ipamHasIpAddress");
-
-               Iterator<BusinessObjectLight> ipAddressesInPortIterator = ipAddressesInPort.iterator();
-               while (ipAddressesInPortIterator.hasNext()) {
-                  BusinessObjectLight ipAddress = ipAddressesInPortIterator.next();
-
-                  // need to know the subnet of the ip address to get the location
-                  List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
-                  LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
-
-                  HashMap<String, String> line = new HashMap<String, String>();
-                  
-                  // use node name derived from containment hierarchy OR use the given node name
-                  String nodename = locationName+"_"+rackName+"_"+name;
-                  if(useAbsoluteNames){
-                     nodename=name;
-                  } 
-                  line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
-                  
-                  // sets the foreignId 
-                  if (useNodeLabelAsForeignId) {
-                     line.put(OnmsRequisitionConstants.ID_, nodename);
-                  } else {
-                     line.put(OnmsRequisitionConstants.ID_, deviceId);
-                  }
-                  
-                  // sets asset category which determines which panel is displayed in grafana
-                  if(deviceEquipmentDisplayName==null || deviceEquipmentDisplayName.isEmpty()) {
-                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, defaultAssetCategory);
-                  } else {
-                     line.put(OnmsRequisitionConstants.ASSET_CATEGORY, deviceEquipmentDisplayName);
-                  }
-                  
-                  // sets display category which indicates customer
-                  String cName= "NOT_ASSIGNED".equals(customerName) ? defaultAssetDisplayCategory : customerName ;
-                  cName= cName.replace(" ","_");
-                  line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, cName  );
-                  
-                  line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_ID, customerId.replace(" ","_"));
-                  line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_NAME, customerName.replace(" ","_"));
-                  line.put(OnmsRequisitionConstants.METADATA_SERVICE_ID, serviceId.replace(" ","_"));
-                  line.put(OnmsRequisitionConstants.METADATA_SERVICE_NAME, serviceName.replace(" ","_"));
-
-                  // sets the management address of the device
-                  // this can be a derived address to emulate multiple address spaces
-                  String ipManagement = ipAddress.getName();
-                  if (subnetNetSubstitutionFilter != null && ! subnetNetSubstitutionFilter.isEmpty()) {
-                     ipManagement = IpV4Cidr.subnetIpv4Substitution(subnetNetSubstitutionFilter, ipAddress.getName());
-                  }
-                  line.put(OnmsRequisitionConstants.IP_MANAGEMENT, ipManagement);
-
-                  // if port set as isManagement then set as Primary (P) snmp interface else (N) - not management
-                  line.put(OnmsRequisitionConstants.MGMTTYPE_, (String) (isManagement ? "P" : "N"));
-
-                  if (latitude != null && !latitude.isEmpty()) {
-                     line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude);
-                  }
-                  if (longitude != null && !longitude.isEmpty()) {
-                     line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude);
-                  }
-
-                  // set the location of the minion monitoring this interface based on the 'folder' containing this address
-
-                  String location = ipLocationDAO.getLocationForIpAddress(ipAddress.getName());
-
-                  if (location != null) {
-                     line.put(OnmsRequisitionConstants.MINION_LOCATION, location);
-                  } else {
-                     line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
-                  }
-                  
-                  // find managed object type in kuwaiba heirarchy
-                  String managedObjectType = getDataModelClassPath(device.getClassName());
-                  line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTTYPE, managedObjectType);
-                  
-                  // use kuwaiba managed object instance
-                  line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
-
-                  // only create a line if useAllPortAddresses is true or if isManagement is true for the port
-                  if (useAllPortAddresses) {
-                      csvLineData.add(line);
-                  } else if (isManagement) {
-                     csvLineData.add(line);
-                  }
-               }
-            }
-
-         }
-      } catch (MetadataObjectNotFoundException | InvalidArgumentException | BusinessObjectNotFoundException | ApplicationObjectNotFoundException e) {
-         throw new RuntimeException(e);
-      }
-
-      return csvLineData;
-   }
-
    /**
-    * returns the data model classPath for the given class name
-    * the class path begins with root of hierarchy and ends with given class name
-    * @param className  name of the class as defined in kuwaiba data model manager
-    * @return String hierarchy of class separated by /
-    */
-   public String getDataModelClassPath(String className) {
-      StringBuffer sb = new StringBuffer();
-      try {
-         ArrayList<ClassMetadataLight> classMetadataList = new ArrayList<ClassMetadataLight>(mem.getSuperClassesLight(className, true));
-         // reverse order of list
-         Collections.reverse(classMetadataList);
-         
-         Iterator<ClassMetadataLight> classMetadataListIterator = classMetadataList.iterator();
-         while (classMetadataListIterator.hasNext()) {
-            ClassMetadataLight classMetadata = classMetadataListIterator.next();
-            sb.append(classMetadata.getName());
-            if (classMetadataListIterator.hasNext())
-               sb.append("/");
-         }
-         return sb.toString();
-      } catch (MetadataObjectNotFoundException e) {
-         throw new IllegalArgumentException("cant find className=" + className, e);
-      }
-   }
-
-   // overloaded toString methods for BusinessObjects
-   String businessObjectToString(BusinessObject bo) {
-      return (bo == null) ? "BusinessObject[ null ]"
-               : "BusinessObject[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
-                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + " getAttributes()=" + bo.getAttributes() + "]";
-   }
-
-   String businessObjectToString(BusinessObjectLight bo) {
-      return (bo == null) ? "BusinessObjectLight[ null ]"
-               : "BusinessObjectLight[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
-                        bo.getClassDisplayName() + ", getId()=" + bo.getId() + "]";
-   }
-
-
-   /**
-    * class which looks up which minion location ip addresses are in are in based on the parent folder name
-    */
-   public class IPLocationDAO {
-      Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
-
-      BusinessEntityManager bem;
-
-      HashMap<String, String> addresslookup = new HashMap<String, String>();
-
-      IPLocationDAO(BusinessEntityManager bem) {
-         this.bem = bem;
-      }
-
-      public void init() throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
-
-         // first we get all ip addresses, folders and subnets names from ipam
-
-         // find ipv4 root pools - currently only one root but could be more
-         List<InventoryObjectPool> ipv4RootPools;
-
-         ipv4RootPools = bem.getRootPools(Constants.CLASS_SUBNET_IPV4, ApplicationEntityManager.POOL_TYPE_MODULE_ROOT, false);
-
-         HashMap<String, ArrayList<String>> folderAddresses = new HashMap<String, ArrayList<String>>();
-
-         poolLookup(ipv4RootPools, bem, Constants.CLASS_SUBNET_IPV4, folderAddresses);
-         printFolderAddresses(folderAddresses);
-
-      for (String folderName : folderAddresses.keySet()) {
-         ArrayList<String> addresses = folderAddresses.get(folderName);
-         for (String address : addresses) {
-               addresslookup.put(address, folderName);
-         }
-      }
-         LOG.warn("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
-
-   }
-
-   void poolLookup(List<InventoryObjectPool> topFolderPoolList, BusinessEntityManager bem, String ipType, HashMap<String, ArrayList<String>> folderAddresses)
-            throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
-
-      for (InventoryObjectPool topFolderPool : topFolderPoolList) {
-         LOG.warn("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
-
-         // Look up subnets
-         List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
-
-         ArrayList<String> addresses = new ArrayList<String>();
-         folderAddresses.put(topFolderPool.getName().strip().replace(" ", "_"), addresses);
-
-         subnetLookup(subnetsInfolder, bem, ipType, addresses);
-
-         // Look up Individual ip addresses in folder
-         List<BusinessObjectLight> ipaddressesInFolder = bem.getPoolItemsByClassName(topFolderPool.getId(), Constants.CLASS_IP_ADDRESS, 0, 50);
-         LOG.warn("individual ipaddressesInFolder " + ipaddressesInFolder);
-
-         for (BusinessObjectLight ip : ipaddressesInFolder) {
-            addresses.add(ip.getName());
-         }
-
-         List<InventoryObjectPool> foldersInPool = bem.getPoolsInPool(topFolderPool.getId(), Constants.CLASS_GENERICADDRESS);
-
-         // recurse through sub folders
-         poolLookup(foldersInPool, bem, ipType, folderAddresses);
-
-      }
-
-   }
-
-   void subnetLookup(List<BusinessObjectLight> subnetsList, BusinessEntityManager bem, String ipType, ArrayList<String> addresses) throws ApplicationObjectNotFoundException,
-            InvalidArgumentException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
-
-      LOG.warn("subnetLookup subnetsList " + subnetsList);
-
-      for (BusinessObjectLight subnet : subnetsList) {
-
-         List<BusinessObjectLight> children = bem.getObjectSpecialChildrenWithFilters(ipType, subnet.getId(), new ArrayList<>(Arrays.asList(ipType)), 0, 50);
-         List<BusinessObjectLight> subnets = new ArrayList<>();
-         for (BusinessObjectLight child : children) {
-            if (child.getClassName().equals(Constants.CLASS_SUBNET_IPV4) ||
-                     child.getClassName().equals(Constants.CLASS_SUBNET_IPV6))
-               subnets.add(child);
-         }
-
-         // recursively look up subnets
-         subnetLookup(subnets, bem, ipType, addresses);
-
-         //addresses in subnets
-
-            List<BusinessObjectLight> usedIpsInSubnet = bem.getObjectSpecialChildrenWithFilters(ipType, subnet.getId(),
-                     new ArrayList<>(Arrays.asList(Constants.CLASS_IP_ADDRESS)), 0, 50);
-         for (BusinessObjectLight ip : usedIpsInSubnet) {
-            addresses.add(ip.getName());
-         }
-
-         LOG.warn("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
-      }
-
-   }
-
-      public void printFolderAddresses(HashMap<String, ArrayList<String>> folderAddresses) {
-
-         for (String folderName : folderAddresses.keySet()) {
-            ArrayList<String> addresses = folderAddresses.get(folderName);
-            for (String address : addresses) {
-               LOG.warn("Folder: '" + folderName + "' Address: '" + address + "'");
-            }
-         }
-      }
-
-   /**
-       * returns the containing folder name as the location if the address is in a folder or null if address is not in a folder
-       * @param ipAddressString
-       * @return location name which contains this address
-       */
-      public String getLocationForIpAddress(String ipAddressString) {
-         return addresslookup.get(ipAddressString);
-      }
-
-   }
-
-   // TODO - allow service access from script in kuwaiba
-   // this is a clone of methods in the internal PhysicalConnectionsService because the service is not accessible from a script
+   * PhysicalConnectionsServiceProxy replicates the function of the internal PhysicalConnectionsService 
+   * org.neotropic.kuwaiba.modules.optional.physcon.PhysicalConnectionsService
+   * 
+   * This is a clone of methods in the internal PhysicalConnectionsService 
+   * because the service is not accessible from a script
+   * TODO - allow service access from script in kuwaiba
+   */
    public static class PhysicalConnectionsServiceProxy {
 
       private ApplicationEntityManager aem;
@@ -1022,7 +1118,7 @@ public class OpenNMSExport08 {
       private BusinessEntityManager bem;
 
       private MetadataEntityManager mem;
-      
+
       private GraphDatabaseService connectionHandler;
 
       public PhysicalConnectionsServiceProxy(ApplicationEntityManager aem, BusinessEntityManager bem, MetadataEntityManager mem, GraphDatabaseService connectionHandler) {
@@ -1034,17 +1130,17 @@ public class OpenNMSExport08 {
       }
 
       // taken from ogmService ObjectGraphMappingService - ONLY USED MINIMAL METHOD to get a BusinessObjectLight with no validators
-      public BusinessObjectLight createObjectLightFromNode (Node instance) {
+      public BusinessObjectLight createObjectLightFromNode(Node instance) {
          Node classNode = instance.getSingleRelationship(RelTypes.INSTANCE_OF, Direction.OUTGOING).getEndNode();
-         String className = (String)classNode.getProperty(Constants.PROPERTY_NAME);
-         
+         String className = (String) classNode.getProperty(Constants.PROPERTY_NAME);
+
          //First, we create the naked business object, without validators
-         BusinessObjectLight res = new BusinessObjectLight(className, (String)instance.getProperty(Constants.PROPERTY_UUID), 
-                 (String)instance.getProperty(Constants.PROPERTY_NAME), (String)classNode.getProperty(Constants.PROPERTY_DISPLAY_NAME, null));
+         BusinessObjectLight res = new BusinessObjectLight(className, (String) instance.getProperty(Constants.PROPERTY_UUID),
+                  (String) instance.getProperty(Constants.PROPERTY_NAME), (String) classNode.getProperty(Constants.PROPERTY_DISPLAY_NAME, null));
          return res;
       }
-      
-   /**
+
+      /**
        * Gets A tree representation of all physical paths as a hash map.
        * @param objectClass The source port class name.
        * @param objectId The source port id.
@@ -1053,64 +1149,62 @@ public class OpenNMSExport08 {
        * @throws MetadataObjectNotFoundException If any of the object classes involved in the path cannot be found
        * @throws ApplicationObjectNotFoundException If any of the objects involved in the path has a malformed list type attribute
        * @throws InvalidArgumentException If any of the objects involved in the path has an invalid objectId or className
-       */    
-      public HashMap<BusinessObjectLight, List<BusinessObjectLight>> getPhysicalTree(String objectClass, String objectId) 
-              throws IllegalStateException, BusinessObjectNotFoundException, MetadataObjectNotFoundException,
-              ApplicationObjectNotFoundException, InvalidArgumentException {
-          
-//          if (persistenceService.getState() == EXECUTION_STATE.STOPPED)
-//              throw new IllegalStateException(ts.getTranslatedString("module.general.messages.cant-reach-backend"));
-          
-          HashMap<BusinessObjectLight, List<BusinessObjectLight>> tree = new LinkedHashMap();
-          // If the port is a logical port (virtual port, Pseudowire or service instance, we look for the first physical parent port)
-          // try (Transaction tx = connectionManager.getConnectionHandler().beginTx()) {
-         Transaction tx= null;
+       */
+      public HashMap<BusinessObjectLight, List<BusinessObjectLight>> getPhysicalTree(String objectClass, String objectId)
+               throws IllegalStateException, BusinessObjectNotFoundException, MetadataObjectNotFoundException,
+               ApplicationObjectNotFoundException, InvalidArgumentException {
+
+         //          if (persistenceService.getState() == EXECUTION_STATE.STOPPED)
+         //              throw new IllegalStateException(ts.getTranslatedString("module.general.messages.cant-reach-backend"));
+
+         HashMap<BusinessObjectLight, List<BusinessObjectLight>> tree = new LinkedHashMap();
+         // If the port is a logical port (virtual port, Pseudowire or service instance, we look for the first physical parent port)
+         //try (Transaction tx = connectionManager.getConnectionHandler().beginTx()) {
+         Transaction tx = null;
          try {
             tx = connectionHandler.beginTx();
-              //The first part of the query will return many paths, that we build as a tree
-              StringBuilder queryBuilder = new StringBuilder();
-              queryBuilder.append(String.format("MATCH paths = (o)-[r:%s*]-(c) ", RelTypes.RELATED_TO_SPECIAL));
-              queryBuilder.append(String.format("WHERE o._uuid = '%s' AND all(rel in r where rel.name IN "
-                      + "['mirror','mirrorMultiple'] or rel.name = 'endpointA' or rel.name = 'endpointB') ", objectId));
-              queryBuilder.append("WITH nodes(paths) as path ");
-              queryBuilder.append("RETURN path ORDER BY length(path) DESC");
+            //The first part of the query will return many paths, that we build as a tree
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append(String.format("MATCH paths = (o)-[r:%s*]-(c) ", RelTypes.RELATED_TO_SPECIAL));
+            queryBuilder.append(String.format("WHERE o._uuid = '%s' AND all(rel in r where rel.name IN "
+                     + "['mirror','mirrorMultiple'] or rel.name = 'endpointA' or rel.name = 'endpointB') ", objectId));
+            queryBuilder.append("WITH nodes(paths) as path ");
+            queryBuilder.append("RETURN path ORDER BY length(path) DESC");
 
-              //Result result = connectionManager.getConnectionHandler().execute(queryBuilder.toString());
-              Result result = connectionHandler.execute(queryBuilder.toString());
-              Iterator<List<Node>> column = result.columnAs("path"); //NOI18N
+            //Result result = connectionManager.getConnectionHandler().execute(queryBuilder.toString());
+            Result result = connectionHandler.execute(queryBuilder.toString());
+            Iterator<List<Node>> column = result.columnAs("path"); //NOI18N
 
-              for (List<Node> listOfNodes : Iterators.asIterable(column)) {
-                  for (int i = 0; i < listOfNodes.size(); i++) {
-                      //BusinessObjectLight object = ogmService.createObjectLightFromNode(listOfNodes.get(i)); // CHANGED
-                     BusinessObjectLight object = createObjectLightFromNode(listOfNodes.get(i));
+            for (List<Node> listOfNodes : Iterators.asIterable(column)) {
+               for (int i = 0; i < listOfNodes.size(); i++) {
+                  //BusinessObjectLight object = ogmService.createObjectLightFromNode(listOfNodes.get(i)); // CHANGED
+                  BusinessObjectLight object = createObjectLightFromNode(listOfNodes.get(i));
 
-                      if (!tree.containsKey(object))
-                          tree.put(object, new ArrayList());
+                  if (!tree.containsKey(object))
+                     tree.put(object, new ArrayList());
 
-                      if (i < listOfNodes.size() - 1) {
-                          //BusinessObjectLight nextObject = ogmService.createObjectLightFromNode(listOfNodes.get(i + 1)); // CHANGED
-                          BusinessObjectLight nextObject = createObjectLightFromNode(listOfNodes.get(i + 1));
+                  if (i < listOfNodes.size() - 1) {
+                     //BusinessObjectLight nextObject = ogmService.createObjectLightFromNode(listOfNodes.get(i + 1)); // CHANGED
+                     BusinessObjectLight nextObject = createObjectLightFromNode(listOfNodes.get(i + 1));
 
-                          if (!tree.get(object).contains(nextObject))
-                              tree.get(object).add(nextObject);
-                      }
+                     if (!tree.get(object).contains(nextObject))
+                        tree.get(object).add(nextObject);
                   }
-              }
-              tx.success();
-          } catch (Exception ex) {
-             throw new IllegalArgumentException("problem finding node tree", ex);
-          }
-          return tree;
+               }
+            }
+            tx.success();
+         } catch (Exception ex) {
+            throw new IllegalArgumentException("problem finding node tree", ex);
+         }
+
+         return tree;
       }
 
    }
-   
-
 
    /**
-    * Class which sets requisition values at top of csv file
+    * Class which sets OpenNMS requisition column names at top of csv file
     */
-   // remove public static class in groovy
    public static class OnmsRequisitionConstants {
 
       public static final String NODE_LABEL = "Node_Label";
@@ -1242,14 +1336,12 @@ public class OpenNMSExport08 {
 
    }
 
-   
    /**
     * Class to decode IP V4 Address with or without a cidr address prefix
     */
    // remove static class in groovy
    public static class IpV4Cidr {
-      static Logger LOG =  LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
-
+      static Logger LOG = LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
 
       private String ipv4WithCidrString;
       private InetAddress netMask;
@@ -1284,11 +1376,11 @@ public class OpenNMSExport08 {
 
          int value = mask;
          // not in groovy netMaskBytes = new byte[] { (byte) (value >>> 24), (byte) (value >> 16 & 0xff), (byte) (value >> 8 & 0xff), (byte) (value & 0xff) };
-         netMaskBytes = new byte[4] ; 
-         netMaskBytes[0] =(byte) (value >>> 24);
-         netMaskBytes[1] =(byte) (value >> 16 & 0xff);
-         netMaskBytes[2] =(byte) (value >> 8 & 0xff);
-         netMaskBytes[3] =(byte) (value & 0xff);
+         netMaskBytes = new byte[4];
+         netMaskBytes[0] = (byte) (value >>> 24);
+         netMaskBytes[1] = (byte) (value >> 16 & 0xff);
+         netMaskBytes[2] = (byte) (value >> 8 & 0xff);
+         netMaskBytes[3] = (byte) (value & 0xff);
          try {
             netMask = InetAddress.getByAddress(netMaskBytes);
          } catch (Exception ex) {
@@ -1349,8 +1441,6 @@ public class OpenNMSExport08 {
 
          return contains;
       }
-      
-      
 
       /**
        * check if sub network represented by this object contains the testAddress in string form
@@ -1445,7 +1535,7 @@ public class OpenNMSExport08 {
          }
          return xored;
       }
-      
+
       public static byte[] orByteArrays(byte[] bytesA, byte[] bytesB) {
          if (bytesA.length != bytesB.length)
             throw new IllegalArgumentException("byte arrays not same length. bytesA " + bytesA.length + " bytesB " + bytesB.length);
@@ -1474,15 +1564,14 @@ public class OpenNMSExport08 {
        * @return substituteAddressStr
        */
       public static String subnetIpv4Substitution(String subnetNetSubstitutionFilterStr, String inputIpv4AddressStr) {
-         
-         
+
          String substituteAddressStr = "";
 
          IpV4Cidr ipV4Address = null;
          IpV4Cidr insideSubnet = null;
          IpV4Cidr substituteSubnet = null;
-         
-         if(subnetNetSubstitutionFilterStr==null || subnetNetSubstitutionFilterStr.isEmpty()) {
+
+         if (subnetNetSubstitutionFilterStr == null || subnetNetSubstitutionFilterStr.isEmpty()) {
             LOG.warn("no subnetNetSubstitutionFilter provided. Passing address unchanged");
             return inputIpv4AddressStr;
          }
@@ -1498,32 +1587,32 @@ public class OpenNMSExport08 {
             substituteSubnet = new IpV4Cidr(parts[1]);
             ipV4Address = new IpV4Cidr(inputIpv4AddressStr);
 
-            LOG.warn("\n ipV4Address = " + ipV4Address+"\n insideSubnet = " + insideSubnet+"\n substituteSubnet = " + substituteSubnet);
+            LOG.warn("\n ipV4Address = " + ipV4Address + "\n insideSubnet = " + insideSubnet + "\n substituteSubnet = " + substituteSubnet);
 
             if (insideSubnet.networkContainsAddress(ipV4Address.getIpAddress())) {
-               
+
                byte[] substituteNetmaskBytes = substituteSubnet.getNetMask().getAddress();
-               LOG.warn("\n substituteNetmaskBytes           = " + bytesToBinary( substituteNetmaskBytes));
-               
+               LOG.warn("\n substituteNetmaskBytes           = " + bytesToBinary(substituteNetmaskBytes));
+
                byte[] complimentSubstituteNetmaskBytes = complimentByteArray(substituteNetmaskBytes);
-               LOG.warn("\n complimentSubstituteNetmaskBytes = " + bytesToBinary( complimentSubstituteNetmaskBytes));
-               
+               LOG.warn("\n complimentSubstituteNetmaskBytes = " + bytesToBinary(complimentSubstituteNetmaskBytes));
+
                byte[] substituteNetworkAddressBytes = substituteSubnet.getNetworkAddress().getAddress();
-               LOG.warn("\n substituteNetworkAddressBytes    = " + bytesToBinary( substituteNetworkAddressBytes));
-               
+               LOG.warn("\n substituteNetworkAddressBytes    = " + bytesToBinary(substituteNetworkAddressBytes));
+
                byte[] ipV4AddressBytes = ipV4Address.getIpAddress().getAddress();
                LOG.warn("\n ipV4AddressBytes                 = " + bytesToBinary(ipV4AddressBytes));
 
                byte[] andAddressBytes = andByteArrays(ipV4AddressBytes, complimentSubstituteNetmaskBytes);
                LOG.warn("\n andAddressBytes                  = " + bytesToBinary(andAddressBytes));
-               
+
                byte[] substitueAddressBytes = orByteArrays(andAddressBytes, substituteNetworkAddressBytes);
-               
+
                InetAddress substitueAddress = InetAddress.getByAddress(substitueAddressBytes);
-               
+
                substituteAddressStr = substitueAddress.getHostAddress();
-               
-               LOG.warn("\n substitueAddressBytes            = " + bytesToBinary(substitueAddressBytes)+ " substituteAddress: "+substituteAddressStr);
+
+               LOG.warn("\n substitueAddressBytes            = " + bytesToBinary(substitueAddressBytes) + " substituteAddress: " + substituteAddressStr);
 
                //LOG.warn("subnet contains address using substitute address string" + substituteAddressStr);
             } else {
@@ -1598,5 +1687,5 @@ public class OpenNMSExport08 {
       }
 
    }
-   
+
 }
