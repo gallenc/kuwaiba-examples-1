@@ -129,8 +129,17 @@ public class OpenNMSExport08 {
       this.mem = mem;
       this.parameters = (parameters == null) ? new HashMap<String, String>() : parameters;
       this.connectionHandler = connectionHandler;
+      
+      LOG.info("****************************************************************");
+      LOG.info("Start of " + title + " Version " + version + " Author " + author);
 
-      // first we get all ip addresses, folders and subnets names from ipam
+      LOG.info("opennms export report parameters :");
+      for (Entry<String, String> entry : parameters.entrySet()) {
+         LOG.info("   key: " + entry.getKey() + " value: " + entry.getValue());
+      }
+      LOG.info("****************************************************************");
+
+      LOG.info("initialise to get all ip addresses, folders and subnets names from ipam");
       ipLocationDAO = new IPLocationDAO(bem);
       try {
          ipLocationDAO.init();
@@ -142,13 +151,6 @@ public class OpenNMSExport08 {
 
    // main report function
    InventoryReport returnReport() {
-      LOG.info("Start of " + title + " Version " + version + " Author " + author);
-
-      LOG.info("opennms export report parameters :");
-      for (Entry<String, String> entry : parameters.entrySet()) {
-         LOG.info("   key: " + entry.getKey() + " value: " + entry.getValue());
-      }
-
       /*
        * useNodeLabelAsForeignId
        * If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
@@ -262,7 +264,9 @@ public class OpenNMSExport08 {
       // return a RawReport containing csv
       InventoryReport report = new RawReport(title, author, version, textBuffer.toString());
 
+      LOG.info("****************************************************************");
       LOG.info("End of " + title);
+      LOG.info("****************************************************************");
 
       return report;
 
@@ -272,8 +276,11 @@ public class OpenNMSExport08 {
             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory,
             String subnetNetSubstitutionFilter, String rangeParentValue, boolean generatePassivePon) {
 
+      // data for each line in csv export
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
-      LinkedHashSet<BusinessObject> devices = new LinkedHashSet<BusinessObject>(); // maintains order of entry but only one of each device
+
+      // devices to be processed into csv export (maintains order of entry but only one of each device)
+      LinkedHashSet<BusinessObject> devices = new LinkedHashSet<BusinessObject>(); 
 
       //                                 (className             downstream            upstream
       //   Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>
@@ -318,7 +325,9 @@ public class OpenNMSExport08 {
 
          // if generating pon populate downstreamUpsteamMappings with OLTs in range
          if (generatePassivePon) {
-            LOG.info("GETTING OLTS " + title);
+            LOG.info("************************************************");
+            LOG.info("GENERATING PASSIVE PON DATA FOR OLTS " + title);
+            LOG.info("************************************************");
 
             List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
             String terminatingClassName = "OpticalNetworkTerminal";
@@ -327,6 +336,7 @@ public class OpenNMSExport08 {
                LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
 
                List<BusinessObject> oltdevices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
+               LOG.info("all olt devices:" + oltdevices);
 
                for (BusinessObject oltDevice : oltdevices) {
                   // TODO work around
@@ -339,11 +349,13 @@ public class OpenNMSExport08 {
                            break;
                         }
                      }
+                  } else {
+                     oltSet.add(oltDevice);
                   }
 
                }
 
-               LOG.info("finding downstream for olt devices  devices:" + oltSet);
+               LOG.info("finding and adding downstream for olt devices:" + oltSet);
 
                downstreamUpsteamMappings = gettingDownstreamObjectsForOLTs(oltSet, searchClassNames, terminatingClassName);
 
@@ -351,7 +363,10 @@ public class OpenNMSExport08 {
 
                // TODO MAY NEED TO LOOK AT ORDERING
                // do this so that upstream olt devices are defined first in list
-               devices.addAll(oltdevices);
+               for (BusinessObjectLight olt : downstreamUpsteamMappings.get("OpticalLineTerminal").keySet()) {
+                  BusinessObject oltBusinessObject = bem.getObject(olt.getClassName(), olt.getId());
+                  devices.add(oltBusinessObject);
+               }
 
                // now add all splitters (note that upstream splitters will be ordered above downstream)
                for (BusinessObjectLight splitter : downstreamUpsteamMappings.get("FiberSplitter").keySet()) {
@@ -368,12 +383,22 @@ public class OpenNMSExport08 {
             } catch (Exception ex) {
                LOG.info("problem getting OLTS ", ex);
             }
-            LOG.info("END OF GETTING OLTS " + title);
+            LOG.info("************************************************");
+            LOG.info("END OF GENERATING PASSIVE PON DATA FOR OLTS " + title);
+            LOG.info("************************************************");
          }
 
-         // Next we get all remaining active network devices
-         devices.addAll(bem.getObjectsOfClass(Constants.CLASS_GENERICCOMMUNICATIONSELEMENT, -1));
+         // Next we get all remaining active network devices but don't replace ones already created
+         List<BusinessObject> deviceList = bem.getObjectsOfClass(Constants.CLASS_GENERICCOMMUNICATIONSELEMENT, -1);
+         for (BusinessObject device : deviceList) {
+            if (! devices.contains(device)) {
+               devices.add(device);
+            }
+         }
 
+         LOG.info("************************************************");
+         LOG.info("GENERATING CSV LINES FOR DEVICES " + title);
+         LOG.info("************************************************");
          for (BusinessObject device : devices) {
 
             String name = device.getName().strip().replace(" ", "_");
@@ -388,10 +413,11 @@ public class OpenNMSExport08 {
             String customerId = "";
             String serviceName = "NOT_ASSIGNED";
             String serviceId = "";
+            String serialNumber = "NOT_ASSIGNED";
 
             try {
 
-               LOG.warn("************ processing device with attributes :" + device.getAttributes());
+               LOG.warn("************ processing device with attributes :" + businessObjectToString(device));
 
                // if rangeParent is set do not proceed if device is not a child of rangeParent
                // TODO this is correct method but doesn't work because transaction is not closed in BusinessEntityManagerImpl.isParent (no txSuccess())
@@ -418,6 +444,8 @@ public class OpenNMSExport08 {
                      continue;
                   }
                }
+
+               serialNumber = (device.getAttributes().get("serialNumber")!=null) ? (String) device.getAttributes().get("serialNumber") : "NOT_ASSIGNED";
 
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
                if (equipmentModelId != null) {
@@ -483,7 +511,7 @@ public class OpenNMSExport08 {
 
             // FiberSplitter created with dummy port
             if ("FiberSplitter".equals(device.getClassName())) {
-               LOG.info("******************* creating line for PASSIVE SPLITTER device: "+businessObjectToString(device));
+               LOG.info("******************* processing line data for PASSIVE SPLITTER device: " + businessObjectToString(device));
 
                HashMap<String, String> line = new HashMap<String, String>();
 
@@ -538,10 +566,76 @@ public class OpenNMSExport08 {
 
                csvLineData.add(line);
 
+            } else if ("OpticalNetworkTerminal".equals(device.getClassName())) {
+               // OpticalNetworkTerminal created with dummy port (no assigned ip address)
+            
+               LOG.info("******************* processing line data for OPTICAL NETWORK TERMINAL device: " + businessObjectToString(device));
+
+               HashMap<String, String> line = new HashMap<String, String>();
                
-            } else {
-                // all normal devices
-               LOG.info("******************* creating line for communications device: "+businessObjectToString(device));
+               line.put(OnmsRequisitionConstants.ASSET_SERIALNUMBER, serialNumber);
+
+               // use node name derived from containment hierarchy OR use the given node name
+               String nodename = locationName + "_" + rackName + "_" + name;
+               if (useAbsoluteNames) {
+                  nodename = name;
+               }
+               line.put(OnmsRequisitionConstants.NODE_LABEL, nodename);
+
+               // sets the foreignId 
+               if (useNodeLabelAsForeignId) {
+                  line.put(OnmsRequisitionConstants.ID_, nodename);
+               } else {
+                  line.put(OnmsRequisitionConstants.ID_, deviceId);
+               }
+
+               // sets asset category which determines which panel is displayed in grafana
+               if (deviceEquipmentDisplayName == null || deviceEquipmentDisplayName.isEmpty()) {
+                  line.put(OnmsRequisitionConstants.ASSET_CATEGORY, defaultAssetCategory);
+               } else {
+                  line.put(OnmsRequisitionConstants.ASSET_CATEGORY, deviceEquipmentDisplayName);
+               }
+
+               // sets display category which indicates customer
+               String cName = "NOT_ASSIGNED".equals(customerName) ? defaultAssetDisplayCategory : customerName;
+               cName = cName.replace(" ", "_");
+               line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, cName);
+               
+               line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_ID, customerId.replace(" ", "_"));
+               line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_NAME, customerName.replace(" ", "_"));
+               line.put(OnmsRequisitionConstants.METADATA_SERVICE_ID, serviceId.replace(" ", "_"));
+               line.put(OnmsRequisitionConstants.METADATA_SERVICE_NAME, serviceName.replace(" ", "_"));
+
+
+               // if port set as isManagement then set as Primary (P) snmp interface else (N) - not management
+               line.put(OnmsRequisitionConstants.MGMTTYPE_, "N");
+               
+               // sets the management address of the device
+
+               line.put(OnmsRequisitionConstants.IP_MANAGEMENT, OnmsRequisitionConstants.DUMMY_IP_ADDRESS);
+
+
+               if (latitude != null && !latitude.isEmpty()) {
+                  line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude);
+               }
+               if (longitude != null && !longitude.isEmpty()) {
+                  line.put(OnmsRequisitionConstants.ASSET_LONGITUDE, longitude);
+               }
+
+               line.put(OnmsRequisitionConstants.MINION_LOCATION, OnmsRequisitionConstants.DEFAULT_MINION_LOCATION);
+
+               // find managed object type in kuwaiba heirarchy
+               String managedObjectType = getDataModelClassPath(device.getClassName());
+               line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTTYPE, managedObjectType);
+
+               // use kuwaiba managed object instance
+               line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
+
+               csvLineData.add(line);
+
+            }  else {
+               // all other devices
+               LOG.info("******************* processing line data for COMMUNICATIONS DEVICE: " + businessObjectToString(device));
 
                // then we get comms ports (interfaces) on each device
                List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(device.getId(), device.getClassName(), "GenericCommunicationsPort", null, -1, -1);
@@ -833,7 +927,14 @@ public class OpenNMSExport08 {
          downstreamUpsteamMappings.put(name, new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>());
       }
 
+      // add olts to mapping without upstream
       for (BusinessObjectLight olt : oltSet) {
+         downstreamUpsteamMappings.get("OpticalLineTerminal").put(olt, null);
+      }
+
+      // now add downstream of OLTs
+      for (BusinessObjectLight olt : oltSet) {
+         LOG.info("getting downstream objects for "+businessObjectToString(olt));
          try {
             String parentOid = olt.getId();
             String parentClass = olt.getClassName();
@@ -841,12 +942,15 @@ public class OpenNMSExport08 {
             List<BusinessObjectLight> oltPorts = bem.getChildrenOfClassLightRecursive(parentOid, parentClass, "OpticalPort", null, -1, -1);
             for (BusinessObjectLight port : oltPorts) {
 
-               // if isManagement attribute set this is NOT a PON port. Also check if  port name starts with PON-
+               // if isManagement attribute set this is NOT a PON port.
                String isManagementStr = bem.getAttributeValueAsString(port.getClassName(), port.getId(), "isManagement");
                boolean isManagement = Boolean.valueOf(isManagementStr);
 
-               if (!isManagement && port.getName().startsWith("PON")) {
+               LOG.info("processing oltName: "+olt.getName()+ " port: "+businessObjectToString(port)+ " isManagement property:"+isManagement);
+               if ( ! isManagement ) {
                   Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamMapping = gettingDownstreamObjectsForPort(port.getClassName(), port.getId(), searchClassNames, terminatingClassName);
+                  LOG.info("adding: "+olt.getName()+ " downstream nodes: "+ downstreamMapping.size());
+
                   addDownstreamMapping(downstreamUpsteamMappings, downstreamMapping);
                }
             }
@@ -865,7 +969,7 @@ public class OpenNMSExport08 {
     * @param currentMapping
     * @param additionalMapping
     * @return currentMapping with additional objects
-    * @Throws IllegalArgumentException if additionalMapping tries to redefine an upstream mpping in the current mapping (shouldnt happen)
+    * @Throws IllegalArgumentException if additionalMapping tries to redefine an upstream mpping in the current mapping (shouldn't happen)
     */
    public Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> addDownstreamMapping(Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> currentMapping,
             Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> additionalMapping) {
@@ -1011,7 +1115,7 @@ public class OpenNMSExport08 {
 
             LOG.info("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
 
-            traverse(connectionPort,
+            boolean treeContainsTerminatingObject =  traverse(connectionPort,
                      upstreamFoundClass,
                      searchClassNames,
                      terminatingClassName,
@@ -1038,6 +1142,7 @@ public class OpenNMSExport08 {
     * @param portToParentMap
     * @param physicalTreeResult
     * @param traverseDeapth
+    * @return boolean treeContainsTerminatingObject  true if there is an ONT attached to this device
     */
    private boolean traverse(BusinessObjectLight connectionPort,
             BusinessObjectLight upstreamFoundClass,
