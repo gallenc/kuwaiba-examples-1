@@ -46,7 +46,10 @@
  *
  *    generatePassivePon
  *    If true, the exporter searches for OpticalLineTerminals and searches for trees of provisioned PON devices describing circuits from OLTs to ONT's
- *    Each device in the tree is provisioned with an upstream device so that alarm downstream and upstream correlation can be performed.      
+ *    Each device in the tree is provisioned with an upstream device so that alarm downstream and upstream correlation can be performed.  
+ *    
+ *    defaultParentForeignSource
+ *    Sets the default foreign source for the upstream definitions
  * 
  * Applies to: All classes as a generic report
  * 
@@ -214,9 +217,15 @@ public class OpenNMSExport08 {
        * generatePassivePon
        * If true, the exporter searches for OpticalLineTerminals and searches for trees of provisioned PON devices describing circuits from OLTs to ONT's
        * Each device in the tree is provisioned with an upstream device so that alarm downstream and upstream correlation can be performed.        
-      */
+       */
       String generatePassivePonStr = parameters.getOrDefault("generatePassivePon", "true");
       boolean generatePassivePon = Boolean.parseBoolean(generatePassivePonStr);
+
+      /*
+       *    defaultParentForeignSource
+       *    Sets the default foreign source for the upstream object definitions (parent-foreign-source="" parent-foreign-id)
+       */
+      String defaultParentForeignSource = parameters.getOrDefault("defaultParentForeignSource", "Kuwaiba-UK");
 
       StringBuffer textBuffer = new StringBuffer();
 
@@ -234,7 +243,7 @@ public class OpenNMSExport08 {
 
       // now populate data lines
       ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses, useNodeLabelAsForeignId, defaultAssetCategory,
-               defaultAssetDisplayCategory, subnetNetSubstitutionFilter, rangeParentValue, generatePassivePon);
+               defaultAssetDisplayCategory, subnetNetSubstitutionFilter, rangeParentValue, generatePassivePon, defaultParentForeignSource);
 
       for (HashMap<String, String> singleCsvlineData : csvLineData) {
 
@@ -275,17 +284,20 @@ public class OpenNMSExport08 {
 
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory,
-            String subnetNetSubstitutionFilter, String rangeParentValue, boolean generatePassivePon) {
+            String subnetNetSubstitutionFilter, String rangeParentValue, boolean generatePassivePon, String defaultParentForeignSource) {
 
       // data for each line in csv export
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
-      
+
       // devices to be processed into csv export (maintains order of entry but only one of each device)
-      LinkedHashSet<BusinessObject> devices = new LinkedHashSet<BusinessObject>(); 
+      LinkedHashSet<BusinessObject> devices = new LinkedHashSet<BusinessObject>();
 
       //                                 (className             downstream            upstream
       //   Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>
       Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMappings = new LinkedHashMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>();
+
+      // simple hashmap to search upstream businessObjects
+      HashMap<BusinessObject, BusinessObjectLight> simpleUpstreamMapping = new HashMap<BusinessObject, BusinessObjectLight>();
 
       try {
 
@@ -367,18 +379,21 @@ public class OpenNMSExport08 {
                for (BusinessObjectLight olt : downstreamUpsteamMappings.get("OpticalLineTerminal").keySet()) {
                   BusinessObject oltBusinessObject = bem.getObject(olt.getClassName(), olt.getId());
                   devices.add(oltBusinessObject);
+                  simpleUpstreamMapping.put(oltBusinessObject, downstreamUpsteamMappings.get("OpticalLineTerminal").get(olt));
                }
 
                // now add all splitters (note that upstream splitters will be ordered above downstream)
                for (BusinessObjectLight splitter : downstreamUpsteamMappings.get("FiberSplitter").keySet()) {
                   BusinessObject splitterBusinessObject = bem.getObject(splitter.getClassName(), splitter.getId());
                   devices.add(splitterBusinessObject);
+                  simpleUpstreamMapping.put(splitterBusinessObject, downstreamUpsteamMappings.get("FiberSplitter").get(splitter));
                }
 
                // now add all onts
                for (BusinessObjectLight ont : downstreamUpsteamMappings.get("OpticalNetworkTerminal").keySet()) {
                   BusinessObject ontBusinessObject = bem.getObject(ont.getClassName(), ont.getId());
                   devices.add(ontBusinessObject);
+                  simpleUpstreamMapping.put(ontBusinessObject, downstreamUpsteamMappings.get("OpticalNetworkTerminal").get(ont));
                }
 
             } catch (Exception ex) {
@@ -389,7 +404,7 @@ public class OpenNMSExport08 {
             LOG.info("************************************************");
          }
 
-         // Next we get all remaining active network devices but don't replace ones already created
+         // Next we add all remaining active network devices but don't replace ones already created
          List<BusinessObject> deviceList = bem.getObjectsOfClass(Constants.CLASS_GENERICCOMMUNICATIONSELEMENT, -1);
          for (BusinessObject device : deviceList) {
             if (!devices.contains(device)) {
@@ -415,6 +430,9 @@ public class OpenNMSExport08 {
             String serviceName = "NOT_ASSIGNED";
             String serviceId = "";
             String serialNumber = "NOT_ASSIGNED";
+
+            String parent_foreign_source = "";
+            String parent_foreign_id = "";
 
             try {
 
@@ -445,8 +463,21 @@ public class OpenNMSExport08 {
                      continue;
                   }
                }
-               
-               serialNumber = (device.getAttributes().get("serialNumber")!=null) ? (String) device.getAttributes().get("serialNumber") : "NOT_ASSIGNED";
+
+               // get parent foreign source and id if defined
+               BusinessObjectLight upstreamDevice = simpleUpstreamMapping.get(device);
+               if (upstreamDevice != null) {
+                  parent_foreign_source = defaultParentForeignSource;
+                  if (useNodeLabelAsForeignId && useAbsoluteNames) {
+                     // we can only use absolute names as we don't have access to the container name for the upsteam device
+                     parent_foreign_id =  upstreamDevice.getName();
+                  } else {
+                     parent_foreign_id = upstreamDevice.getId();
+                  }
+               }
+
+               // get serial number
+               serialNumber = (device.getAttributes().get("serialNumber") != null) ? (String) device.getAttributes().get("serialNumber") : "NOT_ASSIGNED";
 
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
                if (equipmentModelId != null) {
@@ -516,6 +547,9 @@ public class OpenNMSExport08 {
 
                HashMap<String, String> line = new HashMap<String, String>();
 
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_ID, parent_foreign_id);
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE, parent_foreign_source);
+
                // use node name derived from containment hierarchy OR use the given node name
                String nodename = locationName + "_" + rackName + "_" + name;
                if (useAbsoluteNames) {
@@ -565,16 +599,19 @@ public class OpenNMSExport08 {
                // use kuwaiba managed object instance
                line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
-               LOG.info("adding line:"+line);
+               LOG.info("adding line:" + line);
                csvLineData.add(line);
 
             } else if (generatePassivePon && "OpticalNetworkTerminal".equals(device.getClassName())) {
                // OpticalNetworkTerminal created with dummy port (no assigned ip address)
-            
+
                LOG.info("******************* processing line data for OPTICAL NETWORK TERMINAL device: " + businessObjectToString(device));
 
                HashMap<String, String> line = new HashMap<String, String>();
-               
+
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_ID, parent_foreign_id);
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE, parent_foreign_source);
+
                line.put(OnmsRequisitionConstants.ASSET_SERIALNUMBER, serialNumber);
 
                // use node name derived from containment hierarchy OR use the given node name
@@ -602,20 +639,18 @@ public class OpenNMSExport08 {
                String cName = "NOT_ASSIGNED".equals(customerName) ? defaultAssetDisplayCategory : customerName;
                cName = cName.replace(" ", "_");
                line.put(OnmsRequisitionConstants.ASSET_DISPLAYCATEGORY, cName);
-               
+
                line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_ID, customerId.replace(" ", "_"));
                line.put(OnmsRequisitionConstants.METADATA_CUSTOMER_NAME, customerName.replace(" ", "_"));
                line.put(OnmsRequisitionConstants.METADATA_SERVICE_ID, serviceId.replace(" ", "_"));
                line.put(OnmsRequisitionConstants.METADATA_SERVICE_NAME, serviceName.replace(" ", "_"));
 
-
                // if port set as isManagement then set as Primary (P) snmp interface else (N) - not management
                line.put(OnmsRequisitionConstants.MGMTTYPE_, "N");
-               
+
                // sets the management address of the device
 
                line.put(OnmsRequisitionConstants.IP_MANAGEMENT, OnmsRequisitionConstants.DUMMY_IP_ADDRESS);
-
 
                if (latitude != null && !latitude.isEmpty()) {
                   line.put(OnmsRequisitionConstants.ASSET_LATITUDE, latitude);
@@ -633,10 +668,10 @@ public class OpenNMSExport08 {
                // use kuwaiba managed object instance
                line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
-               LOG.info("adding line:"+line);
+               LOG.info("adding line:" + line);
                csvLineData.add(line);
 
-            }  else {
+            } else {
                // all other devices
                LOG.info("******************* processing line data for COMMUNICATIONS DEVICE: " + businessObjectToString(device));
 
@@ -663,7 +698,10 @@ public class OpenNMSExport08 {
                      LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
                      HashMap<String, String> line = new HashMap<String, String>();
-                     
+
+                     line.put(OnmsRequisitionConstants.PARENT_FOREIGN_ID, parent_foreign_id);
+                     line.put(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE, parent_foreign_source);
+
                      line.put(OnmsRequisitionConstants.ASSET_SERIALNUMBER, serialNumber);
 
                      // use node name derived from containment hierarchy OR use the given node name
@@ -734,13 +772,13 @@ public class OpenNMSExport08 {
 
                      // only create a line if useAllPortAddresses is true or if isManagement is true for the port
                      if (useAllPortAddresses) {
-                        LOG.info("adding line:"+line);
+                        LOG.info("adding line:" + line);
                         csvLineData.add(line);
                      } else if (isManagement) {
-                        LOG.info("adding line:"+line);
+                        LOG.info("adding line:" + line);
                         csvLineData.add(line);
                      } else {
-                        LOG.info("not adding line: useAllPortAddresses: "+useAllPortAddresses+ " isManagement: "+isManagement);
+                        LOG.info("not adding line: useAllPortAddresses: " + useAllPortAddresses + " isManagement: " + isManagement);
                      }
                   }
                }
@@ -934,7 +972,7 @@ public class OpenNMSExport08 {
       for (String name : searchClassNames) {
          downstreamUpsteamMappings.put(name, new LinkedHashMap<BusinessObjectLight, BusinessObjectLight>());
       }
-      
+
       // add olts to mapping without upstream
       for (BusinessObjectLight olt : oltSet) {
          downstreamUpsteamMappings.get("OpticalLineTerminal").put(olt, null);
@@ -948,7 +986,7 @@ public class OpenNMSExport08 {
             String parentClass = olt.getClassName();
             // getChildrenOfClassLightRecursive(String parentOid, String parentClass, String classToFilter, HashMap <String, String> attributesToFilters, int page, int limit) 
             List<BusinessObjectLight> oltPorts = bem.getChildrenOfClassLightRecursive(parentOid, parentClass, "OpticalPort", null, -1, -1);
-            
+
             for (BusinessObjectLight port : oltPorts) {
 
                // if isManagement attribute set this is NOT a PON port.
@@ -1123,7 +1161,7 @@ public class OpenNMSExport08 {
 
             LOG.info("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
 
-            boolean treeContainsTerminatingObject =  traverse(connectionPort,
+            boolean treeContainsTerminatingObject = traverse(connectionPort,
                      upstreamFoundClass,
                      searchClassNames,
                      terminatingClassName,

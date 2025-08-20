@@ -218,6 +218,12 @@ public class OpenNMSExport08 {
       String generatePassivePonStr = parameters.getOrDefault("generatePassivePon", "true");
       boolean generatePassivePon = Boolean.parseBoolean(generatePassivePonStr);
 
+      /*
+       *    defaultParentForeignSource
+       *    Sets the default foreign source for the upstream object definitions (parent-foreign-source="" parent-foreign-id)
+       */
+      String defaultParentForeignSource = parameters.getOrDefault("defaultParentForeignSource", "Kuwaiba-UK");
+
       StringBuffer textBuffer = new StringBuffer();
 
       // create CSV headerline
@@ -234,7 +240,7 @@ public class OpenNMSExport08 {
 
       // now populate data lines
       ArrayList<HashMap<String, String>> csvLineData = generateCsvLineData(bem, aem, useAbsoluteNames, useAllPortAddresses, useNodeLabelAsForeignId, defaultAssetCategory,
-               defaultAssetDisplayCategory, subnetNetSubstitutionFilter, rangeParentValue, generatePassivePon);
+               defaultAssetDisplayCategory, subnetNetSubstitutionFilter, rangeParentValue, generatePassivePon, defaultParentForeignSource);
 
       for (HashMap<String, String> singleCsvlineData : csvLineData) {
 
@@ -274,7 +280,7 @@ public class OpenNMSExport08 {
 
    public ArrayList<HashMap<String, String>> generateCsvLineData(BusinessEntityManager bem, ApplicationEntityManager aem,
             Boolean useAbsoluteNames, Boolean useAllPortAddresses, Boolean useNodeLabelAsForeignId, String defaultAssetCategory, String defaultAssetDisplayCategory,
-            String subnetNetSubstitutionFilter, String rangeParentValue, boolean generatePassivePon) {
+            String subnetNetSubstitutionFilter, String rangeParentValue, boolean generatePassivePon, String defaultParentForeignSource) {
 
       // data for each line in csv export
       ArrayList<HashMap<String, String>> csvLineData = new ArrayList<HashMap<String, String>>();
@@ -285,6 +291,9 @@ public class OpenNMSExport08 {
       //                                 (className             downstream            upstream
       //   Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>
       Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMappings = new LinkedHashMap<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>>();
+
+      // simple hashmap to search upstream businessObjects
+      HashMap<BusinessObject, BusinessObjectLight> simpleUpstreamMapping = new HashMap<BusinessObject, BusinessObjectLight>();
 
       try {
 
@@ -366,18 +375,21 @@ public class OpenNMSExport08 {
                for (BusinessObjectLight olt : downstreamUpsteamMappings.get("OpticalLineTerminal").keySet()) {
                   BusinessObject oltBusinessObject = bem.getObject(olt.getClassName(), olt.getId());
                   devices.add(oltBusinessObject);
+                  simpleUpstreamMapping.put(oltBusinessObject, downstreamUpsteamMappings.get("OpticalLineTerminal").get(olt));
                }
 
                // now add all splitters (note that upstream splitters will be ordered above downstream)
                for (BusinessObjectLight splitter : downstreamUpsteamMappings.get("FiberSplitter").keySet()) {
                   BusinessObject splitterBusinessObject = bem.getObject(splitter.getClassName(), splitter.getId());
                   devices.add(splitterBusinessObject);
+                  simpleUpstreamMapping.put(splitterBusinessObject, downstreamUpsteamMappings.get("FiberSplitter").get(splitter));
                }
 
                // now add all onts
                for (BusinessObjectLight ont : downstreamUpsteamMappings.get("OpticalNetworkTerminal").keySet()) {
                   BusinessObject ontBusinessObject = bem.getObject(ont.getClassName(), ont.getId());
                   devices.add(ontBusinessObject);
+                  simpleUpstreamMapping.put(ontBusinessObject, downstreamUpsteamMappings.get("OpticalNetworkTerminal").get(ont));
                }
 
             } catch (Exception ex) {
@@ -388,7 +400,7 @@ public class OpenNMSExport08 {
             LOG.info("************************************************");
          }
 
-         // Next we get all remaining active network devices but don't replace ones already created
+         // Next we add all remaining active network devices but don't replace ones already created
          List<BusinessObject> deviceList = bem.getObjectsOfClass(Constants.CLASS_GENERICCOMMUNICATIONSELEMENT, -1);
          for (BusinessObject device : deviceList) {
             if (! devices.contains(device)) {
@@ -414,6 +426,9 @@ public class OpenNMSExport08 {
             String serviceName = "NOT_ASSIGNED";
             String serviceId = "";
             String serialNumber = "NOT_ASSIGNED";
+
+            String parent_foreign_source = "";
+            String parent_foreign_id = "";
 
             try {
 
@@ -445,6 +460,19 @@ public class OpenNMSExport08 {
                   }
                }
 
+               // get parent foreign source and id if defined
+               BusinessObjectLight upstreamDevice = simpleUpstreamMapping.get(device);
+               if (upstreamDevice != null) {
+                  parent_foreign_source = defaultParentForeignSource;
+                  if (useNodeLabelAsForeignId && useAbsoluteNames) {
+                     // we can only use absolute names as we don't have access to the container name for the upsteam device
+                     parent_foreign_id =  upstreamDevice.getName();
+               } else {
+                     parent_foreign_id = upstreamDevice.getId();
+                  }
+               }
+
+               // get serial number
                serialNumber = (device.getAttributes().get("serialNumber")!=null) ? (String) device.getAttributes().get("serialNumber") : "NOT_ASSIGNED";
 
                String equipmentModelId = (String) device.getAttributes().get(Constants.ATTRIBUTE_MODEL);
@@ -515,6 +543,9 @@ public class OpenNMSExport08 {
 
                HashMap<String, String> line = new HashMap<String, String>();
 
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_ID, parent_foreign_id);
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE, parent_foreign_source);
+
                // use node name derived from containment hierarchy OR use the given node name
                String nodename = locationName + "_" + rackName + "_" + name;
                if (useAbsoluteNames) {
@@ -574,6 +605,9 @@ public class OpenNMSExport08 {
 
                HashMap<String, String> line = new HashMap<String, String>();
                
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_ID, parent_foreign_id);
+               line.put(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE, parent_foreign_source);
+
                line.put(OnmsRequisitionConstants.ASSET_SERIALNUMBER, serialNumber);
 
                // use node name derived from containment hierarchy OR use the given node name
@@ -662,6 +696,9 @@ public class OpenNMSExport08 {
                      LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
                      HashMap<String, String> line = new HashMap<String, String>();
+
+                     line.put(OnmsRequisitionConstants.PARENT_FOREIGN_ID, parent_foreign_id);
+                     line.put(OnmsRequisitionConstants.PARENT_FOREIGN_SOURCE, parent_foreign_source);
 
                      line.put(OnmsRequisitionConstants.ASSET_SERIALNUMBER, serialNumber);
 
