@@ -510,7 +510,7 @@ public class OpenNMSExport08 {
             }
 
             // FiberSplitter created with dummy port
-            if ("FiberSplitter".equals(device.getClassName())) {
+            if (generatePassivePon && "FiberSplitter".equals(device.getClassName())) {
                LOG.info("******************* processing line data for PASSIVE SPLITTER device: " + businessObjectToString(device));
 
                HashMap<String, String> line = new HashMap<String, String>();
@@ -564,9 +564,10 @@ public class OpenNMSExport08 {
                // use kuwaiba managed object instance
                line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
+               LOG.info("adding line:"+line);
                csvLineData.add(line);
 
-            } else if ("OpticalNetworkTerminal".equals(device.getClassName())) {
+            } else if (generatePassivePon && "OpticalNetworkTerminal".equals(device.getClassName())) {
                // OpticalNetworkTerminal created with dummy port (no assigned ip address)
             
                LOG.info("******************* processing line data for OPTICAL NETWORK TERMINAL device: " + businessObjectToString(device));
@@ -631,6 +632,7 @@ public class OpenNMSExport08 {
                // use kuwaiba managed object instance
                line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
+               LOG.info("adding line:"+line);
                csvLineData.add(line);
 
             }  else {
@@ -660,6 +662,8 @@ public class OpenNMSExport08 {
                      LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
                      HashMap<String, String> line = new HashMap<String, String>();
+
+                     line.put(OnmsRequisitionConstants.ASSET_SERIALNUMBER, serialNumber);
 
                      // use node name derived from containment hierarchy OR use the given node name
                      String nodename = locationName + "_" + rackName + "_" + name;
@@ -729,9 +733,13 @@ public class OpenNMSExport08 {
 
                      // only create a line if useAllPortAddresses is true or if isManagement is true for the port
                      if (useAllPortAddresses) {
+                        LOG.info("adding line:"+line);
                         csvLineData.add(line);
                      } else if (isManagement) {
+                        LOG.info("adding line:"+line);
                         csvLineData.add(line);
+                     } else {
+                        LOG.info("not adding line: useAllPortAddresses: "+useAllPortAddresses+ " isManagement: "+isManagement);
                      }
                   }
                }
