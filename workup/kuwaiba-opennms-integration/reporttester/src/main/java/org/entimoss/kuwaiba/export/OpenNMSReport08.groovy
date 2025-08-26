@@ -415,8 +415,10 @@ public class OpenNMSExport08 {
                   simpleUpstreamMapping.put(oltBusinessObject, downstreamUpsteamMappings.get("OpticalLineTerminal").get(olt));
                }
 
-               // now add all splitters (note that upstream splitters will be ordered above downstream)
-               for (BusinessObjectLight splitter : downstreamUpsteamMappings.get("FiberSplitter").keySet()) {
+               // now add all splitters (note that upstream splitters will be ordered above downstream) // TODO SORT OUT ORDER 
+               List<BusinessObjectLight> aNewList = new ArrayList<BusinessObjectLight>(downstreamUpsteamMappings.get("FiberSplitter").keySet());
+               Collections.reverse(aNewList);
+               for (BusinessObjectLight splitter : aNewList) {
                   BusinessObject splitterBusinessObject = bem.getObject(splitter.getClassName(), splitter.getId());
                   devices.add(splitterBusinessObject);
                   simpleUpstreamMapping.put(splitterBusinessObject, downstreamUpsteamMappings.get("FiberSplitter").get(splitter));

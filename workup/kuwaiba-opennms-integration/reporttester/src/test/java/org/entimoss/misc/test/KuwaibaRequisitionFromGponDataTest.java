@@ -97,9 +97,9 @@ public class KuwaibaRequisitionFromGponDataTest {
 
    String vendor = "NOKIA";
 
-   Double fexLatitude = Double.valueOf("-1.3762576");
+   Double fexLatitude = Double.valueOf("50.9178581");
 
-   Double fexLongitude = Double.valueOf("50.9178581");
+   Double fexLongitude = Double.valueOf("-1.3762576");
 
    /*
     * Foreign source name used in naming the file and also in parent foreign source references
@@ -116,7 +116,7 @@ public class KuwaibaRequisitionFromGponDataTest {
     * set to number of lines to read or null if read to end.
     */
    //TODO - REMOVE limit lines for full file
-   Integer UPRN_limitLines = 5;
+   Integer UPRN_limitLines = 500;
 
    /*
     * set true if WireContainers should be created
