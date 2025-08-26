@@ -834,7 +834,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
    }
 
    String businessObjectToString(BusinessObjectLight bo) {
-      return (bo == null) ? "BusinessObject[ null ]"
+      return (bo == null) ? "BusinessObjectLight[ null ]"
                : "BusinessObjectLight[ getName()=" + bo.getName() + ", getClassName()=" + bo.getClassName() + ", getClassDisplayName()=" +
                         bo.getClassDisplayName() + ", getId()=" + bo.getId() + "]";
    }

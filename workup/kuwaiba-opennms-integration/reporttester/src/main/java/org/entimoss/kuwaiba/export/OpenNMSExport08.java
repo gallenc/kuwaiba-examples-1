@@ -346,26 +346,60 @@ public class OpenNMSExport08 {
             String terminatingClassName = "OpticalNetworkTerminal";
 
             try {
+               
                LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
 
                List<BusinessObject> oltdevices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
                LOG.info("all olt devices:" + oltdevices);
 
                for (BusinessObject oltDevice : oltdevices) {
+
+                  // only consider OLTs in range if rangeParent set
                   // TODO work around
                   if (rangeParentId != null) {
+                     boolean oltInrange = false;
                      List<BusinessObjectLight> oltParents = bem.getParents(oltDevice.getClassName(), oltDevice.getId());
-
-                     for (BusinessObjectLight parent : oltParents) {
+                     Iterator<BusinessObjectLight> oltParentsIterator = oltParents.iterator();
+                     while (oltParentsIterator.hasNext() && !oltInrange) {
+                        BusinessObjectLight parent = oltParentsIterator.next();
                         if (parent.getId().equals(rangeParentId)) {
-                           oltSet.add(oltDevice);
-                           break;
+                           oltInrange = true;
                         }
                      }
-                  } else {
-                     oltSet.add(oltDevice);
+                     if (!oltInrange)
+                        continue;
                   }
 
+                  // only add OLTs with ip address if useAllPortAddresses true
+                  // only add OLTs with ip Address and isManagement
+                  boolean addOlt = false;
+
+                  List<BusinessObjectLight> commPorts = 
+                           bem.getChildrenOfClassLightRecursive(oltDevice.getId(), oltDevice.getClassName(), "GenericCommunicationsPort", null, -1, -1);
+                  Iterator<BusinessObjectLight> commportsIterator = commPorts.iterator();
+
+                  while (commportsIterator.hasNext() && addOlt != true) {
+                     BusinessObjectLight port = commportsIterator.next();
+
+                     // We check if there's an IP address associated to the port.
+                     List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(port.getClassName(), port.getId(), "ipamHasIpAddress");
+                     if (!ipAddressesInPort.isEmpty()) {
+                        if (useAllPortAddresses) {
+                           addOlt = true;
+                        } else {
+                           String isManagementStr = bem.getAttributeValueAsString(port.getClassName(), port.getId(), "isManagement");
+                           boolean isManagement = Boolean.valueOf(isManagementStr);
+                           if (isManagement) {
+                              addOlt = true;
+                           }
+                        }
+
+                        if (addOlt) {
+                           oltSet.add(oltDevice);
+                        }
+                     }
+                  }
+                  
                }
 
                LOG.info("finding and adding downstream for olt devices:" + oltSet);
@@ -374,7 +408,7 @@ public class OpenNMSExport08 {
 
                printChildParentMap(downstreamUpsteamMappings);
 
-               // TODO MAY NEED TO LOOK AT ORDERING
+               // TODO MAY NEED TO LOOK AT ORDERING primary before secondary splitters
                // do this so that upstream olt devices are defined first in list
                for (BusinessObjectLight olt : downstreamUpsteamMappings.get("OpticalLineTerminal").keySet()) {
                   BusinessObject oltBusinessObject = bem.getObject(olt.getClassName(), olt.getId());
@@ -470,7 +504,7 @@ public class OpenNMSExport08 {
                   parent_foreign_source = defaultParentForeignSource;
                   if (useNodeLabelAsForeignId && useAbsoluteNames) {
                      // we can only use absolute names as we don't have access to the container name for the upsteam device
-                     parent_foreign_id =  upstreamDevice.getName();
+                     parent_foreign_id = upstreamDevice.getName();
                   } else {
                      parent_foreign_id = upstreamDevice.getId();
                   }
