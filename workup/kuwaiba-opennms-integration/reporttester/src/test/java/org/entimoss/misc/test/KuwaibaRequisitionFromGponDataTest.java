@@ -116,7 +116,7 @@ public class KuwaibaRequisitionFromGponDataTest {
     * set to number of lines to read or null if read to end.
     */
    //TODO - REMOVE limit lines for full file
-   Integer UPRN_limitLines = 500;
+   Integer UPRN_limitLines = null;
 
    /*
     * set true if WireContainers should be created
@@ -217,11 +217,19 @@ public class KuwaibaRequisitionFromGponDataTest {
                   int localPolePortNo = uprnCount % (SPLITTERS_TO_USE_PER_POLE * SECONDARY_SPLIT_RATIO);
                   int poleSplitterNo = localPolePortNo / SECONDARY_SPLIT_RATIO; // splitter number on pole
                   int poleSplitterOutPortNo = localPolePortNo % SECONDARY_SPLIT_RATIO; // port on splitter
-
+                  
+                  int secondarySplitterCount = uprnCount / SECONDARY_SPLIT_RATIO;
+                  int primarySplitterCount = secondarySplitterCount / PRIMARY_SPLIT_RATIO;
+                  
                   // each cabinet splitter port associated with one poleSplitter
-                  int cabinetNo = poleNo / (SPLITTERS_TO_USE_PER_POLE * SPLITTERS_TO_USE_PER_CAB);
-                  int cabinetSplitterNo = (uprnCount / SECONDARY_SPLIT_RATIO) / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
-                  int cabinetSplitterOutPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
+                  int cabinetNo = primarySplitterCount / SPLITTERS_TO_USE_PER_CAB ; // cabinet number
+                  int localCabinetPortNo = secondarySplitterCount % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO); 
+                  int cabinetSplitterNo = localCabinetPortNo / PRIMARY_SPLIT_RATIO; // splitter number in cabinet
+                  int cabinetSplitterOutPortNo = localCabinetPortNo % PRIMARY_SPLIT_RATIO; // port on primary splitter
+ 
+                  //int cabinetSplitterNo = (uprnCount / SECONDARY_SPLIT_RATIO) / (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
+                 // int cabinetSplitterOutPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % (SPLITTERS_TO_USE_PER_CAB * PRIMARY_SPLIT_RATIO);
+                  //int cabinetSplitterOutPortNo = (uprnCount / SECONDARY_SPLIT_RATIO) % PRIMARY_SPLIT_RATIO;
 
                   // each olt has multiple shelves each with separate ports (2 x 8 port shelves = 16 possible splitters)
                   int oltShelfNo = cabinetSplitterNo / PORTS_PER_OLT_CARD;
@@ -236,6 +244,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                            ", cabinetSplitterNo=" + cabinetSplitterNo + ", cabinetSplitterOutPortNo=" + cabinetSplitterOutPortNo + ", oltNo=" + oltNo + ", oltShelfNo=" + oltShelfNo +
                            ", oltPortNo=" + oltPortNo);
 
+                  if (cabinetSplitterOutPortNo>=9) throw new RuntimeException("error cabinet splitter number="+cabinetSplitterOutPortNo);
                   // create house UPRN , ONT if doesn't exist splice 2 fibres
                   // Building / House              UPRN_<uprn>  UPRN_200001919492
                   // CSP (Customer Splice Point)   CSP_<uprn>   CSP_200001919492 note CSP has two splices IN-0 OUT-0 
