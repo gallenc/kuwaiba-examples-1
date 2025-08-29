@@ -116,7 +116,7 @@ public class KuwaibaRequisitionFromGponDataTest {
     * set to number of lines to read or null if read to end.
     */
    //TODO - REMOVE limit lines for full file
-   Integer UPRN_limitLines = null;
+   Integer UPRN_limitLines = 100;
 
    /*
     * set true if WireContainers should be created
