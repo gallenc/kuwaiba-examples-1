@@ -50,6 +50,11 @@
  *    
  *    defaultParentForeignSource
  *    Sets the default foreign source for the upstream definitions
+ *    
+ *    csvOutputFile
+ *    Sets the name and location (within the container) of the csv output file.
+ *    This is useful where the report is too long for vaadin to export as a rawReport
+ *    If not set, defaults to "/exported-reports/"+defaultParentForeignSource+".csv"
  * 
  * Applies to: All classes as a generic report
  * 
@@ -86,6 +91,9 @@ import org.neotropic.kuwaiba.core.persistence.PersistenceService.EXECUTION_STATE
 import org.neotropic.kuwaiba.core.persistence.reference.neo4j.RelTypes;
 import org.neotropic.kuwaiba.modules.optional.reports.defaults.RawReport;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -222,10 +230,19 @@ public class OpenNMSExport08 {
       boolean generatePassivePon = Boolean.parseBoolean(generatePassivePonStr);
 
       /*
-       *    defaultParentForeignSource
-       *    Sets the default foreign source for the upstream object definitions (parent-foreign-source="" parent-foreign-id)
+       * defaultParentForeignSource
+       * Sets the default foreign source for the upstream object definitions (parent-foreign-source="?" parent-foreign-id="?")
        */
-      String defaultParentForeignSource = parameters.getOrDefault("defaultParentForeignSource", "Kuwaiba-UK");
+      String defaultParentForeignSource = parameters.getOrDefault("defaultParentForeignSource", "kuwaibaForeignSource");
+
+      /*
+       * csvOutputFile
+       * Sets the name and location (within the container) of the csv output file.
+       * This is useful where the report is too long for vaadin to export as a rawReport
+       * If not set, defaults to "/exported-reports/"+defaultParentForeignSource+".csv"
+       */
+      String csvOutputFileString = parameters.getOrDefault("csvOutputFile", "/exported-reports/" + defaultParentForeignSource + ".csv");
+      File csvOutputFile = new File(csvOutputFileString);
 
       StringBuffer textBuffer = new StringBuffer();
 
@@ -271,8 +288,18 @@ public class OpenNMSExport08 {
          textBuffer.append("\n");
       }
 
+      // write the report to a file
+      String csvOutputStr = textBuffer.toString();
+
+      try {
+         LOG.info(" writing csv to internal file: " + csvOutputFile.getAbsolutePath());
+         writeStringToFile(csvOutputFile, csvOutputStr);
+      } catch (Exception ex) {
+         LOG.error("problem writing output file", ex);
+      }
+
       // return a RawReport containing csv
-      InventoryReport report = new RawReport(title, author, version, textBuffer.toString());
+      InventoryReport report = new RawReport(title, author, version, csvOutputStr);
 
       LOG.info("****************************************************************");
       LOG.info("End of " + title);
@@ -346,7 +373,7 @@ public class OpenNMSExport08 {
             String terminatingClassName = "OpticalNetworkTerminal";
 
             try {
-               
+
                LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
 
                List<BusinessObject> oltdevices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
@@ -374,8 +401,7 @@ public class OpenNMSExport08 {
                   // only add OLTs with ip Address and isManagement
                   boolean addOlt = false;
 
-                  List<BusinessObjectLight> commPorts = 
-                           bem.getChildrenOfClassLightRecursive(oltDevice.getId(), oltDevice.getClassName(), "GenericCommunicationsPort", null, -1, -1);
+                  List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(oltDevice.getId(), oltDevice.getClassName(), "GenericCommunicationsPort", null, -1, -1);
                   Iterator<BusinessObjectLight> commportsIterator = commPorts.iterator();
 
                   while (commportsIterator.hasNext() && addOlt != true) {
@@ -399,7 +425,7 @@ public class OpenNMSExport08 {
                         }
                      }
                   }
-                  
+
                }
 
                LOG.info("finding and adding downstream for olt devices:" + oltSet);
@@ -851,6 +877,30 @@ public class OpenNMSExport08 {
          return sb.toString();
       } catch (MetadataObjectNotFoundException e) {
          throw new IllegalArgumentException("cant find className=" + className, e);
+      }
+   }
+
+   /**
+    * Writes the contents of a given string to the output file
+    * @param outputFile File object to write the string to. Ant pre existing file will be deleted. A new file object will be created each time this method is called
+    * @param stringdata the string to write to the file
+    */
+   public void writeStringToFile(File outputFile, String stringdata) {
+      PrintWriter printWriter = null;
+      try {
+         outputFile.delete();
+
+         File parent = outputFile.getParentFile();
+         if (!parent.exists())
+            parent.mkdirs();
+         printWriter = new PrintWriter(new FileWriter(outputFile));
+         printWriter.print(stringdata);
+
+      } catch (Exception ex) {
+         LOG.error("problem printing data to outputfile: " + outputFile.getAbsolutePath(), ex);
+      } finally {
+         if (printWriter != null)
+            printWriter.close();
       }
    }
 
