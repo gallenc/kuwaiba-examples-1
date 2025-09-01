@@ -1174,7 +1174,7 @@ public class OpenNMSExport08 {
          printPhysicalTreeResult(physicalTreeResult, searchClassNames);
          LOG.info("************ END OF print physical tree results");
 
-         LOG.info("************ starting downstream mapping searchClassNames: " + searchClassNames + "terminatingClassName" + terminatingClassName);
+         LOG.info("************ starting downstream mapping searchClassNames: " + searchClassNames + " terminatingClassName=" + terminatingClassName);
          downstreamUpsteamMapping = traverseTree(physicalTreeResult, searchClassNames, terminatingClassName);
          LOG.info("************ END OF downstream mapping");
 
