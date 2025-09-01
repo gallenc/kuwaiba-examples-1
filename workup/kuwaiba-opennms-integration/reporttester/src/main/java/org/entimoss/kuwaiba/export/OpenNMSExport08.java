@@ -393,8 +393,10 @@ public class OpenNMSExport08 {
                            oltInrange = true;
                         }
                      }
-                     if (!oltInrange)
+                     if (!oltInrange) {
+                        LOG.info("olt not in range, Ignoring : " + businessObjectToString(oltDevice));
                         continue;
+                     }
                   }
 
                   // only add OLTs with ip address if useAllPortAddresses true
@@ -402,6 +404,8 @@ public class OpenNMSExport08 {
                   boolean addOlt = false;
 
                   List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(oltDevice.getId(), oltDevice.getClassName(), "GenericCommunicationsPort", null, -1, -1);
+                  LOG.info("coms ports on device : " + businessObjectToString(oltDevice) + " ports: " + commPorts);
+
                   Iterator<BusinessObjectLight> commportsIterator = commPorts.iterator();
 
                   while (commportsIterator.hasNext() && addOlt != true) {
@@ -409,21 +413,29 @@ public class OpenNMSExport08 {
 
                      // We check if there's an IP address associated to the port.
                      List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(port.getClassName(), port.getId(), "ipamHasIpAddress");
-                     if (!ipAddressesInPort.isEmpty()) {
+
+                     if (ipAddressesInPort.isEmpty()) {
+                        LOG.info("no ip address on port : " + businessObjectToString(port));
+                     } else {
+
                         if (useAllPortAddresses) {
                            addOlt = true;
+                           LOG.info("useAllPorts: ip address on port : " + businessObjectToString(port) + " ipAddressesInPort: " + ipAddressesInPort);
                         } else {
                            String isManagementStr = bem.getAttributeValueAsString(port.getClassName(), port.getId(), "isManagement");
                            boolean isManagement = Boolean.valueOf(isManagementStr);
                            if (isManagement) {
                               addOlt = true;
+                              LOG.info("ip address on isManagement port : " + businessObjectToString(port) + " ipAddressesInPort: " + ipAddressesInPort);
                            }
                         }
 
-                        if (addOlt) {
-                           oltSet.add(oltDevice);
-                        }
                      }
+                  }
+
+                  if (addOlt) {
+                     LOG.info("will generate for OLT :" + businessObjectToString(oltDevice));
+                     oltSet.add(oltDevice);
                   }
 
                }

@@ -1437,7 +1437,7 @@ public class KuwaibaRequisitionFromGponDataTest {
                childDefinition1Attributes.put("position", Integer.toString(2 + oltNo * 2)); // top 2 slots free
                childDefinition1.getTemplateAttributes().putAll(childDefinition1Attributes);
 
-               // 2 cards per olt
+               // 2 PON cards per olt
                for (int card = 1; card <= 2; card++) {
                   KuwaibaTemplateDefinition childDefinition1_1 = new KuwaibaTemplateDefinition();
                   childDefinition1_1.setTemplateElementName("card-" + String.format("%03d", card));
@@ -1455,8 +1455,21 @@ public class KuwaibaRequisitionFromGponDataTest {
                   }
 
                }
+               
+               // OLT management port
+               KuwaibaTemplateDefinition childDefinition1_2 = new KuwaibaTemplateDefinition();
+               childDefinition1_2.setTemplateElementName("management");
+               childDefinition1_2.setClassName("OpticalPort");
+               childDefinition1_2.setSpecial(false);
 
+               HashMap<String, String> childDefinition1_2_Attributes = new HashMap<String, String>();
+               childDefinition1_2_Attributes.put("isManagement", "true");
+               childDefinition1_2.getTemplateAttributes().putAll(childDefinition1_2_Attributes);
+               
+               childDefinition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1_2);
+               
                definition1.getChildKuwaibaTemplateDefinitions().add(childDefinition1);
+               
             }
 
             kuwaibaTemplateDefinitionList.add(definition1);
