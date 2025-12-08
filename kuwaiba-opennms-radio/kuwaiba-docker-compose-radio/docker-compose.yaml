@@ -46,7 +46,8 @@ volumes:
 services:
 
   nginx:
-    image: nginx:1.23-alpine
+    image: ${DOCKER_REGISTRY:-docker.io}/nginx:${NGINX_VERSION:-1.23-alpine}
+    #image: nginx:1.23-alpine
     container_name: nginx
     hostname: nginx
     restart: unless-stopped
