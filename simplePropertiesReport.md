@@ -1,4 +1,4 @@
-# simple repot to print out java system properties
+# simple report to print out java system properties
 
 ```
 /*

@@ -34,6 +34,10 @@
         <!-- <maxFlushTime></maxFlushTime> -->
         <neverBlock>true</neverBlock>
     </appender>
+    
+    <logger name="org.entimoss.kuwaiba.provisioning.script" level="INFO"   >
+        <appender-ref ref="ASYNC_CONSOLE" />
+    </logger>
 
     <!-- Root logger configuration -->
     <root level="info">

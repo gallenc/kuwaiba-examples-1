@@ -18,8 +18,7 @@
  * 
  * Notes -  use COMMIT ON EXECUTE if running as a task
  * 
- * TODO LOG.warn should be LOG.debug if debugging can be enabled
- *      Need to count created objects correctly
+ * TODO Need to count created objects correctly
  * 
  */
 
@@ -165,7 +164,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
    public void createObjects(List<KuwaibaClass> kuwaibaClassList) {
       for (KuwaibaClass kuwaibaClass : kuwaibaClassList) {
-         LOG.info("PROCESSING kuwaibaClass: " + kuwaibaClass);
+         if(LOG.isTraceEnabled()) LOG.trace("PROCESSING kuwaibaClass: " + kuwaibaClass);
 
          String createObjectClassName = kuwaibaClass.getClassName();
          String createObjectName = kuwaibaClass.getName();
@@ -176,7 +175,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
          BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
                   parentClasses, templateName, initialAttributes);
 
-         LOG.info("FINISHED PROCESSING kuwaibaClass:"+ kuwaibaClass + " MATCHING business object: " + businessObjectToString(businessObject));
+         if(LOG.isTraceEnabled()) LOG.trace("FINISHED PROCESSING kuwaibaClass:" + kuwaibaClass + " MATCHING business object: " + businessObjectToString(businessObject));
 
       }
 
@@ -205,7 +204,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
          List<BusinessObject> foundObjects = bem.getObjectsWithFilter(createObjectClassName, Constants.PROPERTY_NAME, createObjectName);
          if (!foundObjects.isEmpty()) {
             createdObject = foundObjects.get(0);
-            LOG.info("createIfDoesntExist - OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
+            if(LOG.isTraceEnabled()) LOG.trace("createIfDoesntExist - OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
             kuwaibaClassesExisting++;
             return createdObject;
          }
@@ -243,11 +242,11 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                   existingChildId = child.getId();
                   createdObject = child;
                   
-                  LOG.info("createIfDoesntExist - matched templateName=" + templateName + " child object=" + businessObjectToString(child) + " will be updated in parent " +
+                  if(LOG.isTraceEnabled()) LOG.trace("createIfDoesntExist - matched templateName=" + templateName + " child object=" + businessObjectToString(child) + " will be updated in parent " +
                                businessObjectToString(parentObject));
                   
                   ChangeDescriptor changeDescriptor = bem.updateObject(child.getClassName(), existingChildId, newAttributes);
-                  LOG.info("createIfDoesntExist - updated child object name ChangeDescriptor [getAffectedProperties()=" +
+                  if(LOG.isTraceEnabled()) LOG.trace("createIfDoesntExist - updated child object name ChangeDescriptor [getAffectedProperties()=" +
                            changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
                            changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() +
                            ", getNotes()=" + changeDescriptor.getNotes() + "]");
@@ -265,7 +264,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                if (templateName.equals(tmplate.getName())) {
                   template = tmplate;
                   templateId = template.getId();
-                     LOG.info("createIfDoesntExist - creating object " + template.getClassName() + " with template: " + template.getName() + " templateId: " + template.getId());
+                     if(LOG.isTraceEnabled()) LOG.trace("createIfDoesntExist - creating object " + template.getClassName() + " with template: " + template.getName() + " templateId: " + template.getId());
                   break;
                }
             }
@@ -286,7 +285,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
             // this is added because the created object takes the name of the template and not the name we want to give it.
             ChangeDescriptor changeDescriptor = bem.updateObject(createObjectClassName, createdObjectId, newAttributes);
-            LOG.info("createIfDoesntExist - updated new object name  ChangeDescriptor [getAffectedProperties()=" + changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
+            if(LOG.isTraceEnabled()) LOG.trace("createIfDoesntExist - updated new object name  ChangeDescriptor [getAffectedProperties()=" + changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
                      changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() + ", getNotes()=" + changeDescriptor.getNotes() + "]");
 
             createdObject = bem.getObject(createObjectClassName, createdObjectId);
@@ -300,7 +299,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                   //TODO isParent(String parentClass, String parentId, String childClass, String childId) - doesnt work - TRANSACTION IS NOT CLOSED
                   List<BusinessObjectLight> portParents = bem.getParentsUntilFirstOfClass("OpticalPort", port.getId(), "OpticalSplitter");
                   if (!portParents.isEmpty()) {
-                     LOG.warn("createIfDoesntExist - updating OpticalSplitter IN port " + port.getId() + " name from 001-IN to IN-001");
+                     if(LOG.isDebugEnabled()) LOG.debug("createIfDoesntExist - updating OpticalSplitter IN port " + port.getId() + " name from 001-IN to IN-001");
                   HashMap<String, String> attributes = new HashMap<String, String>();
                   attributes.put("name", "IN-001");
                   bem.updateObject("OpticalPort", port.getId(), attributes);
@@ -308,7 +307,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
             }
             }
 
-            LOG.info("createIfDoesntExist - FINISHED CREATING NEW OBJECT " + businessObjectToString(createdObject));
+            if(LOG.isTraceEnabled()) LOG.trace("createIfDoesntExist - FINISHED CREATING NEW OBJECT " + businessObjectToString(createdObject));
 
             kuwaibaClassesNew++;
          } catch (Exception e) {
@@ -337,14 +336,14 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
          // find parent objects if specified
          BusinessObject parentObject = findDirectParentClass(searchClass.getParentClasses());
-         LOG.info("findObjectWithParents directParent="+ businessObjectToString(parentObject));
+         if(LOG.isTraceEnabled()) LOG.trace("findObjectWithParents directParent=" + businessObjectToString(parentObject));
 
          List<BusinessObject> foundObjects;
          if (parentObject != null) {
             
             if (searchClass.getSpecial()) {
                List<BusinessObjectLight> foundLightObjects = bem.getSpecialChildrenOfClassLight(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), -1);
-               LOG.info("findObjectWithParents parentObject.getId()=" + parentObject.getId() + ", parentObject.getClassName()=" + parentObject.getClassName() +
+               if(LOG.isTraceEnabled()) LOG.trace("findObjectWithParents parentObject.getId()=" + parentObject.getId() + ", parentObject.getClassName()=" + parentObject.getClassName() +
                         ", searchClass.getClassName()=" + searchClass.getClassName() + ", searchClass.getSpecial()=" + searchClass.getSpecial() + ", foundLightObjects=" + foundLightObjects);
 
                // try to find by full name
@@ -367,7 +366,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
             } else {
             foundObjects = bem.getChildrenOfClass(parentObject.getId(), parentObject.getClassName(), searchClass.getClassName(), 0, 0);
-            LOG.info("findObjectWithParents parentObject.getId()="+parentObject.getId()+", parentObject.getClassName()="+parentObject.getClassName()+
+               if(LOG.isTraceEnabled()) LOG.trace("findObjectWithParents parentObject.getId()=" + parentObject.getId() + ", parentObject.getClassName()=" + parentObject.getClassName() +
                         ", searchClass.getClassName()=" + searchClass.getClassName() + ", searchClass.getSpecial()=" + searchClass.getSpecial() + ", foundObjects=" + foundObjects);
                // try to find by full name
             for (BusinessObject child : foundObjects) {
@@ -397,7 +396,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
             }
          }
 
-         LOG.info("findObjectWithParents found object ="+ businessObjectToString(foundObject));
+         if(LOG.isTraceEnabled()) LOG.trace("findObjectWithParents found object =" + businessObjectToString(foundObject));
          return foundObject;
 
       } catch (Exception ex) {
@@ -423,12 +422,12 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
          // find first object in parent list
          KuwaibaClass parentClass = parentIterator.next();
-         LOG.info("findDirectParentClass looking for first parentObject " + parentClass);
+         if(LOG.isTraceEnabled()) LOG.trace("findDirectParentClass looking for first parentObject " + parentClass);
          
          List<BusinessObject> foundObjects = bem.getObjectsWithFilter(parentClass.getClassName(), Constants.PROPERTY_NAME, parentClass.getName());
          if (!foundObjects.isEmpty()) {
             parentObject = foundObjects.get(0);
-            LOG.info("findDirectParentClass first parentObject exists " + businessObjectToString(parentObject));
+            if(LOG.isTraceEnabled()) LOG.trace("findDirectParentClass first parentObject exists " + businessObjectToString(parentObject));
          } else {
             throw new IllegalArgumentException("cannot find parent class " + parentClass.getClassName() + " name " + parentClass.getName());
          }
@@ -436,7 +435,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
          // iterate parent list to find any children
          while (parentIterator.hasNext()) {
             parentClass = parentIterator.next();
-            LOG.info("findDirectParentClass looking for next parentObject " + parentClass);
+            if(LOG.isTraceEnabled()) LOG.trace("findDirectParentClass looking for next parentObject " + parentClass);
 
             BusinessObject foundObject = null;
 
@@ -444,7 +443,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
             for (BusinessObject businessObject : foundObjects) {
                if (businessObject.getName().equals(parentClass.getName())) {
                   foundObject = businessObject;
-                  LOG.info("findDirectParentClass found parent child " + businessObjectToString(foundObject));
+                  if(LOG.isTraceEnabled()) LOG.trace("findDirectParentClass found parent child " + businessObjectToString(foundObject));
                   break;
                }
             }
@@ -473,7 +472,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
    public int createChildTemplateElements(List<KuwaibaTemplateDefinition> kuwaibaChildTemplateElementList, String elementParentClassName, String elementParentId) {
       int templateElementsCreated = 0;
 
-      LOG.warn("creating " + kuwaibaChildTemplateElementList.size() + " child template elements");
+      if(LOG.isDebugEnabled()) LOG.debug("creating " + kuwaibaChildTemplateElementList.size() + " child template elements");
       for (KuwaibaTemplateDefinition templateElement : kuwaibaChildTemplateElementList) {
 
          String function = templateElement.getTemplateFunction();
@@ -500,12 +499,12 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                   attributeValues.add(value);
                }
 
-               LOG.warn("created template child:" + templateElement + ", clildId=" + clildId + " template element for elementParentClassName=" +
+               if(LOG.isDebugEnabled()) LOG.debug("created template child:" + templateElement + ", clildId=" + clildId + " template element for elementParentClassName=" +
                         elementParentClassName + ", elementParentId=" + elementParentId);
 
                ChangeDescriptor changeDescriptor = aem.updateTemplateElement(templateElement.getClassName(), clildId,
                         (String[]) attributeNames.toArray(), (String[]) attributeValues.toArray());
-               LOG.info("added properties to child ChangeDescriptor [getAffectedProperties()=" +
+               if(LOG.isTraceEnabled()) LOG.trace("added properties to child ChangeDescriptor [getAffectedProperties()=" +
                         changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
                         changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() +
                         ", getNotes()=" + changeDescriptor.getNotes() + "]");
@@ -526,7 +525,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
                HashMap<String, String> functionAttributes = templateElement.getTemplateFunctionAttributes();
 
-               LOG.info("trying to create template elements from function=" + function + " with functionAttributes=" +
+               if(LOG.isTraceEnabled()) LOG.trace("trying to create template elements from function=" + function + " with functionAttributes=" +
                         functionAttributes + " className=" +
                         templateElement.getClassName() + "  templateElementParentClassName=" + elementParentClassName +
                         "  templateElementParentId=" + elementParentId);
@@ -549,7 +548,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
             HashMap<String, String> functionAttributes) {
       int elementsCreated = 0;
 
-      LOG.info("trying to create new template element (templateName="+templateName+ ") for parent class=" + templateElementParentClassName +
+      if(LOG.isTraceEnabled()) LOG.trace("trying to create new template element (templateName=" + templateName + ") for parent class=" + templateElementParentClassName +
                " id=" + templateElementParentId +
                " from function=" + function + " with functionAttributes=" + functionAttributes);
 
@@ -618,7 +617,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
             }
 
             if (templateId != null) {
-               LOG.info("TEMPLATE " + templateName + " ALREADY EXISTS, will not create a new template with templateId=" + templateId);
+               if(LOG.isTraceEnabled()) LOG.trace("TEMPLATE " + templateName + " ALREADY EXISTS, will not create a new template with templateId=" + templateId);
 
             } else {
                // if template doesn't exist
@@ -626,12 +625,12 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                String function = kuwaibaTemplateDefinition.getTemplateFunction();
 
                if (function == null || function.isEmpty()) {
-                  LOG.info("trying to create without function new template name = " + templateName);
+                  if(LOG.isTraceEnabled()) LOG.trace("trying to create without function new template name = " + templateName);
 
                   // no function so create a simple template for this class
                   templateId = aem.createTemplate(className, templateName);
                   templateElementsCreated++;
-                  LOG.info("template " + templateName + " Was created. New templateId=" + templateId);
+                  if(LOG.isTraceEnabled()) LOG.trace("template " + templateName + " Was created. New templateId=" + templateId);
 
                   // add attributes
                   //ChangeDescriptor updateTemplateElement(String templateElementClass, String templateElementId, String[] attributeNames, String[] attributeValues)
@@ -645,7 +644,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
                   ChangeDescriptor changeDescriptor = aem.updateTemplateElement(kuwaibaTemplateDefinition.getClassName(), templateId,
                            (String[]) attributeNames.toArray(), (String[]) attributeValues.toArray());
-                  LOG.info("added properties to template ChangeDescriptor [getAffectedProperties()=" +
+                  if(LOG.isTraceEnabled()) LOG.trace("added properties to template ChangeDescriptor [getAffectedProperties()=" +
                            changeDescriptor.getAffectedProperties() + ", getOldValues()=" +
                            changeDescriptor.getOldValues() + ", getNewValues()=" + changeDescriptor.getNewValues() +
                            ", getNotes()=" + changeDescriptor.getNotes() + "]");
@@ -658,11 +657,11 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
                } else {
 
-                  LOG.info("trying to create new template " + templateName + " with class name=" + className + " from function=" + function + " with functionAttributes=" + functionAttributes);
+                  if(LOG.isTraceEnabled()) LOG.trace("trying to create new template " + templateName + " with class name=" + className + " from function=" + function + " with functionAttributes=" + functionAttributes);
 
                   templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateName, templateElementName, null, null,  function, functionAttributes);
 
-                  LOG.info("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
+                  if(LOG.isTraceEnabled()) LOG.trace("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
 
                }
 
@@ -712,11 +711,11 @@ public class EntimossKuwaibaProvisioningTask_v2 {
          elementsCreated = childTemplateElementIds.size();
 
          for (String childId : childTemplateElementIds) {
-            LOG.info("created splitter optical port template element  id=" + childId);
+            if(LOG.isTraceEnabled()) LOG.trace("created splitter optical port template element  id=" + childId);
 
             // fails because getTemplateElement does not close transaction
             //TemplateObject templateObject = aem.getTemplateElement("OpticalPort", childId);
-            // LOG.info("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
+            // if(LOG.isTraceEnabled()) LOG.trace("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
          }
 
          return elementsCreated;
@@ -758,11 +757,11 @@ public class EntimossKuwaibaProvisioningTask_v2 {
          elementsCreated = childTemplateElementIds.size();
 
          for (String childId : childTemplateElementIds) {
-            LOG.info("created SpliceBox optical port template element  id=" + childId);
+            if(LOG.isTraceEnabled()) LOG.trace("created SpliceBox optical port template element  id=" + childId);
 
             // fails because getTemplateElement does not close transaction
             //            TemplateObject templateObject = aem.getTemplateElement("OpticalPort", childId);
-            //            LOG.info("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
+            //            if(LOG.isTraceEnabled()) LOG.trace("created splitter optical port name "+templateObject.getName()+" id=" +templateObject.getId());
          }
 
          return elementsCreated;
@@ -804,13 +803,13 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
             // .createTemplateSpecialElement(String tsElementClass, String tsElementParentClassName, String tsElementParentId, String tsElementName)
             String cableObjectId = aem.createTemplateSpecialElement("WireContainer", "WireContainer", elementId, cableName);
-            LOG.info("created cable id=" + cableObjectId + " cable name=" + cableName);
+            if(LOG.isTraceEnabled()) LOG.trace("created cable id=" + cableObjectId + " cable name=" + cableName);
 
             // create fibers inside cable
             for (int fiberNo = 1; fiberNo <= numberOfFibers; fiberNo++) {
                String fiberName = String.format("%02d", fiberNo) + "-" + ContainerColour.getColourForStrand(fiberNo);
                String opticalLinkObjectId = aem.createTemplateSpecialElement("OpticalLink", "WireContainer", cableObjectId, fiberName);
-               LOG.info("created optical link id=" + opticalLinkObjectId + " cable name=" + fiberName);
+               if(LOG.isTraceEnabled()) LOG.trace("created optical link id=" + opticalLinkObjectId + " cable name=" + fiberName);
                elementsCreated++;
             }
 
@@ -848,7 +847,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
       PhysicalConnectionsServiceProxy physicalConnectionService = new PhysicalConnectionsServiceProxy(aem, bem, mem);
       // create new connections
       for (KuwaibaConnection kuwaibaConnection : containerConnectionList) {
-         LOG.info("creating connection using: " + kuwaibaConnection);
+         if(LOG.isTraceEnabled()) LOG.trace("creating connection using: " + kuwaibaConnection);
 
          String name = kuwaibaConnection.getConnectionClass().getName();
          String connectionClassName = kuwaibaConnection.getConnectionClass().getClassName();
@@ -883,7 +882,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                if (physicalConnectionObject == null)
                   throw new IllegalArgumentException("cannot find " + kuwaibaConnection.getConnectionClass());
 
-               LOG.info("found physicalConnectionObject " + this.businessObjectToString(physicalConnectionObject)
+               if(LOG.isTraceEnabled()) LOG.trace("found physicalConnectionObject " + this.businessObjectToString(physicalConnectionObject)
                         + "for connection class definition " + kuwaibaConnection.getConnectionClass());
 
                // check if endpoints are connected
@@ -916,10 +915,10 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                      HashMap<String, String> newAttributes = new HashMap<String, String>();
                      newAttributes.put(Constants.PROPERTY_NAME, kuwaibaConnection.getConnectionClass().getName());
                      ChangeDescriptor changeDescriptor = bem.updateObject(physicalConnectionObject.getClassName(), physicalConnectionObject.getId(), newAttributes);
-                     LOG.info("changed name of connection from "+connectionTemplateName+" to "+kuwaibaConnection.getConnectionClass().getName());
+                     if(LOG.isTraceEnabled()) LOG.trace("changed name of connection from " + connectionTemplateName + " to " + kuwaibaConnection.getConnectionClass().getName());
                   }
 
-                  LOG.info("Created new end point connections for connection definition="+kuwaibaConnection);
+                  if(LOG.isTraceEnabled()) LOG.trace("Created new end point connections for connection definition=" + kuwaibaConnection);
 
                } else {
                   // check if already created or if endpoints are associated to different ports
@@ -929,7 +928,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                   if(currentEndpointB!=null && ! currentEndpointB.getId().equals(bObject.getId()) && ! currentEndpointB.getClassName().equals(bObject.getClassName() )) {
                      throw new IllegalArgumentException(" connection definition="+kuwaibaConnection+" link endpointB already associated with a differnt endpoint="+currentEndpointB.getId());
                   }
-                  LOG.info("CONNECTION ALREADY EXISTS for connection definition="+kuwaibaConnection);
+                  if(LOG.isTraceEnabled()) LOG.trace("CONNECTION ALREADY EXISTS for connection definition=" + kuwaibaConnection);
                }
 
             } catch (Exception ex) {
@@ -948,7 +947,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                List<BusinessObject> foundObjects = bem.getObjectsWithFilter(connectionClassName, Constants.PROPERTY_NAME, name);
                if (!foundObjects.isEmpty()) {
                   BusinessObject createdObject = foundObjects.get(0);
-                  LOG.info("createConnections - CONNECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
+                  if(LOG.isTraceEnabled()) LOG.trace("createConnections - CONNECTION OBJECT ALREADY EXIST " + businessObjectToString(createdObject));
                   kuwaibaClassesExisting++;
                   continue; // go to next connection
                }
@@ -967,7 +966,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
                for (TemplateObjectLight tmplate : foundTemplates) {
                   if (connectionTemplateName.equals(tmplate.getName())) {
                      templateId = tmplate.getId();
-                        LOG.info("creating connection " + connectionClassName + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
+                        if(LOG.isTraceEnabled()) LOG.trace("creating connection " + connectionClassName + " with connectionTemplateName: " + connectionTemplateName + " templateId: " + tmplate.getId());
                      break;
                   }
                }
@@ -975,7 +974,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
    
             String userName = "admin";
 
-            LOG.info("creating connection name=" + name + " connectionClass=" + connectionClassName + " template=" +
+               if(LOG.isTraceEnabled()) LOG.trace("creating connection name=" + name + " connectionClass=" + connectionClassName + " template=" +
                      templateId + " to end objects aObject=" + businessObjectToString(aObject) + " bObject=" + businessObjectToString(bObject));
 
             physicalConnectionService.createPhysicalConnection(aObject.getClassName(), aObjectId, bObject.getClassName(), bObjectId, name, connectionClassName, templateId, userName);
