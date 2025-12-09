@@ -72,7 +72,8 @@ services:
     container_name: kuwaiba
     hostname: kuwaiba
     environment:
-       SPRING_CONFIG_ADDITIONAL-LOCATION : optional:file:./custom-config/
+       SPRING_CONFIG_ADDITIONAL-LOCATION : optional:file:/custom-config/
+       LOGGING_CONFIG : file:/custom-config/logback-spring.xml
 
 #      SPRING_CONFIG_NAME : 
 #      SPRING_CONFIG_LOCATION : file:///Users/home/config
