@@ -1,7 +1,7 @@
 /**
  * Exports inventory of nodes and interface IP addresses as OpenNMS PRIS CSV format.
  * (see https://docs.opennms.com/pris/latest/ )
- * Entimoss Ltd - version 0.8 (Apache Licensed)
+ * Entimoss Ltd - version 0.8.1 (Apache Licensed)
  * Parameters:
  *    useNodeLabelAsForeignId
  *    If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
@@ -59,7 +59,7 @@
  * Applies to: All classes as a generic report
  * 
  * Notes - todo
- * LOG.warn should be LOG.debug if debugging is enabled
+ * changes: v0.8.1 logging trace and added @CompileStatic
  * 
  */
 
@@ -111,10 +111,13 @@ import java.util.regex.Pattern;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import groovy.transform.CompileStatic;
+
 // TODO uncomment in groovy script
 //OpenNMSExport08 opennmsExport = new OpenNMSExport08(bem, aem,  mem,  parameters, connectionHandler);
 //return opennmsExport.returnReport();
 
+@CompileStatic
 public class OpenNMSExport08 {
    static Logger LOG = LoggerFactory.getLogger("OpenNMSInventoryExport"); // remove static in groovy
 
@@ -144,13 +147,13 @@ public class OpenNMSExport08 {
       LOG.info("****************************************************************");
       LOG.info("Start of " + title + " Version " + version + " Author " + author);
 
-      LOG.info("opennms export report parameters :");
+      LOG.info("opennms export input report parameters :");
       for (Entry<String, String> entry : parameters.entrySet()) {
          LOG.info("   key: " + entry.getKey() + " value: " + entry.getValue());
       }
       LOG.info("****************************************************************");
 
-      LOG.info("initialise to get all ip addresses, folders and subnets names from ipam");
+      LOG.debug("initialise to get all ip addresses, folders and subnets names from ipam");
       ipLocationDAO = new IPLocationDAO(bem);
       try {
          ipLocationDAO.init();
@@ -167,7 +170,10 @@ public class OpenNMSExport08 {
        * If blank or false, report uses the kuwaiba object id of the device as the node foreignId in the requisition (default)
        * If true the report uses the generated object label as node foreignId in the requisition.
        */
+      LOG.info("opennms export effective report parameters :");
+      
       Boolean useNodeLabelAsForeignId = Boolean.valueOf(parameters.getOrDefault("useNodeLabelAsForeignId", "false"));
+      LOG.info("    useNodeLabelAsForeignId  :"+useNodeLabelAsForeignId );
 
       /*
        * useAbsoluteNames
@@ -175,6 +181,7 @@ public class OpenNMSExport08 {
        * if true it uses only the name of the node given in the model
        */
       Boolean useAbsoluteNames = Boolean.valueOf(parameters.getOrDefault("useAbsoluteNames", "false"));
+      LOG.info("    useAbsoluteNames  :"+useAbsoluteNames );
 
       /*
        * useAllPortAddresses
@@ -183,6 +190,7 @@ public class OpenNMSExport08 {
        * or N (Not managed) if isManagment is false
        */
       Boolean useAllPortAddresses = Boolean.valueOf(parameters.getOrDefault("useAllPortAddresses", "false"));
+      LOG.info("    useAllPortAddresses  :"+useAllPortAddresses );
 
       /*
        * defaultAssetCategory
@@ -191,6 +199,7 @@ public class OpenNMSExport08 {
        * (this can be used in grafana to determine which display template to use)
        */
       String defaultAssetCategory = parameters.getOrDefault("defaultAssetCategory", "");
+      LOG.info("    defaultAssetCategory  :"+defaultAssetCategory );
 
       /*
        * defaultAssetDisplayCategory
@@ -199,6 +208,7 @@ public class OpenNMSExport08 {
        * (this can be used in OpenNMS to determine which users can view an object)
        */
       String defaultAssetDisplayCategory = parameters.getOrDefault("defaultAssetDisplayCategory", "");
+      LOG.info("    defaultAssetDisplayCategory  :"+defaultAssetDisplayCategory );
 
       /*
        * subnetNetSubstitutionFilterStr
@@ -210,6 +220,7 @@ public class OpenNMSExport08 {
        *  String substituteAddressStr= "192.168.105.20
        */
       String subnetNetSubstitutionFilter = parameters.getOrDefault("subnetNetSubstitutionFilter", "");
+      LOG.info("    subnetNetSubstitutionFilter  :"+subnetNetSubstitutionFilter );
 
       /*
        * rangeParentValue
@@ -220,6 +231,7 @@ public class OpenNMSExport08 {
        * If a device has this parent somewhere in their parent object tree, the device will be a candidate to be included in the requisition for OpenNMS.
        */
       String rangeParentValue = parameters.getOrDefault("rangeParentValue", "");
+      LOG.info("    rangeParentValue  :"+rangeParentValue );
 
       /*
        * generatePassivePon
@@ -228,12 +240,14 @@ public class OpenNMSExport08 {
        */
       String generatePassivePonStr = parameters.getOrDefault("generatePassivePon", "true");
       boolean generatePassivePon = Boolean.parseBoolean(generatePassivePonStr);
+      LOG.info("    generatePassivePon  :"+generatePassivePon );
 
       /*
        * defaultParentForeignSource
        * Sets the default foreign source for the upstream object definitions (parent-foreign-source="?" parent-foreign-id="?")
        */
       String defaultParentForeignSource = parameters.getOrDefault("defaultParentForeignSource", "kuwaibaForeignSource");
+      LOG.info("   defaultParentForeignSource  :"+defaultParentForeignSource );
 
       /*
        * csvOutputFile
@@ -365,9 +379,9 @@ public class OpenNMSExport08 {
 
          // if generating pon populate downstreamUpsteamMappings with OLTs in range
          if (generatePassivePon) {
-            LOG.info("************************************************");
-            LOG.info("GENERATING PASSIVE PON DATA FOR OLTS " + title);
-            LOG.info("************************************************");
+            if(LOG.isTraceEnabled()) LOG.trace("************************************************");
+            if(LOG.isTraceEnabled()) LOG.trace("GENERATING PASSIVE PON DATA FOR OLTS " + title);
+            if(LOG.isTraceEnabled()) LOG.trace("************************************************");
 
             List<String> searchClassNames = Arrays.asList("FiberSplitter", "OpticalNetworkTerminal", "OpticalLineTerminal");
             String terminatingClassName = "OpticalNetworkTerminal";
@@ -377,7 +391,7 @@ public class OpenNMSExport08 {
                LinkedHashSet<BusinessObjectLight> oltSet = new LinkedHashSet<BusinessObjectLight>();
 
                List<BusinessObject> oltdevices = bem.getObjectsOfClass("OpticalLineTerminal", -1);
-               LOG.info("all olt devices:" + oltdevices);
+               if(LOG.isTraceEnabled()) LOG.trace("all olt devices:" + oltdevices);
 
                for (BusinessObject oltDevice : oltdevices) {
 
@@ -394,7 +408,7 @@ public class OpenNMSExport08 {
                         }
                      }
                      if (!oltInrange) {
-                        LOG.info("olt not in range, Ignoring : " + businessObjectToString(oltDevice));
+                        if(LOG.isTraceEnabled()) LOG.trace("olt not in range, Ignoring : " + businessObjectToString(oltDevice));
                         continue;
                      }
                   }
@@ -404,7 +418,7 @@ public class OpenNMSExport08 {
                   boolean addOlt = false;
 
                   List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(oltDevice.getId(), oltDevice.getClassName(), "GenericCommunicationsPort", null, -1, -1);
-                  LOG.info("coms ports on device : " + businessObjectToString(oltDevice) + " ports: " + commPorts);
+                  if(LOG.isTraceEnabled()) LOG.trace("coms ports on device : " + businessObjectToString(oltDevice) + " ports: " + commPorts);
 
                   Iterator<BusinessObjectLight> commportsIterator = commPorts.iterator();
 
@@ -415,18 +429,18 @@ public class OpenNMSExport08 {
                      List<BusinessObjectLight> ipAddressesInPort = bem.getSpecialAttribute(port.getClassName(), port.getId(), "ipamHasIpAddress");
 
                      if (ipAddressesInPort.isEmpty()) {
-                        LOG.info("no ip address on port : " + businessObjectToString(port));
+                        if(LOG.isTraceEnabled()) LOG.trace("no ip address on port : " + businessObjectToString(port));
                      } else {
 
                         if (useAllPortAddresses) {
                            addOlt = true;
-                           LOG.info("useAllPorts: ip address on port : " + businessObjectToString(port) + " ipAddressesInPort: " + ipAddressesInPort);
+                           if(LOG.isTraceEnabled()) LOG.trace("useAllPorts: ip address on port : " + businessObjectToString(port) + " ipAddressesInPort: " + ipAddressesInPort);
                         } else {
                            String isManagementStr = bem.getAttributeValueAsString(port.getClassName(), port.getId(), "isManagement");
                            boolean isManagement = Boolean.valueOf(isManagementStr);
                            if (isManagement) {
                               addOlt = true;
-                              LOG.info("ip address on isManagement port : " + businessObjectToString(port) + " ipAddressesInPort: " + ipAddressesInPort);
+                              if(LOG.isTraceEnabled()) LOG.trace("ip address on isManagement port : " + businessObjectToString(port) + " ipAddressesInPort: " + ipAddressesInPort);
                            }
                         }
 
@@ -434,17 +448,17 @@ public class OpenNMSExport08 {
                   }
 
                   if (addOlt) {
-                     LOG.info("will generate for OLT :" + businessObjectToString(oltDevice));
+                     if(LOG.isTraceEnabled()) LOG.trace("will generate for OLT :" + businessObjectToString(oltDevice));
                      oltSet.add(oltDevice);
                   }
 
                }
 
-               LOG.info("finding and adding downstream for olt devices:" + oltSet);
+               if(LOG.isTraceEnabled()) LOG.trace("finding and adding downstream for olt devices:" + oltSet);
 
                downstreamUpsteamMappings = gettingDownstreamObjectsForOLTs(oltSet, searchClassNames, terminatingClassName);
 
-               printChildParentMap(downstreamUpsteamMappings);
+               if(LOG.isTraceEnabled()) printChildParentMap(downstreamUpsteamMappings);
 
                // TODO MAY NEED TO LOOK AT ORDERING primary before secondary splitters
                // do this so that upstream olt devices are defined first in list
@@ -471,11 +485,11 @@ public class OpenNMSExport08 {
                }
 
             } catch (Exception ex) {
-               LOG.info("problem getting OLTS ", ex);
+               LOG.error("problem getting OLTS ", ex);
             }
-            LOG.info("************************************************");
-            LOG.info("END OF GENERATING PASSIVE PON DATA FOR OLTS " + title);
-            LOG.info("************************************************");
+            if(LOG.isTraceEnabled()) LOG.trace("************************************************");
+            if(LOG.isTraceEnabled()) LOG.trace("END OF GENERATING PASSIVE PON DATA FOR OLTS " + title);
+            if(LOG.isTraceEnabled()) LOG.trace("************************************************");
          }
 
          // Next we add all remaining active network devices but don't replace ones already created
@@ -486,9 +500,9 @@ public class OpenNMSExport08 {
             }
          }
 
-         LOG.info("************************************************");
-         LOG.info("GENERATING CSV LINES FOR DEVICES " + title);
-         LOG.info("************************************************");
+         if(LOG.isTraceEnabled()) LOG.trace("************************************************");
+         if(LOG.isTraceEnabled()) LOG.trace("GENERATING CSV LINES FOR DEVICES " + title);
+         if(LOG.isTraceEnabled()) LOG.trace("************************************************");
          for (BusinessObject device : devices) {
 
             String name = device.getName().strip().replace(" ", "_");
@@ -510,7 +524,7 @@ public class OpenNMSExport08 {
 
             try {
 
-               LOG.warn("************ processing device with attributes :" + businessObjectToString(device));
+               if(LOG.isTraceEnabled()) LOG.trace("************ processing device with attributes :" + businessObjectToString(device));
 
                // if rangeParent is set do not proceed if device is not a child of rangeParent
                // TODO this is correct method but doesn't work because transaction is not closed in BusinessEntityManagerImpl.isParent (no txSuccess())
@@ -523,7 +537,7 @@ public class OpenNMSExport08 {
                if (rangeParentId != null) {
                   List<BusinessObjectLight> parents = bem.getParents(device.getClassName(), device.getId());
 
-                  LOG.warn("parents of device name: " + device.getClassName() + " Id: " + device.getId() + " : " + parents);
+                  if(LOG.isTraceEnabled()) LOG.trace("parents of device name: " + device.getClassName() + " Id: " + device.getId() + " : " + parents);
 
                   boolean isParent = false;
                   for (BusinessObjectLight parent : parents) {
@@ -604,12 +618,12 @@ public class OpenNMSExport08 {
                               break;
                            }
                         }
-                        LOG.warn("assocaitedService assigned from rack " + rack.getName() + " serviceName:" + serviceName + " serviceId:" + serviceId + " customerName: " + customerName +
+                        if(LOG.isTraceEnabled()) LOG.trace("assocaitedService assigned from rack " + rack.getName() + " serviceName:" + serviceName + " serviceId:" + serviceId + " customerName: " + customerName +
                                  " customerId " + customerId);
                      }
                   }
                }
-               LOG.warn("assocaitedService serviceName:" + serviceName + " serviceId:" + serviceId + " customerName: " + customerName + " customerId " + customerId);
+               if(LOG.isTraceEnabled()) LOG.trace("assocaitedService serviceName:" + serviceName + " serviceId:" + serviceId + " customerName: " + customerName + " customerId " + customerId);
 
             } catch (Exception ex) {
                LOG.error("problem getting device data", ex);
@@ -617,7 +631,7 @@ public class OpenNMSExport08 {
 
             // FiberSplitter created with dummy port
             if (generatePassivePon && "FiberSplitter".equals(device.getClassName())) {
-               LOG.info("******************* processing line data for PASSIVE SPLITTER device: " + businessObjectToString(device));
+               if(LOG.isTraceEnabled()) LOG.trace("******************* processing line data for PASSIVE SPLITTER device: " + businessObjectToString(device));
 
                HashMap<String, String> line = new HashMap<String, String>();
 
@@ -673,13 +687,13 @@ public class OpenNMSExport08 {
                // use kuwaiba managed object instance
                line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
-               LOG.info("adding line:" + line);
+               if(LOG.isTraceEnabled()) LOG.trace("adding line:" + line);
                csvLineData.add(line);
 
             } else if (generatePassivePon && "OpticalNetworkTerminal".equals(device.getClassName())) {
                // OpticalNetworkTerminal created with dummy port (no assigned ip address)
 
-               LOG.info("******************* processing line data for OPTICAL NETWORK TERMINAL device: " + businessObjectToString(device));
+               if(LOG.isTraceEnabled()) LOG.trace("******************* processing line data for OPTICAL NETWORK TERMINAL device: " + businessObjectToString(device));
 
                HashMap<String, String> line = new HashMap<String, String>();
 
@@ -742,12 +756,12 @@ public class OpenNMSExport08 {
                // use kuwaiba managed object instance
                line.put(OnmsRequisitionConstants.ASSET_MANAGEDOBJECTINSTANCE, device.getId());
 
-               LOG.info("adding line:" + line);
+               if(LOG.isTraceEnabled()) LOG.trace("adding line:" + line);
                csvLineData.add(line);
 
             } else {
                // all other devices
-               LOG.info("******************* processing line data for COMMUNICATIONS DEVICE: " + businessObjectToString(device));
+               if(LOG.isTraceEnabled()) LOG.trace("******************* processing line data for COMMUNICATIONS DEVICE: " + businessObjectToString(device));
 
                // then we get comms ports (interfaces) on each device
                List<BusinessObjectLight> commPorts = bem.getChildrenOfClassLightRecursive(device.getId(), device.getClassName(), "GenericCommunicationsPort", null, -1, -1);
@@ -769,7 +783,7 @@ public class OpenNMSExport08 {
 
                      // need to know the subnet of the ip address to get the location
                      List<BusinessObjectLight> ipaddressfound = bem.getObjectsByNameAndClassName(new ArrayList<>(Arrays.asList(ipAddress.getName())), -1, -1, Constants.CLASS_IP_ADDRESS);
-                     LOG.warn("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
+                     if(LOG.isTraceEnabled()) LOG.trace("IPADDRESS NAME " + ipAddress.getName() + " ipaddressfound " + ipaddressfound);
 
                      HashMap<String, String> line = new HashMap<String, String>();
 
@@ -846,13 +860,13 @@ public class OpenNMSExport08 {
 
                      // only create a line if useAllPortAddresses is true or if isManagement is true for the port
                      if (useAllPortAddresses) {
-                        LOG.info("adding line:" + line);
+                        if(LOG.isTraceEnabled()) LOG.trace("adding line:" + line);
                         csvLineData.add(line);
                      } else if (isManagement) {
-                        LOG.info("adding line:" + line);
+                        if(LOG.isTraceEnabled()) LOG.trace("adding line:" + line);
                         csvLineData.add(line);
                      } else {
-                        LOG.info("not adding line: useAllPortAddresses: " + useAllPortAddresses + " isManagement: " + isManagement);
+                        if(LOG.isTraceEnabled()) LOG.trace("not adding line: useAllPortAddresses: " + useAllPortAddresses + " isManagement: " + isManagement);
                      }
                   }
                }
@@ -955,7 +969,7 @@ public class OpenNMSExport08 {
          HashMap<String, ArrayList<String>> folderAddresses = new HashMap<String, ArrayList<String>>();
 
          poolLookup(ipv4RootPools, bem, Constants.CLASS_SUBNET_IPV4, folderAddresses);
-         printFolderAddresses(folderAddresses);
+         if(LOG.isTraceEnabled()) printFolderAddresses(folderAddresses);
 
          for (String folderName : folderAddresses.keySet()) {
             ArrayList<String> addresses = folderAddresses.get(folderName);
@@ -963,7 +977,7 @@ public class OpenNMSExport08 {
                addresslookup.put(address, folderName);
             }
          }
-         LOG.warn("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
+         if(LOG.isTraceEnabled()) LOG.trace("************************* addresslookup size " + addresslookup.size() + " " + addresslookup);
 
       }
 
@@ -971,7 +985,7 @@ public class OpenNMSExport08 {
                throws InvalidArgumentException, ApplicationObjectNotFoundException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
          for (InventoryObjectPool topFolderPool : topFolderPoolList) {
-            LOG.warn("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
+            if(LOG.isTraceEnabled()) LOG.trace("topFolderPool " + topFolderPool.getName() + "  " + topFolderPool.getId());
 
             // Look up subnets
             List<BusinessObjectLight> subnetsInfolder = bem.getPoolItemsByClassName(topFolderPool.getId(), ipType, 0, 50);
@@ -983,7 +997,7 @@ public class OpenNMSExport08 {
 
             // Look up Individual ip addresses in folder
             List<BusinessObjectLight> ipaddressesInFolder = bem.getPoolItemsByClassName(topFolderPool.getId(), Constants.CLASS_IP_ADDRESS, 0, 50);
-            LOG.warn("individual ipaddressesInFolder " + ipaddressesInFolder);
+            if(LOG.isTraceEnabled()) LOG.trace("individual ipaddressesInFolder " + ipaddressesInFolder);
 
             for (BusinessObjectLight ip : ipaddressesInFolder) {
                addresses.add(ip.getName());
@@ -1001,7 +1015,7 @@ public class OpenNMSExport08 {
       void subnetLookup(List<BusinessObjectLight> subnetsList, BusinessEntityManager bem, String ipType, ArrayList<String> addresses) throws ApplicationObjectNotFoundException,
                InvalidArgumentException, MetadataObjectNotFoundException, BusinessObjectNotFoundException {
 
-         LOG.warn("subnetLookup subnetsList " + subnetsList);
+         if(LOG.isTraceEnabled()) LOG.trace("subnetLookup subnetsList " + subnetsList);
 
          for (BusinessObjectLight subnet : subnetsList) {
 
@@ -1024,7 +1038,7 @@ public class OpenNMSExport08 {
                addresses.add(ip.getName());
             }
 
-            LOG.warn("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
+            if(LOG.isTraceEnabled()) LOG.trace("ip addresses in subnet " + subnet.getName() + " " + usedIpsInSubnet);
          }
 
       }
@@ -1034,7 +1048,7 @@ public class OpenNMSExport08 {
          for (String folderName : folderAddresses.keySet()) {
             ArrayList<String> addresses = folderAddresses.get(folderName);
             for (String address : addresses) {
-               LOG.warn("Folder: '" + folderName + "' Address: '" + address + "'");
+               if(LOG.isTraceEnabled()) LOG.trace("Folder: '" + folderName + "' Address: '" + address + "'");
             }
          }
       }
@@ -1078,7 +1092,7 @@ public class OpenNMSExport08 {
 
       // now add downstream of OLTs
       for (BusinessObjectLight olt : oltSet) {
-         LOG.info("getting downstream objects for " + businessObjectToString(olt));
+         if(LOG.isTraceEnabled()) LOG.trace("getting downstream objects for " + businessObjectToString(olt));
          try {
             String parentOid = olt.getId();
             String parentClass = olt.getClassName();
@@ -1091,10 +1105,10 @@ public class OpenNMSExport08 {
                String isManagementStr = bem.getAttributeValueAsString(port.getClassName(), port.getId(), "isManagement");
                boolean isManagement = Boolean.valueOf(isManagementStr);
 
-               LOG.info("processing oltName: " + olt.getName() + " port: " + businessObjectToString(port) + " isManagement property:" + isManagement);
+               if(LOG.isTraceEnabled()) LOG.trace("processing oltName: " + olt.getName() + " port: " + businessObjectToString(port) + " isManagement property:" + isManagement);
                if (!isManagement) {
                   Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamMapping = gettingDownstreamObjectsForPort(port.getClassName(), port.getId(), searchClassNames, terminatingClassName);
-                  LOG.info("adding: " + olt.getName() + " downstream nodes: " + downstreamMapping.size());
+                  if(LOG.isTraceEnabled()) LOG.trace("adding: " + olt.getName() + " downstream nodes: " + downstreamMapping.size());
 
                   addDownstreamMapping(downstreamUpsteamMappings, downstreamMapping);
                }
@@ -1167,17 +1181,19 @@ public class OpenNMSExport08 {
 
          HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult = physicalConnectionService.getPhysicalTree(portObjectClass, portObjectId);
 
-         LOG.info("************ print physical tree results for port objectClass" + portObjectClass + " objectId" + portObjectId);
-         printPhysicalTreeResult(physicalTreeResult, searchClassNames);
-         LOG.info("************ END OF print physical tree results");
-
-         LOG.info("************ starting downstream mapping searchClassNames: " + searchClassNames + " terminatingClassName=" + terminatingClassName);
+         LOG.trace("************ starting downstream mapping searchClassNames: " + searchClassNames + " terminatingClassName=" + terminatingClassName);
          downstreamUpsteamMapping = traverseTree(physicalTreeResult, searchClassNames, terminatingClassName);
-         LOG.info("************ END OF downstream mapping");
+         LOG.trace("************ END OF downstream mapping");
+         
+         if(LOG.isTraceEnabled()) {
+             LOG.trace("************ print physical tree results for port objectClass" + portObjectClass + " objectId" + portObjectId);
+             printPhysicalTreeResult(physicalTreeResult, searchClassNames);
+             LOG.trace("************ END OF print physical tree results");
 
-         LOG.info("************ Print down stream up stream mapping");
-         printDownstreamUpsteamMapping(downstreamUpsteamMapping);
-         LOG.info("************ END OF Print down stream up stream mapping");
+             LOG.trace("************ Print down stream up stream mapping");
+             printDownstreamUpsteamMapping(downstreamUpsteamMapping);
+             LOG.trace("************ END OF Print down stream up stream mapping");
+         }
 
       } catch (Exception ex) {
          LOG.error("problem getting tree for olt ", ex);
@@ -1239,12 +1255,14 @@ public class OpenNMSExport08 {
             }
          }
 
-         LOG.info("************ Print connectionPortToParentDeviceMap");
-         for (BusinessObjectLight bo : connectionPortToParentDeviceMap.keySet()) {
-            LOG.info("connectionPort: " + businessObjectToString(bo));
-            LOG.info("        device: " + businessObjectToString(connectionPortToParentDeviceMap.get(bo)));
+         if(LOG.isDebugEnabled()) {
+            LOG.debug("************ Print connectionPortToParentDeviceMap");
+            for (BusinessObjectLight bo : connectionPortToParentDeviceMap.keySet()) {
+               LOG.debug("connectionPort: " + businessObjectToString(bo));
+               LOG.debug("        device: " + businessObjectToString(connectionPortToParentDeviceMap.get(bo)));
+            }
+            LOG.debug("************ END OF Print connectionPortToParentDeviceMap");
          }
-         LOG.info("************ END OF Print connectionPortToParentDeviceMap");
 
          // traverse tree to find actual links
 
@@ -1253,11 +1271,11 @@ public class OpenNMSExport08 {
          for (BusinessObjectLight connectionPort : physicalTreeResult.keySet()) {
 
             if (!"OpticalPort".equals(connectionPort.getClassName())) {
-               LOG.info("************ ignoring downstream mapping for " + businessObjectToString(connectionPort));
+               if(LOG.isTraceEnabled()) LOG.trace("************ ignoring downstream mapping for " + businessObjectToString(connectionPort));
                continue;
             }
 
-            LOG.info("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
+            if(LOG.isTraceEnabled()) LOG.trace("************ starting downstream mapping for OpticalPort " + businessObjectToString(connectionPort));
 
             boolean treeContainsTerminatingObject = traverse(connectionPort,
                      upstreamFoundClass,
@@ -1267,7 +1285,7 @@ public class OpenNMSExport08 {
                      connectionPortToParentDeviceMap,
                      physicalTreeResult, 0);
 
-            LOG.info("************ finished downstream mapping for connection port " + businessObjectToString(connectionPort));
+            if(LOG.isTraceEnabled()) LOG.trace("************ finished downstream mapping for connection port " + businessObjectToString(connectionPort));
          }
 
       } catch (Exception ex) {
@@ -1308,7 +1326,7 @@ public class OpenNMSExport08 {
 
       BusinessObjectLight parentDeviceOfCurrentPort = connectionPortToParentDeviceMap.get(connectionPort);
 
-      LOG.info(sb.toString() + "traversing path depth=" + traverseDeapth + " for connectionPort: " +
+      if(LOG.isTraceEnabled()) LOG.trace(sb.toString() + "traversing path depth=" + traverseDeapth + " for connectionPort: " +
                businessObjectToString(connectionPort) + " parent: " + businessObjectToString(parentDeviceOfCurrentPort));
 
       boolean treeContainsTerminatingObject = false;
@@ -1316,7 +1334,7 @@ public class OpenNMSExport08 {
       // dont continue below terminating class type even if sublist exists
       if (parentDeviceOfCurrentPort != null && terminatingClassName.equals(parentDeviceOfCurrentPort.getClassName())) {
          treeContainsTerminatingObject = true;
-         LOG.info(sb.toString() + "found terminating class: " + businessObjectToString(parentDeviceOfCurrentPort) + " for port " + businessObjectToString(connectionPort));
+         if(LOG.isTraceEnabled()) LOG.trace(sb.toString() + "found terminating class: " + businessObjectToString(parentDeviceOfCurrentPort) + " for port " + businessObjectToString(connectionPort));
 
       } else {
 
@@ -1364,7 +1382,7 @@ public class OpenNMSExport08 {
             if (upstreamFoundClass != null && upstreamFoundClass != parentDeviceOfCurrentPort) {
                if (!childParentMapping.keySet().contains(parentDeviceOfCurrentPort)) {
                   childParentMapping.put(parentDeviceOfCurrentPort, upstreamFoundClass);
-                  LOG.info(sb.toString() + "assigning upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
+                  if(LOG.isTraceEnabled()) LOG.trace(sb.toString() + "assigning upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
                            " to " + businessObjectToString(upstreamFoundClass));
                } else {
                   // check you aren't reassigning upstream device (should not happen)
@@ -1373,7 +1391,7 @@ public class OpenNMSExport08 {
                               " from " + businessObjectToString(childParentMapping.get(parentDeviceOfCurrentPort)) +
                               " to " + businessObjectToString(upstreamFoundClass));
                   }
-                  LOG.info(sb.toString() + " already assigned upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
+                  if(LOG.isTraceEnabled()) LOG.trace(sb.toString() + " already assigned upstream device for " + businessObjectToString(parentDeviceOfCurrentPort) +
                            " to " + businessObjectToString(upstreamFoundClass));
                }
             }
@@ -1392,19 +1410,19 @@ public class OpenNMSExport08 {
     */
    public void printChildParentMap(Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> childParentMaps) {
 
-      LOG.info("*************** printChildParentMap");
+      LOG.trace("*************** printChildParentMap");
 
       for (String className : childParentMaps.keySet()) {
          LinkedHashMap<BusinessObjectLight, BusinessObjectLight> childParentMap = childParentMaps.get(className);
-         LOG.info(" child parent map for className: " + className + " size=" + childParentMap.size());
+         LOG.trace(" child parent map for className: " + className + " size=" + childParentMap.size());
 
          for (BusinessObjectLight child : childParentMap.keySet()) {
             BusinessObjectLight parent = childParentMap.get(child);
-            LOG.info("    parent:" + businessObjectToString(parent));
-            LOG.info("       child: " + businessObjectToString(child));
+            LOG.trace("    parent:" + businessObjectToString(parent));
+            LOG.trace("       child: " + businessObjectToString(child));
          }
       }
-      LOG.info("*************** END printChildParentMap");
+      LOG.trace("*************** END printChildParentMap");
    }
 
    /**
@@ -1412,18 +1430,18 @@ public class OpenNMSExport08 {
     * @param childParentMaps
     */
    public void printDownstreamUpsteamMapping(Map<String, LinkedHashMap<BusinessObjectLight, BusinessObjectLight>> downstreamUpsteamMapping) {
-      LOG.info("*************** printDownstreamUpsteamMapping");
+      LOG.trace("*************** printDownstreamUpsteamMapping");
 
       for (String classType : downstreamUpsteamMapping.keySet()) {
-         LOG.info(" down stream upstream mapping for : " + classType + " size=" + downstreamUpsteamMapping.get(classType).size());
+         LOG.trace(" down stream upstream mapping for : " + classType + " size=" + downstreamUpsteamMapping.get(classType).size());
          for (BusinessObjectLight downstream : downstreamUpsteamMapping.get(classType).keySet()) {
             BusinessObjectLight upstream = downstreamUpsteamMapping.get(classType).get(downstream);
-            LOG.info("    upstream     : " + businessObjectToString(upstream));
-            LOG.info("       downstream: " + businessObjectToString(downstream));
+            LOG.trace("    upstream     : " + businessObjectToString(upstream));
+            LOG.trace("       downstream: " + businessObjectToString(downstream));
          }
 
       }
-      LOG.info("*************** END printDownstreamUpsteamMapping");
+      LOG.trace("*************** END printDownstreamUpsteamMapping");
    }
 
    /**
@@ -1431,26 +1449,26 @@ public class OpenNMSExport08 {
     * @param physicalTreeResult
     */
    public void printPhysicalTreeResult(HashMap<BusinessObjectLight, List<BusinessObjectLight>> physicalTreeResult, List<String> searchClassNames) {
-      LOG.info("*************** physicalTreeResult");
+      LOG.trace("*************** physicalTreeResult");
 
       try {
          for (BusinessObjectLight connection : physicalTreeResult.keySet()) {
-            LOG.info("     connection: " + businessObjectToString(connection));
+            LOG.trace("     connection: " + businessObjectToString(connection));
             List<BusinessObjectLight> connectionParents = bem.getParentsUntilFirstOfClass(connection.getClassName(), connection.getId(), (String[]) searchClassNames.toArray());
             for (BusinessObjectLight parent : connectionParents) {
                if (searchClassNames.contains(parent.getClassName())) {
-                  LOG.info("     connection parent=" + businessObjectToString(parent));
+                  LOG.trace("     connection parent=" + businessObjectToString(parent));
                   break;
                }
             }
 
-            LOG.info("           downstream size: " + physicalTreeResult.get(connection).size());
+            LOG.trace("           downstream size: " + physicalTreeResult.get(connection).size());
             for (BusinessObjectLight downstream : physicalTreeResult.get(connection)) {
-               LOG.info("           downstream:" + businessObjectToString(downstream));
+               LOG.trace("           downstream:" + businessObjectToString(downstream));
                List<BusinessObjectLight> downstreamParents = bem.getParentsUntilFirstOfClass(downstream.getClassName(), downstream.getId(), (String[]) searchClassNames.toArray());
                for (BusinessObjectLight downstreamParent : downstreamParents) {
                   if (searchClassNames.contains(downstreamParent.getClassName())) {
-                     LOG.info("                         downstream parent=" + businessObjectToString(downstreamParent));
+                     LOG.trace("                         downstream parent=" + businessObjectToString(downstreamParent));
                      break;
                   }
                }
@@ -1462,7 +1480,7 @@ public class OpenNMSExport08 {
          LOG.error("problem printing PhysicalTreeResult ", ex);
       }
 
-      LOG.info("*************** END OF physicalTreeResult");
+      LOG.trace("*************** END OF physicalTreeResult");
    }
 
    /**
@@ -1473,6 +1491,7 @@ public class OpenNMSExport08 {
    * because the service is not accessible from a script
    * TODO - allow service access from script in kuwaiba
    */
+   @CompileStatic
    public static class PhysicalConnectionsServiceProxy {
 
       private ApplicationEntityManager aem;
@@ -1567,6 +1586,7 @@ public class OpenNMSExport08 {
    /**
     * Class which sets OpenNMS requisition column names at top of csv file
     */
+   @CompileStatic
    public static class OnmsRequisitionConstants {
 
       public static final String NODE_LABEL = "Node_Label";
@@ -1703,7 +1723,7 @@ public class OpenNMSExport08 {
    /**
     * Class to decode IP V4 Address with or without a cidr address prefix
     */
-   // remove static class in groovy
+   @CompileStatic
    public static class IpV4Cidr {
       static Logger LOG = LoggerFactory.getLogger("OpenNMSInventoryExport"); // needed for groovy
 
@@ -1736,7 +1756,7 @@ public class OpenNMSExport08 {
             throw new IllegalArgumentException("invalid ip v4 with cidr prefix: " + ipv4WithCidrString, ex);
          }
 
-         int mask = 0xffffffff << (32 - cidrPrefix);
+         int mask = (int) 0xffffffff << (32 - cidrPrefix);
 
          int value = mask;
          // not in groovy netMaskBytes = new byte[] { (byte) (value >>> 24), (byte) (value >> 16 & 0xff), (byte) (value >> 8 & 0xff), (byte) (value & 0xff) };
@@ -1780,17 +1800,17 @@ public class OpenNMSExport08 {
 
          try {
             byte[] testAddressBytes = testAddress.getAddress();
-            //LOG.warn("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
-            //LOG.warn("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
+            //if(LOG.isTraceEnabled()) LOG.trace("xxx testAddressBytes:        " + bytesToHex(testAddressBytes) + "  " + bytesToBinary(testAddressBytes));
+            //if(LOG.isTraceEnabled()) LOG.trace("xxx netMaskBytes:            " + bytesToHex(netMaskBytes) + "  " + bytesToBinary(netMaskBytes));
 
             byte[] testAddressNetworkBytes = andByteArrays(testAddressBytes, netMaskBytes);
 
-            //LOG.warn("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
-            //LOG.warn("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
+            //if(LOG.isTraceEnabled()) LOG.trace("xxx testAddressNetworkBytes: " + bytesToHex(testAddressNetworkBytes) + "  " + bytesToBinary(testAddressNetworkBytes));
+            //if(LOG.isTraceEnabled()) LOG.trace("xxx networkAddressBytes:     " + bytesToHex(networkAddressBytes) + "  " + bytesToBinary(networkAddressBytes));
 
             byte[] xor = xorByteArrays(networkAddressBytes, testAddressNetworkBytes);
 
-            //LOG.warn("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
+            //if(LOG.isTraceEnabled()) LOG.trace("xxx xor: " + bytesToHex(xor) + "  " + bytesToBinary(xor));
 
             for (int x = 0; x < xor.length; x++) {
                if (xor[x] != 0) {
@@ -1927,6 +1947,7 @@ public class OpenNMSExport08 {
        * @param inputIpv4AddressStr
        * @return substituteAddressStr
        */
+      @CompileStatic
       public static String subnetIpv4Substitution(String subnetNetSubstitutionFilterStr, String inputIpv4AddressStr) {
 
          String substituteAddressStr = "";
@@ -1936,7 +1957,7 @@ public class OpenNMSExport08 {
          IpV4Cidr substituteSubnet = null;
 
          if (subnetNetSubstitutionFilterStr == null || subnetNetSubstitutionFilterStr.isEmpty()) {
-            LOG.warn("no subnetNetSubstitutionFilter provided. Passing address unchanged");
+            if(LOG.isTraceEnabled()) LOG.trace("no subnetNetSubstitutionFilter provided. Passing address unchanged");
             return inputIpv4AddressStr;
          }
 
@@ -1951,24 +1972,24 @@ public class OpenNMSExport08 {
             substituteSubnet = new IpV4Cidr(parts[1]);
             ipV4Address = new IpV4Cidr(inputIpv4AddressStr);
 
-            LOG.warn("\n ipV4Address = " + ipV4Address + "\n insideSubnet = " + insideSubnet + "\n substituteSubnet = " + substituteSubnet);
+            if(LOG.isTraceEnabled()) LOG.trace("\n ipV4Address = " + ipV4Address + "\n insideSubnet = " + insideSubnet + "\n substituteSubnet = " + substituteSubnet);
 
             if (insideSubnet.networkContainsAddress(ipV4Address.getIpAddress())) {
 
                byte[] substituteNetmaskBytes = substituteSubnet.getNetMask().getAddress();
-               LOG.warn("\n substituteNetmaskBytes           = " + bytesToBinary(substituteNetmaskBytes));
+               if(LOG.isTraceEnabled()) LOG.trace("\n substituteNetmaskBytes           = " + bytesToBinary(substituteNetmaskBytes));
 
                byte[] complimentSubstituteNetmaskBytes = complimentByteArray(substituteNetmaskBytes);
-               LOG.warn("\n complimentSubstituteNetmaskBytes = " + bytesToBinary(complimentSubstituteNetmaskBytes));
+               if(LOG.isTraceEnabled()) LOG.trace("\n complimentSubstituteNetmaskBytes = " + bytesToBinary(complimentSubstituteNetmaskBytes));
 
                byte[] substituteNetworkAddressBytes = substituteSubnet.getNetworkAddress().getAddress();
-               LOG.warn("\n substituteNetworkAddressBytes    = " + bytesToBinary(substituteNetworkAddressBytes));
+               if(LOG.isTraceEnabled()) LOG.trace("\n substituteNetworkAddressBytes    = " + bytesToBinary(substituteNetworkAddressBytes));
 
                byte[] ipV4AddressBytes = ipV4Address.getIpAddress().getAddress();
-               LOG.warn("\n ipV4AddressBytes                 = " + bytesToBinary(ipV4AddressBytes));
+               if(LOG.isTraceEnabled()) LOG.trace("\n ipV4AddressBytes                 = " + bytesToBinary(ipV4AddressBytes));
 
                byte[] andAddressBytes = andByteArrays(ipV4AddressBytes, complimentSubstituteNetmaskBytes);
-               LOG.warn("\n andAddressBytes                  = " + bytesToBinary(andAddressBytes));
+               if(LOG.isTraceEnabled()) LOG.trace("\n andAddressBytes                  = " + bytesToBinary(andAddressBytes));
 
                byte[] substitueAddressBytes = orByteArrays(andAddressBytes, substituteNetworkAddressBytes);
 
@@ -1976,12 +1997,12 @@ public class OpenNMSExport08 {
 
                substituteAddressStr = substitueAddress.getHostAddress();
 
-               LOG.warn("\n substitueAddressBytes            = " + bytesToBinary(substitueAddressBytes) + " substituteAddress: " + substituteAddressStr);
+               if(LOG.isTraceEnabled()) LOG.trace("\n substitueAddressBytes            = " + bytesToBinary(substitueAddressBytes) + " substituteAddress: " + substituteAddressStr);
 
-               //LOG.warn("subnet contains address using substitute address string" + substituteAddressStr);
+               //if(LOG.isTraceEnabled()) LOG.trace("subnet contains address using substitute address string" + substituteAddressStr);
             } else {
                substituteAddressStr = inputIpv4AddressStr;
-               //LOG.warn("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
+               //if(LOG.isTraceEnabled()) LOG.trace("subnet does not contain address using supplied addresss string : "+substituteAddressStr);
 
             }
 

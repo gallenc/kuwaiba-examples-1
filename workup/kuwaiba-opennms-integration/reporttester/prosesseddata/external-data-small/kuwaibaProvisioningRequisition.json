@@ -1,0 +1,3628 @@
+{
+  "kuwaibaTemplateList" : [ {
+    "templateName" : "House_01",
+    "templateElementName" : "House_01",
+    "className" : "House",
+    "templateFunction" : null,
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ {
+      "templateName" : null,
+      "templateElementName" : "ONT_NOKIA_01",
+      "className" : "OpticalNetworkTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "IN-01",
+        "className" : "OpticalPort",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "eth0",
+        "className" : "ElectricalPort",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "CSP_BFU_1_2_01",
+      "className" : "SpliceBox",
+      "templateFunction" : "OpticalSpliceBoxFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "2"
+      },
+      "templateAttributes" : { }
+    } ],
+    "templateFunctionAttributes" : { },
+    "templateAttributes" : { }
+  }, {
+    "templateName" : "POLE_2_16drop",
+    "templateElementName" : "POLE_2_16drop",
+    "className" : "Pole",
+    "templateFunction" : null,
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ {
+      "templateName" : null,
+      "templateElementName" : "SPL16_001",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "16"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL16_002",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "16"
+      },
+      "templateAttributes" : { }
+    } ],
+    "templateFunctionAttributes" : { },
+    "templateAttributes" : { }
+  }, {
+    "templateName" : "CAB_10SPL8",
+    "templateElementName" : "CAB_10SPL8",
+    "className" : "OutdoorsCabinet",
+    "templateFunction" : null,
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ {
+      "templateName" : null,
+      "templateElementName" : "SPL8_001",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_002",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_003",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_004",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_005",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_006",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_007",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_008",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_009",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "SPL8_010",
+      "className" : "FiberSplitter",
+      "templateFunction" : "FiberSplitterFunction",
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ ],
+      "templateFunctionAttributes" : {
+        "numberOfPorts" : "8"
+      },
+      "templateAttributes" : { }
+    } ],
+    "templateFunctionAttributes" : { },
+    "templateAttributes" : { }
+  }, {
+    "templateName" : "FEX_RACK_001",
+    "templateElementName" : "FEX_RACK_001",
+    "className" : "Rack",
+    "templateFunction" : null,
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_001",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_002",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_003",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_004",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_005",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_006",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_007",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_008",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_009",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    }, {
+      "templateName" : null,
+      "templateElementName" : "OLT_NOKIA_01_010",
+      "className" : "OpticalLineTerminal",
+      "templateFunction" : null,
+      "special" : false,
+      "childKuwaibaTemplateDefinitions" : [ {
+        "templateName" : null,
+        "templateElementName" : "card-001",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      }, {
+        "templateName" : null,
+        "templateElementName" : "card-002",
+        "className" : "OLTBoard",
+        "templateFunction" : null,
+        "special" : false,
+        "childKuwaibaTemplateDefinitions" : [ {
+          "templateName" : null,
+          "templateElementName" : "IN-001",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-002",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-003",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-004",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-005",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-006",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-007",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-008",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-009",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-010",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-011",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-012",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-013",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-014",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-015",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        }, {
+          "templateName" : null,
+          "templateElementName" : "IN-016",
+          "className" : "OpticalPort",
+          "templateFunction" : null,
+          "special" : false,
+          "childKuwaibaTemplateDefinitions" : [ ],
+          "templateFunctionAttributes" : { },
+          "templateAttributes" : { }
+        } ],
+        "templateFunctionAttributes" : { },
+        "templateAttributes" : { }
+      } ],
+      "templateFunctionAttributes" : { },
+      "templateAttributes" : { }
+    } ],
+    "templateFunctionAttributes" : { },
+    "templateAttributes" : { }
+  }, {
+    "templateName" : "BFU_1_2",
+    "templateElementName" : null,
+    "className" : "WireContainer",
+    "templateFunction" : "ColoredFiberWireContainerFunction",
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ ],
+    "templateFunctionAttributes" : {
+      "numberOfCables" : "1",
+      "numberOfFibers" : "2"
+    },
+    "templateAttributes" : { }
+  }, {
+    "templateName" : "BFU_4_12",
+    "templateElementName" : null,
+    "className" : "WireContainer",
+    "templateFunction" : "ColoredFiberWireContainerFunction",
+    "special" : false,
+    "childKuwaibaTemplateDefinitions" : [ ],
+    "templateFunctionAttributes" : {
+      "numberOfCables" : "4",
+      "numberOfFibers" : "12"
+    },
+    "templateAttributes" : { }
+  } ],
+  "kuwaibaClassList" : [ {
+    "className" : "City",
+    "templateName" : null,
+    "name" : "Southampton",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "State",
+      "templateName" : null,
+      "name" : "Hampshire",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : { }
+  }, {
+    "className" : "Neighborhood",
+    "templateName" : null,
+    "name" : "BitternePk",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "City",
+      "templateName" : null,
+      "name" : "Southampton",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : { }
+  }, {
+    "className" : "Facility",
+    "templateName" : null,
+    "name" : "SOTNOO1",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "City",
+      "templateName" : null,
+      "name" : "Southampton",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "latitude" : "-1.39399900",
+      "longitude" : "50.92387300"
+    }
+  }, {
+    "className" : "Rack",
+    "templateName" : "FEX_RACK_001",
+    "name" : "SOTN001_RACK001",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Facility",
+      "templateName" : null,
+      "name" : "SOTNOO1",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : { }
+  }, {
+    "className" : "House",
+    "templateName" : "House_01",
+    "name" : "UPRN_200001919492",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "latitude" : "-1.37188121",
+      "longitude" : "50.92471325"
+    }
+  }, {
+    "className" : "Pole",
+    "templateName" : "POLE_2_16drop",
+    "name" : "SO18BPK1_POLE_001",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "latitude" : "-1.37165175",
+      "longitude" : "50.92451031"
+    }
+  }, {
+    "className" : "House",
+    "templateName" : "House_01",
+    "name" : "UPRN_200001919492",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "latitude" : "50.92445000",
+      "longitude" : "-1.37204500"
+    }
+  }, {
+    "className" : "OpticalNetworkTerminal",
+    "templateName" : "ONT_NOKIA_01",
+    "name" : "ONT_200001919492",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_200001919492",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "serialNumber" : "ALCLF2E910B1A04"
+    }
+  }, {
+    "className" : "SpliceBox",
+    "templateName" : "CSP_BFU_1_2_01",
+    "name" : "CSP_200001919492",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_200001919492",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : { }
+  }, {
+    "className" : "Pole",
+    "templateName" : "POLE_2_16drop",
+    "name" : "SO18BPK1_POLE_001",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "latitude" : "0.00000000",
+      "longitude" : "0.00000000"
+    }
+  }, {
+    "className" : "FiberSplitter",
+    "templateName" : "SPL16",
+    "name" : "SO18BPK1_POLE_001_SPL16_001",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : { }
+  }, {
+    "className" : "OutdoorsCabinet",
+    "templateName" : "CAB_10SPL8",
+    "name" : "SO18BPK1_CAB_001",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Neighborhood",
+      "templateName" : null,
+      "name" : "BitternePk",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "latitude" : "0.00000000",
+      "longitude" : "0.00000000"
+    }
+  }, {
+    "className" : "FiberSplitter",
+    "templateName" : "SPL8",
+    "name" : "SO18BPK1_CAB_001_SPL8_001",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "OutdoorsCabinet",
+      "templateName" : null,
+      "name" : "SO18BPK1_CAB_001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : { }
+  }, {
+    "className" : "OpticalLineTerminal",
+    "templateName" : "OLT_NOKIA_01",
+    "name" : "SOTN001_OLT_103",
+    "special" : false,
+    "parentClasses" : [ {
+      "className" : "Rack",
+      "templateName" : null,
+      "name" : "SOTN001_RACK001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    } ],
+    "attributes" : {
+      "serialNumber" : ""
+    }
+  } ],
+  "kuwaibaWireContainerConnectionList" : [ {
+    "connectionClass" : {
+      "className" : "WireContainer",
+      "templateName" : "BFU_1_2",
+      "name" : "BFU_1_2_SO18BPK1_POLE_001_UPRN_200001919492",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointA" : {
+      "className" : "Pole",
+      "templateName" : null,
+      "name" : "SO18BPK1_POLE_001",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    },
+    "endpointB" : {
+      "className" : "House",
+      "templateName" : null,
+      "name" : "UPRN_200001919492",
+      "special" : false,
+      "parentClasses" : [ ],
+      "attributes" : { }
+    }
+  } ]
+}

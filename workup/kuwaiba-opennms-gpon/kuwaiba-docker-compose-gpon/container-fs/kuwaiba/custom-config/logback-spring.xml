@@ -38,6 +38,10 @@
     <logger name="org.entimoss.kuwaiba.provisioning.script" level="DEBUG" additivity="false" >
         <appender-ref ref="ASYNC_CONSOLE" />
     </logger>
+    
+    <logger name="org.entimoss.kuwaiba.export" level="DEBUG" additivity="false" >
+        <appender-ref ref="ASYNC_CONSOLE" />
+    </logger>
 
     <!-- Root logger configuration -->
     <root level="info">
