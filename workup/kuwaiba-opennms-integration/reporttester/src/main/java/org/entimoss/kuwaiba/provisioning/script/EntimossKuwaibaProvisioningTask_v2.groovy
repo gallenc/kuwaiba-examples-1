@@ -1,7 +1,7 @@
 /**
  * This Task script imports a Kuwaiba inventory from json files
  * Entimoss Ltd. -  (Apache Licensed)
- * Version 2.0
+ * Version 2.0.1
  * 
  * Parameters:
  *   
@@ -56,11 +56,14 @@ import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObject;
 import org.neotropic.kuwaiba.core.apis.persistence.business.BusinessObjectLight;
 import org.neotropic.kuwaiba.core.apis.persistence.util.Constants;
 
+import groovy.transform.CompileStatic; // enables static compilation - faster
+
 // note use COMMIT ON EXECUTE
 // uncomment in groovy script
 EntimossKuwaibaProvisioningTask_v2 kuwaibaImport = new EntimossKuwaibaProvisioningTask_v2(bem, aem, mem, scriptParameters, connectionHandler);
 return kuwaibaImport.runTask();
 
+@CompileStatic
 public class EntimossKuwaibaProvisioningTask_v2 {
    static Logger LOG = LoggerFactory.getLogger(EntimossKuwaibaProvisioningTask_v2.class);
 
@@ -175,7 +178,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
          BusinessObject businessObject = createClassIfDoesntExist(createObjectClassName, createObjectName,
                   parentClasses, templateName, initialAttributes);
 
-         if(LOG.isTraceEnabled()) LOG.trace("FINISHED PROCESSING kuwaibaClass:" + kuwaibaClass + " MATCHING business object: " + businessObjectToString(businessObject));
+         if(LOG.isDebugEnabled()) LOG.debug("FINISHED PROCESSING kuwaibaClass:" + kuwaibaClass + " MATCHING business object: " + businessObjectToString(businessObject));
 
       }
 
@@ -661,7 +664,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
                   templateElementsCreated = templateElementsCreated + createTemplateElementsFromFunction(templateName, templateElementName, null, null,  function, functionAttributes);
 
-                  if(LOG.isTraceEnabled()) LOG.trace("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
+                  if(LOG.isDebugEnabled()) LOG.debug("template " + templateName + " was created using function " + function + " new templateId=" + templateId);
 
                }
 
@@ -974,7 +977,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
    
             String userName = "admin";
 
-               if(LOG.isTraceEnabled()) LOG.trace("creating connection name=" + name + " connectionClass=" + connectionClassName + " template=" +
+               if(LOG.isDebugEnabled()) LOG.debug("creating connection name=" + name + " connectionClass=" + connectionClassName + " template=" +
                      templateId + " to end objects aObject=" + businessObjectToString(aObject) + " bObject=" + businessObjectToString(bObject));
 
             physicalConnectionService.createPhysicalConnection(aObject.getClassName(), aObjectId, bObject.getClassName(), bObjectId, name, connectionClassName, templateId, userName);
@@ -990,6 +993,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
    // TODO - allow service access from script in kuwaiba
    // this is a clone of methods in the internal PhysicalConnectionsService because the service is not accessible from a script
+   @CompileStatic
    public static class PhysicalConnectionsServiceProxy  {
       
       private ApplicationEntityManager aem;
@@ -1108,6 +1112,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
     * These classes could be in separate java classes if not in a groovy script
     */
    
+   @CompileStatic
    public static class ContainerColour {
 
       /*
@@ -1174,6 +1179,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
    }
 
+   @CompileStatic
    public static class KuwaibaClass {
 
       private String className = null;
@@ -1246,8 +1252,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
    
    }
    
-   
-   
+   @CompileStatic
    public static class KuwaibaProvisioningRequisition {
       
       private List<KuwaibaTemplateDefinition> kuwaibaTemplateList = new ArrayList<KuwaibaTemplateDefinition>();
@@ -1292,8 +1297,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
    }
 
-
-   
+   @CompileStatic
    public static class KuwaibaTemplateDefinition {
       
       private String templateName = null;
@@ -1390,6 +1394,7 @@ public class EntimossKuwaibaProvisioningTask_v2 {
 
    }
 
+   @CompileStatic
    public static class KuwaibaConnection {
       
       private KuwaibaClass connectionClass;

@@ -74,6 +74,9 @@ services:
     environment:
        SPRING_CONFIG_ADDITIONAL-LOCATION : optional:file:/custom-config/
        LOGGING_CONFIG : file:/custom-config/logback-spring.xml
+       # enable jmx in docker from outside use jconsole service:jmx:rmi:///jndi/rmi://localhost:5000/jmxrmi
+       # doesnt work :( but connect within jconsol (insecure connection) to service:jmx:rmi:///jndi/rmi://localhost:5000/jmxrmi and it works
+       JAVA_TOOL_OPTIONS : "-Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.port=5000 -Dcom.sun.management.jmxremote.rmi.port=5000 -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=0.0.0.0"
 
 #      SPRING_CONFIG_NAME : 
 #      SPRING_CONFIG_LOCATION : file:///Users/home/config
@@ -120,6 +123,7 @@ services:
       retries: 1
     ports:
       - "8020:8000"
+      - "5000:5000" # JMX
     networks:
       kuwaiba-net:
         ipv4_address: 172.30.0.35
